@@ -6,15 +6,16 @@
       v-bind:key="item.id"
       v-on:click="add(item)"
     >
-      <strong>{{ item.name }}</strong> - {{ item.price }}
+      <strong>{{ item.name }}</strong> - {{ currency(item.price) }}
     </button>
   </div>
 </template>
 
 <script>
+import Utils from "@/services/lib/Util";
+
 export default {
   name: "ItemList",
-  components: {},
   props: {
     items: {
       type: Array,
@@ -24,11 +25,12 @@ export default {
   data: () => {
     return {};
   },
-  computed: {},
-  created() {},
   methods: {
     add(item) {
       this.$emit("add", item);
+    },
+    currency(number) {
+      return Utils.toCurrency(number);
     },
   },
 };

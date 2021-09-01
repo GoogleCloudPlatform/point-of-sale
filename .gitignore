@@ -17,7 +17,8 @@ npm.logs
 
 # local env files
 .env.local
-.env.*.local
+.env*
+!.env.development.sample
 
 # exclude everything
 api-server/src/main/resources/public/*

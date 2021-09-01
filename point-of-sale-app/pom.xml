@@ -21,8 +21,9 @@
     <build-plugin.jacoco.version>0.8.7</build-plugin.jacoco.version>
   </properties>
   <modules>
+    <module>service-sdk</module>
+    <module>ui</module>
     <module>api-server</module>
-    <module>test-server</module>
     <module>inventory</module>
     <module>payments</module>
   </modules>
@@ -34,21 +35,6 @@
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>jib-maven-plugin</artifactId>
           <version>2.1.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
-          <configuration>
-            <compilerArgs>
-              <arg>-Xlint:all</arg>
-            </compilerArgs>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>${build-plugin.jacoco.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

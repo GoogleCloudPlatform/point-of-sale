@@ -3,6 +3,7 @@ package com.google.abmedge.inventory.dao;
 import com.google.abmedge.dto.Item;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface InventoryConnector {
@@ -11,6 +12,8 @@ public interface InventoryConnector {
   List<Item> getAllByType(String type);
 
   Optional<Item> getById(UUID id);
+
+  Set<String> getTypes();
 
   boolean insert(Item item);
 

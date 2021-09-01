@@ -4,9 +4,6 @@ metadata:
   name: backend # module defining backend services
 build:
   artifacts:
-#  - image: gcr.io/abm-edge-test/test-server
-#    jib:
-#      project: test-server
   - image: gcr.io/abm-edge-test/api-server
     jib:
       project: api-server
@@ -24,7 +21,7 @@ deploy:
   kubectl:
     manifests:
     - kubernetes-manifests/service-configs.yaml
-#    - kubernetes-manifests/test-server.yaml
     - kubernetes-manifests/api-server.yaml
+    - kubernetes-manifests/api-server-lb.yaml
     - kubernetes-manifests/inventory.yaml
     - kubernetes-manifests/payments.yaml

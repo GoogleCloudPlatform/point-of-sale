@@ -1,9 +1,11 @@
 package com.google.abmedge.inventory.dao;
 
 import com.google.abmedge.dto.Item;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ public class InMemoryConnector implements InventoryConnector {
 
   private static final Logger LOGGER = LogManager.getLogger(InMemoryConnector.class);
   private static final Map<UUID, Item> idToItemsMap = new ConcurrentHashMap<>();
+  private static final Map<String, List<Item>> typeToItemsMap = new ConcurrentHashMap<>();
 
   @Override
   public List<Item> getAll() {
@@ -26,11 +29,7 @@ public class InMemoryConnector implements InventoryConnector {
 
   @Override
   public List<Item> getAllByType(String type) {
-    return idToItemsMap.values()
-        .stream()
-        .filter(i -> i.getType().equals(type))
-        .map(Item::from)
-        .collect(Collectors.toList());
+    return typeToItemsMap.get(type);
   }
 
   @Override
@@ -40,6 +39,11 @@ public class InMemoryConnector implements InventoryConnector {
         .filter(i -> i.getId().equals(id))
         .map(Item::from)
         .findAny();
+  }
+
+  @Override
+  public Set<String> getTypes() {
+    return typeToItemsMap.keySet();
   }
 
   @Override
@@ -53,24 +57,20 @@ public class InMemoryConnector implements InventoryConnector {
     }
     Item toInsertItem = Item.from(item);
     idToItemsMap.put(itemId, toInsertItem);
+    List<Item> itemsOfType = typeToItemsMap.computeIfAbsent(itemType, k -> new ArrayList<>());
+    itemsOfType.add(toInsertItem);
     return true;
   }
 
   @Override
   public boolean insert(List<Item> items) {
     for (Item it : items) {
-      UUID itemId = it.getId();
-      String itemType = it.getType();
-      if (itemId == null || StringUtils.isEmpty(itemType)) {
-        LOGGER.error("Cannot insert items. Items must have both 'id' and 'type'. "
+      boolean inserted = insert(it);
+      if (!inserted) {
+        LOGGER.error("Issue inserting items. Items must have both 'id' and 'type'. "
             + "One of the passed in item is missing one or both of these attributes");
         return false;
       }
-    }
-    for (Item it : items) {
-      UUID itemId = it.getId();
-      Item toInsertItem = Item.from(it);
-      idToItemsMap.put(itemId, toInsertItem);
     }
     return true;
   }

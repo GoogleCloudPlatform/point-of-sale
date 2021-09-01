@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,14 @@ public class InventoryController {
     List<Item> inventoryItems = activeItemsType.equals(ALL_ITEMS) ?
         activeConnector.getAll() : activeConnector.getAllByType(activeItemsType);
     String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
+    }.getType());
+    return new ResponseEntity<>(jsonString, HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> types() {
+    Set<String> itemTypes = activeConnector.getTypes();
+    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {
     }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }

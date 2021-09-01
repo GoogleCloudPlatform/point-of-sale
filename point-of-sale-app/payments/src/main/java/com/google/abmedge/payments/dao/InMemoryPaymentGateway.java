@@ -19,8 +19,10 @@ public class InMemoryPaymentGateway implements PaymentGateway {
       "----------------------------------------------------------------------------\n";
   private static final String SPACE = " ";
   private static final String TOTAL = "  Total:";
+  private static final String TAX = "  Tax:";
   private static final String PAID = "  Paid:";
   private static final String BALANCE = "  Balance:";
+  private static final double TAX_VALUE = 0.1495;
 
   @Override
   public Bill pay(Payment payment) {
@@ -37,7 +39,7 @@ public class InMemoryPaymentGateway implements PaymentGateway {
 
   private Pair<String, String> generateBill(UUID pId, Payment payment) {
     StringBuilder bill = new StringBuilder();
-    float totalCost = 0;
+    double totalCost = 0;
     int count = 1;
     int lineLength = BILL_HEADER.length();
 
@@ -57,23 +59,30 @@ public class InMemoryPaymentGateway implements PaymentGateway {
       totalCost += pu.getTotalCost().floatValue();
       count++;
     }
-    float balance = payment.getPaidAmount().floatValue() - totalCost;
+    double taxValue = totalCost * TAX_VALUE;
+    double balance = payment.getPaidAmount().floatValue() - totalCost - taxValue;
     bill.append(BILL_HEADER);
 
     String formattedTotal = String.format("%.2f", totalCost);
+    String formattedTax = String.format("%.2f", taxValue);
+    String formattedPaid = String.format("%.2f", payment.getPaidAmount());
     String formattedBalance = String.format("%.2f", balance);
 
     int spacesOnTotalLine = lineLength - TOTAL.length() - formattedTotal.length() - 2;
-    int spacesOnPaidLine =
-        lineLength - PAID.length() - String.valueOf(payment.getPaidAmount()).length() - 2;
+    int spacesOnTaxLine = lineLength - TAX.length() - formattedTax.length() - 2;
+    int spacesOnPaidLine = lineLength - PAID.length() - formattedPaid.length() - 2;
     int spacesOnBalLine = lineLength - BALANCE.length() - formattedBalance.length() - 2;
     bill.append(TOTAL);
     fillSpaces(bill, spacesOnTotalLine);
     bill.append(String.format("$%s\n", formattedTotal));
 
+    bill.append(TAX);
+    fillSpaces(bill, spacesOnTaxLine);
+    bill.append(String.format("$%s\n", formattedTax));
+
     bill.append(PAID);
     fillSpaces(bill, spacesOnPaidLine);
-    bill.append(String.format("$%s\n", payment.getPaidAmount()));
+    bill.append(String.format("$%s\n", formattedPaid));
 
     bill.append(BALANCE);
     fillSpaces(bill, spacesOnBalLine);

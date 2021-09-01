@@ -48,7 +48,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>run build</arguments>
+							<arguments>run build -- --mode production</arguments>
             			</configuration>
 					</execution>
 				</executions>

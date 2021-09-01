@@ -26,7 +26,7 @@
               v-model="item.numberOfItems"
             />
           </td>
-          <td>{{ toCurrency(item.numberOfItems * item.item.price) }}</td>
+          <td>{{ currency(item.numberOfItems * item.item.price) }}</td>
           <td>
             <button
               type="button"
@@ -45,22 +45,32 @@
       <tbody>
         <tr>
           <td>Subtotal:</td>
-          <td>{{ toCurrency(subtotal) }}</td>
+          <td>{{ currency(subtotal) }}</td>
         </tr>
         <tr>
           <td>Tax:</td>
-          <td>{{ toCurrency(tax) }}</td>
+          <td>{{ currency(tax) }}</td>
         </tr>
         <tr>
           <td>Total:</td>
-          <td>{{ toCurrency(total) }}</td>
+          <td>{{ currency(total) }}</td>
         </tr>
       </tbody>
     </table>
+    <div class="btn-container">
+      <button type="button" class="btn btn-success transaction-btn" @click="pay">
+        Pay
+      </button>
+      <button type="button" class="btn btn-warning transaction-btn" @click="clear">
+        Clear
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
+import Utils from "@/services/lib/Util";
+
 export default {
   name: "Transaction",
   components: {},
@@ -82,7 +92,7 @@ export default {
       return subtotal;
     },
     tax() {
-      return this.subtotal * 0.065;
+      return this.subtotal * 0.1495;
     },
     total() {
       return this.subtotal + this.tax;
@@ -90,17 +100,19 @@ export default {
   },
   methods: {
     toggleEdit(item) {
-      // this.$emit("edit", item);
       item.editing = !item.editing;
     },
     removeItem(item) {
       this.$emit("remove", item);
     },
-    toCurrency(number) {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(number);
+    currency(number) {
+      return Utils.toCurrency(number);
+    },
+    pay() {
+      this.$emit("pay", this.total);
+    },
+    clear() {
+      this.$emit("clear");
     },
   },
 };
@@ -113,5 +125,17 @@ export default {
 
 .btn {
   padding: 0em 0.25em;
+}
+
+.btn-container {
+  display: flex;
+}
+
+.transaction-btn {
+  padding: 5px 34px;
+  font-size: 18px;
+  flex: 1;
+  margin-right: 8px;
+  margin-left: 8px;
 }
 </style>

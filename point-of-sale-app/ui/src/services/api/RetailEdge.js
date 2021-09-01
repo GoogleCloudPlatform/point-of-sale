@@ -1,8 +1,5 @@
-import axios from 'axios'
-import store from '@/main'
-
 const API_SERVER_URL = (process.env.VUE_APP_API_SERVER_URL) ?
-  process.env.VUE_APP_API_SERVER_URL : 'http://localhost:8082';
+  process.env.VUE_APP_API_SERVER_URL : window.location.origin;
 const HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
@@ -10,41 +7,31 @@ const HEADERS = {
   'Content-Type': 'application/json'
 };
 
+function post(path, headers, body) {
+  const promise = fetch(path, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers,
+  });
+  return promise.then((response) => response);
+}
+
+function get(path, headers) {
+  const promise = fetch(path, {
+    method: 'GET',
+    headers,
+  });
+  return promise.then((response) => response);
+}
+
 export default {
-  async send(message) {
-    const requestHeaders = {
-      ...HEADERS,
-      'Authorization': `Bearer ${store.getters.accessToken}`,
-    };
-    return axios.post(`${API_SERVER_URL}/send`, message, { headers: requestHeaders })
-      .catch((error) => {
-        if (!error.response) {
-          return { status: 500 };
-        }
-      });
+  async pay(payRequest) {
+    return post(`${API_SERVER_URL}/api/pay`, HEADERS, payRequest);
   },
-  async locales() {
-    return axios.get(`${API_SERVER_URL}/locales`, {
-      headers: {
-        ...HEADERS,
-        'Authorization': `Bearer ${store.getters.accessToken}`,
-      }
-    }).catch((error) => {
-      if (!error.response) {
-        return { status: 500 };
-      }
-    });
+  async items() {
+    return get(`${API_SERVER_URL}/api/items`, HEADERS);
   },
-  async audioLocales(lang) {
-    return axios.get(`${API_SERVER_URL}/audioLocales/${lang}`, {
-      headers: {
-        ...HEADERS,
-        'Authorization': `Bearer ${store.getters.accessToken}`,
-      }
-    }).catch((error) => {
-      if (!error.response) {
-        return { status: 500 };
-      }
-    });
+  async types() {
+    return get(`${API_SERVER_URL}/api/types`, HEADERS);
   }
 }
