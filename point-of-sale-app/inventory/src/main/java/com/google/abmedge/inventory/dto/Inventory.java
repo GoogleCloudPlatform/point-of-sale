@@ -1,5 +1,6 @@
 package com.google.abmedge.inventory.dto;
 
+import com.google.abmedge.dto.Item;
 import java.util.List;
 
 public class Inventory {

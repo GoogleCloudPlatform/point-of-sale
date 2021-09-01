@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,7 +65,7 @@ public class PaymentsController {
     return new ResponseEntity<>("ok", HttpStatus.OK);
   }
 
-  @PostMapping(value = "/pay")
+  @PostMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> pay(@RequestBody Payment payment) {
     Bill bill = this.activePaymentGateway.pay(payment);
     String jsonString = GSON.toJson(bill, Bill.class);

@@ -1,6 +1,6 @@
 package com.google.abmedge.inventory.dao;
 
-import com.google.abmedge.inventory.dto.Item;
+import com.google.abmedge.dto.Item;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

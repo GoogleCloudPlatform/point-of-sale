@@ -6,6 +6,13 @@ public class PurchaseItem {
   private UUID itemId;
   private long itemCount;
 
+  public PurchaseItem() {}
+
+  public PurchaseItem(UUID itemId, long itemCount) {
+    this.itemId = itemId;
+    this.itemCount = itemCount;
+  }
+
   public UUID getItemId() {
     return itemId;
   }
