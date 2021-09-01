@@ -1,1 +1,2 @@
-# anthos-edge-usecases
+# Anthos Bare Metal Edge Use Cases
+
