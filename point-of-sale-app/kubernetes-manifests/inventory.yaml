@@ -16,6 +16,22 @@ spec:
       containers:
       - name: inventory
         image: gcr.io/abm-edge-test/inventory
+        env:
+        - name: CONNECTOR
+          valueFrom:
+            configMapKeyRef:
+              name: inventory-configmap
+              key: CONNECTOR
+        - name: ACTIVE_ITEM_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: inventory-configmap
+              key: ACTIVE_ITEM_TYPE
+        - name: ITEMS
+          valueFrom:
+            configMapKeyRef:
+              name: inventory-configmap
+              key: ITEMS
         resources:
           requests:
             cpu: 100m

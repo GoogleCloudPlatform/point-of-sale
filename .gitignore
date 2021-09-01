@@ -2,5 +2,5 @@
 .idea
 target
 dev.yaml
-.mvn
 .DS_Store
+.mvn

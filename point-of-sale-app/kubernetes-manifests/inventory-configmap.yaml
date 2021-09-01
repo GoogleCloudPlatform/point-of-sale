@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-configmap
+data:
+  CONNECTOR: "IN_MEMORY"
+  ACTIVE_ITEM_TYPE: "mcdonalds"
+  ITEMS: |
+    items:
+      - name: "BigMac"
+        type: "mcdonalds"
+        price: 5.50
+        imageUrl: "usr/lib/images/bigmac.png"
+        quantity: 200
+        labels: [ "retail", "restaurant", "food" ]
+      - name: "McDouble"
+        type: "mcdonalds"
+        price: 7.20
+        imageUrl: "usr/lib/images/mcdouble.png"
+        quantity: 200
+        labels: [ "retail", "restaurant", "food" ]
+      - name: "Shirt"
+        type: "forever21"
+        price: 15.50
+        imageUrl: "usr/lib/images/shirt.png"
+        quantity: 50
+        labels: [ "retail", "textile", "clothing" ]
+      - name: "Short"
+        type: "forever21"
+        price: 17.20
+        imageUrl: "usr/lib/images/short.png"
+        quantity: 20
+        labels: [ "retail", "textile", "clothing" ]
