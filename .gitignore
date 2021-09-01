@@ -1,6 +1,26 @@
 *.iml
 .idea
 target
-dev.yaml
 .DS_Store
 .mvn
+
+test-server
+test-server.yaml
+dev.yaml
+
+node
+package-lock.json
+node_modules
+dist/
+npm.logs
+.appengine.env
+
+# local env files
+.env.local
+.env.*.local
+
+# exclude everything
+api-server/src/main/resources/public/*
+
+# exception to the rule
+!api-server/src/main/resources/public/.gitkeep

@@ -3,14 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.google.abm-edge</groupId>
+		<artifactId>abm-edge-usecase</artifactId>
+		<version>1.0</version>
 	</parent>
-	<groupId>com.google.abm-edge</groupId>
 	<artifactId>payments</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>payments</name>
 	<description>Application to process payments for the Edge Use case workload</description>
 	<properties>
