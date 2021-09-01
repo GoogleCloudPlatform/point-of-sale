@@ -1,19 +1,20 @@
 package com.google.abmedge.inventory.dao;
 
 import com.google.abmedge.inventory.dto.Item;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class InMemoryConnector implements InventoryConnector {
+
   private static final Logger LOGGER = LogManager.getLogger(InMemoryConnector.class);
-  private static final Map<UUID, Item> idToItemsMap = new HashMap<>();
+  private static final Map<UUID, Item> idToItemsMap = new ConcurrentHashMap<>();
 
   @Override
   public List<Item> getAll() {
