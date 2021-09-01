@@ -1,0 +1,25 @@
+apiVersion: skaffold/v2beta18
+kind: Config
+metadata:
+  name: backend # module defining backend services
+build:
+  artifacts:
+  - image: gcr.io/abm-edge-test/frontend
+    jib:
+      project: frontend
+  - image: gcr.io/abm-edge-test/inventory
+    jib:
+      project: inventory
+  - image: gcr.io/abm-edge-test/payments
+    jib:
+      project: payments
+  tagPolicy:
+    gitCommit: { }
+  local:
+    concurrency: 0
+deploy:
+  kubectl:
+    manifests:
+    - kubernetes-manifests/frontend.yaml
+    - kubernetes-manifests/inventory.yaml
+    - kubernetes-manifests/payments.yaml
