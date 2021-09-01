@@ -1,6 +1,9 @@
 package com.google.abmedge.payments.dto;
 
+import com.google.abmedge.dto.Payment;
+
 public class Bill {
+
   private Payment payment;
   private PaymentStatus status;
   private Number balance;

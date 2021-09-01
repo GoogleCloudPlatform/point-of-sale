@@ -1,4 +1,4 @@
-package com.google.abmedge.payments.dto;
+package com.google.abmedge.dto;
 
 import java.util.UUID;
 

@@ -20,7 +20,7 @@ build:
 deploy:
   kubectl:
     manifests:
-    - kubernetes-manifests/inventory-configmap.yaml
+    - kubernetes-manifests/service-configs.yaml
     - kubernetes-manifests/frontend.yaml
     - kubernetes-manifests/inventory.yaml
     - kubernetes-manifests/payments.yaml

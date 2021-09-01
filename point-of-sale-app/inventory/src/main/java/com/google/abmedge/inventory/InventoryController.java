@@ -1,10 +1,10 @@
 package com.google.abmedge.inventory;
 
+import com.google.abmedge.dto.PurchaseItem;
 import com.google.abmedge.inventory.dao.InMemoryConnector;
 import com.google.abmedge.inventory.dao.InventoryConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.dto.Item;
-import com.google.abmedge.inventory.dto.PurchaseItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;

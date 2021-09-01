@@ -16,6 +16,17 @@ spec:
       containers:
       - name: frontend
         image: gcr.io/abm-edge-test/frontend
+        env:
+        - name: INVENTORY_EP
+          valueFrom:
+            configMapKeyRef:
+              name: service-configs
+              key: INVENTORY_EP
+        - name: PAYMENTS_EP
+          valueFrom:
+            configMapKeyRef:
+              name: service-configs
+              key: PAYMENTS_EP
         resources:
           requests:
             cpu: 100m
@@ -41,11 +52,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: frontend-svc
 spec:
   type: ClusterIP
   selector:
-    app: frontend-service
+    app: frontend
   ports:
   - name: http
     port: 8080
