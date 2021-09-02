@@ -4,6 +4,11 @@ target
 .DS_Store
 .mvn
 
+.classpath
+.factorypath
+.project
+.settings
+
 test-server
 test-server.yaml
 dev.yaml
