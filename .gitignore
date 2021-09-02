@@ -1,6 +1,6 @@
-*.iml
+.DS_Store
 .idea
+.mvn
+*.iml
 target
 dev.yaml
-.mvn
-.DS_Store
