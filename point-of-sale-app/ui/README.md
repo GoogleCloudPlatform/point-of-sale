@@ -28,6 +28,8 @@ sed "s/IP_ADDRESS/$API_SERVER_IP/g" ui/.env.development.sample > ui/.env.develop
 
 4. Start the UI project for development
 ```sh
+# must install modules during the first run
+npm install --prefix ui
 npm run serve --prefix ui
 ```
 
