@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import Utils from "@/services/lib/Util";
+import Utils from "@/services/Util";
 
 export default {
   name: "ItemList",

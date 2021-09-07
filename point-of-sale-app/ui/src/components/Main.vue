@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import RetailEdgeAppApi from "@/services/api/RetailEdge";
+import RetailEdgeAppApi from "@/services/RetailEdge";
 import ItemList from "./ItemList.vue";
 import Transaction from "./Transaction.vue";
 
