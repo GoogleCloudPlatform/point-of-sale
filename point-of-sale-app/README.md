@@ -1,11 +1,11 @@
 ## Sample application running in Anthos on Bare Metal at the Edge
 
-- Use skaffold to deploy the application
+1. Use skaffold to deploy the application
 ```bash
 skaffold run
 ```
 
-- Get the external IP of the `api-server`
+2. Get the external IP of the `api-server`
 ```sh
 while [ -z "$API_SERVER_IP" ] || [ "$API_SERVER_IP" = "<pending>" ]; do
   echo "Fetching API_SERVER_IP....."
@@ -15,4 +15,4 @@ done
 echo "API_SERVER IP is $API_SERVER_IP"
 ```
 
-- Access the application using the IP printed above 
+3. Access the application using the IP printed above
