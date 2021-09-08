@@ -14,8 +14,8 @@
 
 package com.google.abmedge.inventory;
 
-import com.google.abmedge.inventory.dao.InMemoryConnector;
-import com.google.abmedge.inventory.dao.InventoryConnector;
+import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
+import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.dto.Item;
 import com.google.abmedge.inventory.dto.PurchaseItem;
@@ -54,11 +54,11 @@ public class InventoryController {
   private static final String IN_MEMORY_CONNECTOR = "IN_MEMORY";
   private static final String ALL_ITEMS = "ALL";
   private static final Gson GSON = new Gson();
-  private static final Map<String, InventoryConnector> inventoryMap = new HashMap<>() {{
-    put(IN_MEMORY_CONNECTOR, new InMemoryConnector());
+  private static final Map<String, InventoryStoreConnector> inventoryMap = new HashMap<>() {{
+    put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
   }};
   private String activeItemsType;
-  private InventoryConnector activeConnector;
+  private InventoryStoreConnector activeConnector;
 
   @PostConstruct
   void init() {

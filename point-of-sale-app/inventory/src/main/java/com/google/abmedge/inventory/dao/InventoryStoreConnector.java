@@ -19,7 +19,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface InventoryConnector {
+/**
+ * {@link InventoryStoreConnector} explains the interface using which we can interact with the
+ * underlying store that holds all the inventory information. Implementations of this interface may
+ * be storing and retrieving items from different places.
+ */
+public interface InventoryStoreConnector {
   List<Item> getAll();
 
   List<Item> getAllByType(String type);

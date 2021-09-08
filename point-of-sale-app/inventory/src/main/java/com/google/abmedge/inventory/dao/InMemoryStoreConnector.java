@@ -25,8 +25,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class InMemoryConnector implements InventoryConnector {
-  private static final Logger LOGGER = LogManager.getLogger(InMemoryConnector.class);
+/**
+ * An implementation of the {@link InventoryStoreConnector} that uses an in memory data structure to
+ * hold all the inventory information. This implementation uses a simple HashMap to store all the
+ * items
+ */
+public class InMemoryStoreConnector implements InventoryStoreConnector {
+  private static final Logger LOGGER = LogManager.getLogger(InMemoryStoreConnector.class);
   private static final Map<UUID, Item> idToItemsMap = new HashMap<>();
 
   @Override
