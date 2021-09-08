@@ -30,14 +30,10 @@ public class Item {
 
   public Item() { }
 
-  public Item(UUID id, String type) {
-    this.id = id;
-    this.type = type;
-    this.labels = new ArrayList<>();
-  }
-
   public static Item from(Item item) {
-    Item copyItem = new Item(item.getId(), item.getType());
+    Item copyItem = new Item();
+    copyItem.id = item.id;
+    copyItem.type = item.type;
     copyItem.name = item.name;
     copyItem.price = item.price;
     copyItem.imageUrl = item.imageUrl;
