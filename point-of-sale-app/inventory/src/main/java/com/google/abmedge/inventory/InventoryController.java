@@ -103,6 +103,21 @@ public class InventoryController {
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
+  /**
+   * Every item managed by the inventory service is expected to have a 'type'. The
+   * type is used to group items into a single context. The grouping can be based
+   * on any aspect that makes sense for the deployment (e.g. textile, food,
+   * electronics, etc).
+   *
+   * This method takes in a specific inventory type and changes the current
+   * context of the inventory service to that specific type by setting the
+   * {@link InventoryController#activeItemsType} variable. The inventory service
+   * APIs respond to requests by only loading and looking at the items in the
+   * inventory that match the current active 'type'.
+   *
+   * @param type the type to which the current context is to be switched to
+   * @return HTTP 200 if the switch is done without any errors
+   */
   @PostMapping(value = "/switch/{type}")
   public ResponseEntity<Void> switchType(@PathVariable String type) {
     this.activeItemsType = type;
