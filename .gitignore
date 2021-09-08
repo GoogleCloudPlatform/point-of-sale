@@ -1,5 +1,5 @@
-*.iml
+.DS_Store
 .idea
+*.iml
 target
 dev.yaml
-.DS_Store
