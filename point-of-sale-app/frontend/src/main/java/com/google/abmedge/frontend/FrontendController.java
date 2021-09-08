@@ -54,9 +54,4 @@ public class FrontendController {
   public String home() {
     return "Hello Anthos BareMetal - Frontend Controller";
   }
-
-  @RequestMapping("/all")
-  public String all() {
-    return "Everything is new";
-  }
 }
