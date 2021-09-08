@@ -105,16 +105,14 @@ public class InventoryController {
   }
 
   /**
-   * Every item managed by the inventory service is expected to have a 'type'. The
-   * type is used to group items into a single context. The grouping can be based
-   * on any aspect that makes sense for the deployment (e.g. textile, food,
-   * electronics, etc).
+   * Every item managed by the inventory service is expected to have a 'type'. The type is used to
+   * group items into a single context. The grouping can be based on any aspect that makes sense for
+   * the deployment (e.g. textile, food, electronics, etc).
    *
-   * This method takes in a specific inventory type and changes the current
-   * context of the inventory service to that specific type by setting the
-   * {@link InventoryController#activeItemsType} variable. The inventory service
-   * APIs respond to requests by only loading and looking at the items in the
-   * inventory that match the current active 'type'.
+   * This method takes in a specific inventory type and changes the current context of the inventory
+   * service to that specific type by setting the {@link InventoryController#activeItemsType}
+   * variable. The inventory service APIs respond to requests by only loading and looking at the
+   * items in the inventory that match the current active 'type'.
    *
    * @param type the type to which the current context is to be switched to
    * @return HTTP 200 if the switch is done without any errors
@@ -178,6 +176,11 @@ public class InventoryController {
     });
   }
 
+  /**
+   * Initializes the connector that will be used to connect to the storage system that holds all the
+   * items' information. The connector should implement the interface {@link
+   * InventoryStoreConnector}
+   */
   private void initConnectorType() {
     String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
     if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {

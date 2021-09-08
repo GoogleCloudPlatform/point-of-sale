@@ -25,6 +25,7 @@ import java.util.UUID;
  * be storing and retrieving items from different places.
  */
 public interface InventoryStoreConnector {
+
   List<Item> getAll();
 
   List<Item> getAllByType(String type);

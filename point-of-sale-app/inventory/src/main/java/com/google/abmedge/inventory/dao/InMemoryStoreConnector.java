@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
  * items
  */
 public class InMemoryStoreConnector implements InventoryStoreConnector {
+
   private static final Logger LOGGER = LogManager.getLogger(InMemoryStoreConnector.class);
   private static final Map<UUID, Item> idToItemsMap = new HashMap<>();
 
