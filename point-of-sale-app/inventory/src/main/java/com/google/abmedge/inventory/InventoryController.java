@@ -16,8 +16,8 @@ package com.google.abmedge.inventory;
 
 import com.google.abmedge.dto.Item;
 import com.google.abmedge.dto.PurchaseItem;
-import com.google.abmedge.inventory.dao.InMemoryConnector;
-import com.google.abmedge.inventory.dao.InventoryConnector;
+import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
+import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -55,11 +55,12 @@ public class InventoryController {
   private static final String IN_MEMORY_CONNECTOR = "IN_MEMORY";
   private static final String ALL_ITEMS = "ALL";
   private static final Gson GSON = new Gson();
-  private static final Map<String, InventoryConnector> inventoryMap = new HashMap<>() {{
-    put(IN_MEMORY_CONNECTOR, new InMemoryConnector());
+  private static final Map<String, InventoryStoreConnector> inventoryMap = new HashMap<>() {{
+    put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
   }};
+  // the context of the inventory service (e.g. textile, food, electronics, etc)
   private String activeItemsType;
-  private InventoryConnector activeConnector;
+  private InventoryStoreConnector activeConnector;
 
   @PostConstruct
   void init() {
@@ -118,6 +119,19 @@ public class InventoryController {
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
+  /**
+   * Every item managed by the inventory service is expected to have a 'type'. The type is used to
+   * group items into a single context. The grouping can be based on any aspect that makes sense for
+   * the deployment (e.g. textile, food, electronics, etc).
+   *
+   * This method takes in a specific inventory type and changes the current context of the inventory
+   * service to that specific type by setting the {@link InventoryController#activeItemsType}
+   * variable. The inventory service APIs respond to requests by only loading and looking at the
+   * items in the inventory that match the current active 'type'.
+   *
+   * @param type the type to which the current context is to be switched to
+   * @return HTTP 200 if the switch is done without any errors
+   */
   @PostMapping(value = "/switch/{type}")
   public ResponseEntity<Void> switchType(@PathVariable String type) {
     this.activeItemsType = type;
@@ -177,6 +191,11 @@ public class InventoryController {
     });
   }
 
+  /**
+   * Initializes the connector that will be used to connect to the storage system that holds all the
+   * items' information. The connector should implement the interface {@link
+   * InventoryStoreConnector}
+   */
   private void initConnectorType() {
     String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
     if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {

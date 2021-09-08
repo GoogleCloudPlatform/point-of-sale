@@ -1,6 +1,3 @@
-<<<<<<< HEAD:point-of-sale-app/service-sdk/src/main/java/com/google/abmedge/dto/PurchaseItem.java
-package com.google.abmedge.dto;
-=======
 // Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +12,7 @@ package com.google.abmedge.dto;
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.inventory.dto;
->>>>>>> add-payment-apis:point-of-sale-app/inventory/src/main/java/com/google/abmedge/inventory/dto/PurchaseItem.java
+package com.google.abmedge.dto;
 
 import java.util.UUID;
 

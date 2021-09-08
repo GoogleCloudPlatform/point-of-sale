@@ -1,0 +1,181 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+# tasks file for ready-ubuntu
+
+### Verify OS is approved (Ubuntu only at this point). Saves the pre-checks later
+- name: Fail if not running on Ubuntu 18.04 or 20.04
+  fail:
+    msg: "This playbook can only run on Ubuntu 18.04 or 20.04. Using {{ ansible_distribution }}:{{ ansible_distribution_version }}"
+  when: ansible_distribution != "Ubuntu" or (ansible_distribution_version != '18.04' and ansible_distribution_version != '20.04')
+  tags:
+  - verify
+
+- name: Install dependencies used in provisioning
+  apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - wget
+    - gnupg-agent
+    - software-properties-common
+    state: present
+    update_cache: yes
+  tags:
+    - update-dependencies
+
+#### Stop and disable apparmor
+- name: Stop apparmor
+  systemd:
+    state: stopped
+    name: apparmor
+  tags:
+  - remove
+
+- name: Disable apparmor
+  systemd:
+    name: apparmor
+    enabled: no
+  tags:
+  - remove
+
+#### Disable ufw
+- name: Disable wfw
+  command: ufw disable
+  register: ufw
+  tags:
+  - remove
+
+- name: Show output for firewall stopping
+  debug:
+    msg: "{{ ufw.stdout }}"
+  tags:
+  - remove
+  - debug
+
+## Create the user that builds and communicates across cluster machines
+- name: Create a user for ABM Control
+  ansible.builtin.user:
+    name: "{{ abm_install_user }}"
+    shell: /bin/bash
+    groups: "sudo"
+    append: yes
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/{{ ssh_key_name }}
+  tags:
+  - abm-install
+  - abm-ssh
+
+## Setup password less SSH into same box
+- name: "Place ssh config with no-host-check turned on"
+  template:
+    src: ssh-config.j2
+    dest: "{{ ssh_user_home }}/config"
+    group: "{{ abm_install_user }}"
+    owner: "{{ abm_install_user }}"
+  tags:
+  - abm-install
+  - abm-ssh
+
+### Add the new user to the no-password sudoers list
+- name: Add user to sudoers list
+  template:
+    src: sudoers.j2
+    dest: "/etc/sudoers.d/{{ abm_install_user }}"
+  tags:
+  - abm-install
+  - abm-ssh
+
+### cat {{ ssh_key_path }}.pub >> {{ ssh_user_home }}/authorized_keys
+- name: Set authorized key taken from file
+  shell: |
+    # remove existing authorized_keys
+    rm -rf {{ ssh_user_home }}/authorized_keys || true
+    touch {{ ssh_user_home }}/authorized_keys
+    cat {{ ssh_key_path_pub }} >> {{ ssh_user_home }}/authorized_keys
+    # make files user access only
+    chown {{ abm_install_user }}.{{ abm_install_user }} {{ ssh_user_home }}/authorized_keys
+    # SSH Key itself, make only read/write from current user
+    chmod 400 {{ ssh_key_path }}
+  args:
+    executable: /bin/bash
+    creates: /var/nothing
+  tags:
+  - abm-install
+  - abm-ssh
+
+# Copy the public key to all other cluster machines
+- name: Pull {{ ssh_user_home }}/{{ ssh_key_name }}.pub to local box
+  fetch:
+    src: "{{ ssh_user_home }}/{{ ssh_key_name }}.pub"
+    dest: "/tmp/{{ ssh_key_name }}-{{ control_plane_ip }}.pub"
+    flat: yes
+  when: "(primary_cluster_machine is defined) and (primary_cluster_machine == true)"
+  tags:
+  - abm-install
+  - abm-ssh
+  - debug-ssh
+
+- name: Copy the ssh pub file to the other users
+  ansible.builtin.copy:
+    src: "/tmp/{{ ssh_key_name }}-{{ primary_ip }}.pub"
+    dest: "{{ ssh_user_home }}/{{ ssh_key_name }}.pub.other"
+    remote_src: no
+  when: "(primary_cluster_machine is not defined) or (primary_cluster_machine == false)"
+  tags:
+  - abm-install
+  - abm-ssh
+  - debug-ssh
+
+- name: Add primary's SSH pub key to authorized_keys
+  shell: |
+    cat {{ ssh_user_home }}/{{ ssh_key_name }}.pub.other >> {{ ssh_user_home }}/authorized_keys
+  when: "(primary_cluster_machine is not defined) or (primary_cluster_machine == false)"
+  tags:
+  - abm-install
+  - abm-ssh
+  - debug-ssh
+
+- name: Setup keyless SSH from primary to all others in group
+  command:
+    cmd: ssh-keyscan {{ machine }} >> {{ ssh_user_home }}/known_hosts
+  when:
+    - (primary_cluster_machine is defined)
+    - (primary_cluster_machine == true)
+    - (control_plane_ip != machine)
+  loop: "{{ control_plane_ips }}"
+  loop_control:
+    loop_var: machine
+  tags:
+  - abm-install
+  - abm-ssh
+  - debug-ssh
+
+## TODO: Take this out after the official fix has been committed
+- name: Setup kernel in response to b/192342102
+  template:
+    src: 24-nf_conntrack_max.conf.j2
+    dest: "/etc/sysctl.d/24-nf_conntrack_max.conf"
+  tags:
+  - temp-fix
+  - ubuntu-setup
+
+- name: "Setup docker on host machine"
+  include: setup-docker-apt.yml
+  tags:
+  - docker
+  # - never

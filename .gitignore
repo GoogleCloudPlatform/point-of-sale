@@ -1,9 +1,7 @@
-*.iml
-.idea
-target
 .DS_Store
-.mvn
-
+.idea
+*.iml
+target
 .classpath
 .factorypath
 .project
