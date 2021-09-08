@@ -14,12 +14,12 @@
 
 package com.google.abmedge.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Item {
+
   private UUID id;
   private String name;
   private String type;
@@ -28,16 +28,13 @@ public class Item {
   private long quantity;
   private List<String> labels;
 
-  public Item() { }
-
-  public Item(UUID id, String type) {
-    this.id = id;
-    this.type = type;
-    this.labels = new ArrayList<>();
+  public Item() {
   }
 
   public static Item from(Item item) {
-    Item copyItem = new Item(item.getId(), item.getType());
+    Item copyItem = new Item();
+    copyItem.id = item.id;
+    copyItem.type = item.type;
     copyItem.name = item.name;
     copyItem.price = item.price;
     copyItem.imageUrl = item.imageUrl;
