@@ -16,9 +16,11 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-service": "^4.5.13",
     "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^7.16.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-vue": "^7.17.0",
+    "lint": "^0.7.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
