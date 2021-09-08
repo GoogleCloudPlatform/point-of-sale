@@ -57,6 +57,7 @@ public class InventoryController {
   private static final Map<String, InventoryStoreConnector> inventoryMap = new HashMap<>() {{
     put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
   }};
+  // the context of the inventory service (e.g. textile, food, electronics, etc)
   private String activeItemsType;
   private InventoryStoreConnector activeConnector;
 
