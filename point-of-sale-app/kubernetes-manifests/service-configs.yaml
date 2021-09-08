@@ -20,29 +20,29 @@ data:
   INVENTORY_EP: "http://inventory-svc:8080"
   PAYMENTS_EP: "http://payments-svc:8080"
   CONNECTOR: "IN_MEMORY"
-  ACTIVE_ITEM_TYPE: "mcdonalds"
+  ACTIVE_ITEM_TYPE: "burgers"
   ITEMS: |
     items:
-      - name: "BigMac"
-        type: "mcdonalds"
+      - name: "BigBurger"
+        type: "burgers"
         price: 5.50
-        imageUrl: "usr/lib/images/bigmac.png"
+        imageUrl: "usr/lib/images/bigburger.png"
         quantity: 200
         labels: [ "retail", "restaurant", "food" ]
-      - name: "McDouble"
-        type: "mcdonalds"
+      - name: "DoubleBurger"
+        type: "burgers"
         price: 7.20
-        imageUrl: "usr/lib/images/mcdouble.png"
+        imageUrl: "usr/lib/images/burgers.png"
         quantity: 200
         labels: [ "retail", "restaurant", "food" ]
       - name: "Shirt"
-        type: "forever21"
+        type: "textile"
         price: 15.50
         imageUrl: "usr/lib/images/shirt.png"
         quantity: 50
         labels: [ "retail", "textile", "clothing" ]
       - name: "Short"
-        type: "forever21"
+        type: "textile"
         price: 17.20
         imageUrl: "usr/lib/images/short.png"
         quantity: 20

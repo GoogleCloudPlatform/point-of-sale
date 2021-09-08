@@ -1,0 +1,78 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+
+# Variables assigned to all inventory
+
+google_project_id: "{{ lookup('env', 'PROJECT_ID') }}"
+google_region: "{{ lookup('env', 'REGION') | default('us-central1', True) }}"
+google_zone: "{{ lookup('env', 'ZONE') | default('us-central1-a', True) }}"
+local_gsa_key: "{{ lookup('env', 'LOCAL_GSA_FILE') }}"
+tools_base_path: "/var/google-tools-install"
+
+# SCM (GitLab, GitHub access token)
+scm_token_user: "{{ lookup('env', 'SCM_TOKEN_USER') }}"
+scm_token_token: "{{ lookup('env', 'SCM_TOKEN_TOKEN') }}"
+
+gcs_bucket_guest_vm: "anthos-consumer-edge-vm-isos"
+vm_guest_image: "windows-server-2016-eval-en-us.iso"
+
+# ACM (using 'token' method)
+acm_root_repo: "https://gitlab.com/mike-ensor/acm-multi-root-demo.git"
+
+franchises: [
+  {
+    franchise_number: "1",
+    git_creds_gcp_secret_name: "franchise-1-git-creds",
+    franchise_name: "ACME",
+    stores: [
+      "nuc-1",
+      "nuc-2"
+    ]
+  },
+  {
+    franchise_name: "Innotec",
+    franchise_number: "2",
+    git_creds_gcp_secret_name: "franchise-2-git-creds",
+    stores: [
+      "nuc-3",
+      "nuc-4"
+    ]
+  },
+  {
+    franchise_name: "Penatrode",
+    franchise_number: "3",
+    git_creds_gcp_secret_name: "franchise-3-git-creds",
+    stores: [
+      "nuc-5"
+    ]
+  },
+  {
+    franchise_name: "UberTrinken",
+    franchise_number: "4",
+    git_creds_gcp_secret_name: "franchise-3-git-creds",
+    stores: [
+      "cnuc-1"
+    ]
+  },
+  {
+    franchise_name: "MassLitre",
+    franchise_number: "5",
+    git_creds_gcp_secret_name: "franchise-3-git-creds",
+    stores: [
+      "cnuc-2"
+    ]
+  }
+]
