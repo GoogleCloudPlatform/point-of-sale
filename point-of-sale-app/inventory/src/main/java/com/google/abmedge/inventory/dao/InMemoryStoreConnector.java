@@ -37,16 +37,12 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   @Override
   public List<Item> getAll() {
-    return idToItemsMap.values()
-        .stream()
-        .map(Item::from)
-        .collect(Collectors.toList());
+    return idToItemsMap.values().stream().map(Item::from).collect(Collectors.toList());
   }
 
   @Override
   public List<Item> getAllByType(String type) {
-    return idToItemsMap.values()
-        .stream()
+    return idToItemsMap.values().stream()
         .filter(i -> i.getType().equals(type))
         .map(Item::from)
         .collect(Collectors.toList());
@@ -54,8 +50,7 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   @Override
   public Optional<Item> getById(UUID id) {
-    return idToItemsMap.values()
-        .stream()
+    return idToItemsMap.values().stream()
         .filter(i -> i.getId().equals(id))
         .map(Item::from)
         .findAny();
@@ -66,8 +61,9 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
     UUID itemId = item.getId();
     String itemType = item.getType();
     if (itemId == null || StringUtils.isEmpty(itemType)) {
-      LOGGER.error("Cannot insert item. Item must have both 'id' and 'type'. "
-          + "Passed in item is missing one or both of these attributes");
+      LOGGER.error(
+          "Cannot insert item. Item must have both 'id' and 'type'. "
+              + "Passed in item is missing one or both of these attributes");
       return false;
     }
     Item toInsertItem = Item.from(item);
@@ -81,8 +77,9 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
       UUID itemId = it.getId();
       String itemType = it.getType();
       if (itemId == null || StringUtils.isEmpty(itemType)) {
-        LOGGER.error("Cannot insert items. Items must have both 'id' and 'type'. "
-            + "One of the passed in item is missing one or both of these attributes");
+        LOGGER.error(
+            "Cannot insert items. Items must have both 'id' and 'type'. "
+                + "One of the passed in item is missing one or both of these attributes");
         return false;
       }
     }
@@ -99,8 +96,9 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
     UUID itemId = item.getId();
     String itemType = item.getType();
     if (itemId == null || StringUtils.isEmpty(itemType)) {
-      LOGGER.error("Cannot update item. Item must have both 'id' and 'type'. "
-          + "Passed in item is missing one or both of these attributes");
+      LOGGER.error(
+          "Cannot update item. Item must have both 'id' and 'type'. "
+              + "Passed in item is missing one or both of these attributes");
       return false;
     }
     Item toUpdateItem = Item.from(item);
