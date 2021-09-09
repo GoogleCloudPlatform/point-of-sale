@@ -23,8 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This is the main controller class for the frontend service defines the APIs exposed by the
+ * service. The controller also defines 2 APIs (/ready and /healthy) for readiness and health
+ * checkups
+ */
 @RestController
 public class FrontendController {
+
   private static final Logger LOGGER =
       LogManager.getLogger(FrontendController.class);
 

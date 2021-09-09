@@ -23,6 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This is the main controller class for the inventory service defines the APIs exposed by the
+ * service. The controller also defines 2 APIs (/ready and /healthy) for readiness and health
+ * checkups
+ */
 @RestController
 public class InventoryController {
   private static final Logger LOGGER =

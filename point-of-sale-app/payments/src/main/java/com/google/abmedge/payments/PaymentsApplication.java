@@ -27,7 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * The payments service APIs enable processing of payments for the point-of-sale application. The
  * APIs of the payments service are not exposed publicly.
- * 
+ *
  *                                 --------------
  *                    |----------> |  inventory |
  *                    |            --------------
