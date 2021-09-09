@@ -28,7 +28,9 @@ public class Item {
   private long quantity;
   private List<String> labels;
 
-  public Item() { }
+  public Item() {
+    this.labels = new ArrayList<>();
+  }
 
   public static Item from(Item item) {
     Item copyItem = new Item();
