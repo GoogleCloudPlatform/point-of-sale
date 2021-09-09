@@ -28,8 +28,7 @@ public class Item {
   private long quantity;
   private List<String> labels;
 
-  public Item() {
-  }
+  public Item() {}
 
   public static Item from(Item item) {
     Item copyItem = new Item();
@@ -108,8 +107,10 @@ public class Item {
       return false;
     }
     Item item = (Item) o;
-    return id.equals(item.id) && name.equals(item.name) && type.equals(item.type) && price
-        .equals(item.price);
+    return id.equals(item.id)
+        && name.equals(item.name)
+        && type.equals(item.type)
+        && price.equals(item.price);
   }
 
   @Override
@@ -119,14 +120,24 @@ public class Item {
 
   @Override
   public String toString() {
-    return "Item{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", type='" + type + '\'' +
-        ", price=" + price +
-        ", imageUrl='" + imageUrl + '\'' +
-        ", quantity=" + quantity +
-        ", labels=" + labels +
-        '}';
+    return "Item{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", type='"
+        + type
+        + '\''
+        + ", price="
+        + price
+        + ", imageUrl='"
+        + imageUrl
+        + '\''
+        + ", quantity="
+        + quantity
+        + ", labels="
+        + labels
+        + '}';
   }
 }

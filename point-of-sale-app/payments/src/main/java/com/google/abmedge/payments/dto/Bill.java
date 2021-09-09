@@ -27,31 +27,35 @@ public class Bill {
     return payment;
   }
 
-  public void setPayment(Payment payment) {
+  public Bill setPayment(Payment payment) {
     this.payment = payment;
+    return this;
   }
 
   public PaymentStatus getStatus() {
     return status;
   }
 
-  public void setStatus(PaymentStatus status) {
+  public Bill setStatus(PaymentStatus status) {
     this.status = status;
+    return this;
   }
 
   public Number getBalance() {
     return balance;
   }
 
-  public void setBalance(Number balance) {
+  public Bill setBalance(Number balance) {
     this.balance = balance;
+    return this;
   }
 
   public String getPrintedBill() {
     return printedBill;
   }
 
-  public void setPrintedBill(String printedBill) {
+  public Bill setPrintedBill(String printedBill) {
     this.printedBill = printedBill;
+    return this;
   }
 }
