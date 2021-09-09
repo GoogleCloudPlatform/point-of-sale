@@ -34,6 +34,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This is the main controller class for the payments service defines the APIs exposed by the
+ * service. The controller also defines 2 APIs (/ready and /healthy) for readiness and health
+ * checkups
+ */
 @RestController
 public class PaymentsController {
 
@@ -41,9 +46,12 @@ public class PaymentsController {
   private static final String IN_MEMORY_GATEWAY = "IN_MEMORY";
   private static final String PAYMENT_GW_TYPE_ENV_VAR = "PAYMENT_GW";
   private static final Gson GSON = new Gson();
-  private static final Map<String, PaymentGateway> paymentGatewayMap = new HashMap<>() {{
-    put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
-  }};
+  private static final Map<String, PaymentGateway> paymentGatewayMap =
+      new HashMap<>() {
+        {
+          put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
+        }
+      };
   private PaymentGateway activePaymentGateway;
 
   @PostConstruct
@@ -80,16 +88,28 @@ public class PaymentsController {
 
   @PostMapping(value = "/pay")
   public ResponseEntity<String> pay(@RequestBody Payment payment) {
-    Bill bill = this.activePaymentGateway.pay(payment);
-    String jsonString = GSON.toJson(bill, Bill.class);
+    String jsonString = null;
+    try {
+      Bill bill = this.activePaymentGateway.pay(payment);
+      jsonString = GSON.toJson(bill, Bill.class);
+    } catch (Exception ex) {
+      String msg =
+          String.format(
+              "Failed to process payment id '%s' with amount $%s",
+              payment.getId(), payment.getPaidAmount());
+      LOGGER.error(msg, ex);
+      return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
   private void initConnectorType() {
     String connectorType = System.getenv(PAYMENT_GW_TYPE_ENV_VAR);
     if (StringUtils.isBlank(connectorType) || !paymentGatewayMap.containsKey(connectorType)) {
-      LOGGER.warn(String.format("'%s' environment variable is not set; "
-          + "thus defaulting to: %s", PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY));
+      LOGGER.warn(
+          String.format(
+              "'%s' environment variable is not set; " + "thus defaulting to: %s",
+              PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY));
       connectorType = IN_MEMORY_GATEWAY;
     }
     activePaymentGateway = paymentGatewayMap.get(connectorType);
