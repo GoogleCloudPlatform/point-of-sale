@@ -1,5 +1,6 @@
 package com.google.abmedge.payments.util;
 
+/** A checked exception that is thrown whenever there is a failure from the payment gateway */
 public class PaymentProcessingFailedException extends Exception {
 
   private static final long serialVersionUID = 7718828512143293558L;

@@ -58,8 +58,9 @@ public class InMemoryPaymentGateway implements PaymentGateway {
     bill.append(String.format("              Payment id: %s              \n", pId));
     bill.append(BILL_HEADER);
     for (PaymentUnit pu : payment.getUnitList()) {
-      String leadingStr = String.format("    %s. %sx %s (%s):",
-          count, pu.getQuantity(), pu.getName(), pu.getItemId());
+      String leadingStr =
+          String.format(
+              "    %s. %sx %s (%s):", count, pu.getQuantity(), pu.getName(), pu.getItemId());
       int leadingLength = leadingStr.length();
       int costLength = pu.getTotalCost().toString().length();
       // -2 for the dollar $ sign and the newline

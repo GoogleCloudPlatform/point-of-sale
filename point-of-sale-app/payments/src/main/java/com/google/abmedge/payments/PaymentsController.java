@@ -18,7 +18,6 @@ import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
 import com.google.abmedge.payments.dao.PaymentGateway;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.dto.Payment;
-import com.google.abmedge.payments.util.PaymentProcessingFailedException;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,9 +46,12 @@ public class PaymentsController {
   private static final String IN_MEMORY_GATEWAY = "IN_MEMORY";
   private static final String PAYMENT_GW_TYPE_ENV_VAR = "PAYMENT_GW";
   private static final Gson GSON = new Gson();
-  private static final Map<String, PaymentGateway> paymentGatewayMap = new HashMap<>() {{
-    put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
-  }};
+  private static final Map<String, PaymentGateway> paymentGatewayMap =
+      new HashMap<>() {
+        {
+          put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
+        }
+      };
   private PaymentGateway activePaymentGateway;
 
   @PostConstruct
@@ -91,8 +93,10 @@ public class PaymentsController {
       Bill bill = this.activePaymentGateway.pay(payment);
       jsonString = GSON.toJson(bill, Bill.class);
     } catch (Exception ex) {
-      String msg = String.format("Failed to process payment id '%s' with amount $%s",
-          payment.getId(), payment.getPaidAmount());
+      String msg =
+          String.format(
+              "Failed to process payment id '%s' with amount $%s",
+              payment.getId(), payment.getPaidAmount());
       LOGGER.error(msg, ex);
       return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -102,8 +106,10 @@ public class PaymentsController {
   private void initConnectorType() {
     String connectorType = System.getenv(PAYMENT_GW_TYPE_ENV_VAR);
     if (StringUtils.isBlank(connectorType) || !paymentGatewayMap.containsKey(connectorType)) {
-      LOGGER.warn(String.format("'%s' environment variable is not set; "
-          + "thus defaulting to: %s", PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY));
+      LOGGER.warn(
+          String.format(
+              "'%s' environment variable is not set; " + "thus defaulting to: %s",
+              PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY));
       connectorType = IN_MEMORY_GATEWAY;
     }
     activePaymentGateway = paymentGatewayMap.get(connectorType);
