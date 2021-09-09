@@ -124,31 +124,6 @@ public class FrontendController {
 
   @PostMapping(value = "/pay")
   public ResponseEntity<Void> pay(@RequestBody List<PurchaseItem> purchaseList) {
-    String updateEndpoint = INVENTORY_SERVICE + UPDATE_EP;
-    String payEndpoint = PAYMENTS_SERVICE + PAY_EP;
-    // try {
-    //   HttpRequest request = HttpRequest.newBuilder()
-    //       .PUT(HttpRequest.BodyPublishers.ofString())
-    //       .uri(URI.create(updateEndpoint))
-    //       .build();
-    //
-    //   request = HttpRequest.newBuilder()
-    //       .POST(HttpRequest.BodyPublishers.ofString())
-    //       .uri(URI.create(payEndpoint))
-    //       .build();
-    //   HttpResponse<String> response = HTTP_CLIENT
-    //       .send(request, HttpResponse.BodyHandlers.ofString());
-    //   int statusCode = response.statusCode();
-    //   if (statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NO_CONTENT.value()) {
-    //     return new ResponseEntity<>(HttpStatus.OK);
-    //   }
-    //   LOGGER.error(String.format("Failed to switch active inventory type to '%s' via endpoint '%s'."
-    //       + " Status code '%s'", type, switchEndpoint, statusCode));
-    // } catch (IOException | InterruptedException e) {
-    //   LOGGER.error(
-    //       String.format("Failed to switch active inventory type to '%s' via endpoint '%s'.", type,
-    //           switchEndpoint), e);
-    // }
     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
