@@ -48,59 +48,83 @@ public class InMemoryPaymentGateway implements PaymentGateway {
         .setPrintedBill(generatedBill.getLeft());
   }
 
-  private Pair<String, String> generateBill(UUID pId, Payment payment) {
-    StringBuilder bill = new StringBuilder();
-    float totalCost = 0;
-    int count = 1;
-    int lineLength = BILL_HEADER.length();
-
-    bill.append(BILL_HEADER);
-    bill.append(String.format("              Payment id: %s              \n", pId));
-    bill.append(BILL_HEADER);
+  private Pair<String, String> generateBill(UUID paymentId, Payment payment) {
+    float total = 0;
+    StringBuilder billBuilder = new StringBuilder();
+    billBuilder.append(billHeader(paymentId));
+    // append an entry per purchase item to the bill
+    int itemIndex = 1;
     for (PaymentUnit pu : payment.getUnitList()) {
-      String leadingStr =
-          String.format(
-              "    %s. %sx %s (%s):", count, pu.getQuantity(), pu.getName(), pu.getItemId());
-      int leadingLength = leadingStr.length();
-      int costLength = pu.getTotalCost().toString().length();
-      // -2 for the dollar $ sign and the newline
-      int middleSpaces = lineLength - leadingLength - costLength - 2;
-      bill.append(leadingStr);
-      fillSpaces(bill, middleSpaces);
-      bill.append(String.format("$%s\n", pu.getTotalCost()));
-      totalCost += pu.getTotalCost().floatValue();
-      count++;
+      billBuilder.append(billItem(itemIndex, pu));
+      total += pu.getTotalCost().floatValue();
+      itemIndex++;
     }
-    float balance = payment.getPaidAmount().floatValue() - totalCost;
-    bill.append(BILL_HEADER);
-
-    String formattedTotal = String.format("%.2f", totalCost);
-    String formattedBalance = String.format("%.2f", balance);
-
-    int spacesOnTotalLine = lineLength - TOTAL.length() - formattedTotal.length() - 2;
-    int spacesOnPaidLine =
-        lineLength - PAID.length() - String.valueOf(payment.getPaidAmount()).length() - 2;
-    int spacesOnBalLine = lineLength - BALANCE.length() - formattedBalance.length() - 2;
-    bill.append(TOTAL);
-    fillSpaces(bill, spacesOnTotalLine);
-    bill.append(String.format("$%s\n", formattedTotal));
-
-    bill.append(PAID);
-    fillSpaces(bill, spacesOnPaidLine);
-    bill.append(String.format("$%s\n", payment.getPaidAmount()));
-
-    bill.append(BALANCE);
-    fillSpaces(bill, spacesOnBalLine);
-    bill.append(String.format("$%s\n", formattedBalance));
-    bill.append(BILL_HEADER);
-    LOGGER.info(String.format("Processed payment:\n%s", bill));
-    return Pair.of(bill.toString(), formattedBalance);
+    billBuilder.append(BILL_HEADER);
+    float paid = payment.getPaidAmount().floatValue();
+    float balance = paid - total;
+    billBuilder.append(infoLine(TOTAL, total));
+    billBuilder.append(infoLine(PAID, paid));
+    billBuilder.append(infoLine(BALANCE, balance));
+    billBuilder.append(BILL_HEADER);
+    LOGGER.info(String.format("Processed payment:\n%s", billBuilder));
+    //  ----------------------------------------------------------------------------
+    //                Payment id: 02beba81-e19f-4543-9823-261db722ed02
+    //  ----------------------------------------------------------------------------
+    //      1. 5x BigBurger (02beba81-e19f-4543-9823-261db722ed02):           $34.44
+    //      2. 4x DoubleBurger (4df41297-a96f-4602-8059-df3b0e4071cb):         $21.2
+    //  ----------------------------------------------------------------------------
+    //    Total:                                                              $55.64
+    //    Paid:                                                             $5000.00
+    //    Balance:                                                          $4944.36
+    //  ----------------------------------------------------------------------------
+    return Pair.of(billBuilder.toString(), String.format("%.2f", balance));
   }
 
-  private void fillSpaces(StringBuilder sb, int count) {
+  private StringBuilder billHeader(UUID paymentId) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(BILL_HEADER);
+    sb.append(String.format("              Payment id: %s              \n", paymentId));
+    sb.append(BILL_HEADER);
+    return sb;
+  }
+
+  private StringBuilder billItem(int itemIndex, PaymentUnit paymentUnit) {
+    StringBuilder sb = new StringBuilder();
+    UUID unitId = paymentUnit.getItemId();
+    String unitName = paymentUnit.getName();
+    Number totalUnitValue = paymentUnit.getTotalCost();
+    long unitQuantity = paymentUnit.getQuantity();
+    String leadingStr =
+        String.format("    %s. %sx %s (%s):", itemIndex, unitQuantity, unitName, unitId);
+    // get length of the current line so far
+    int leadingLength = leadingStr.length();
+    // get length of the total cost for this item
+    int costLength = totalUnitValue.toString().length();
+    // calculate the number of spaces between the item description and the total cost
+    // -2 for the dollar $ sign and the newline
+    int middleSpaces = BILL_HEADER.length() - leadingLength - costLength - 2;
+    sb.append(leadingStr);
+    sb.append(spaces(middleSpaces));
+    sb.append(String.format("$%s\n", totalUnitValue));
+    return sb;
+  }
+
+  private StringBuilder infoLine(String infoType, float value) {
+    StringBuilder sb = new StringBuilder();
+    String formattedValue = String.format("%.2f", value);
+    int spacesToAdd = BILL_HEADER.length() - infoType.length() - formattedValue.length() - 2;
+    sb.append(infoType);
+    sb.append(spaces(spacesToAdd));
+    sb.append(String.format("$%s\n", formattedValue));
+    return sb;
+  }
+
+  private StringBuilder spaces(int count) {
+    StringBuilder sb = new StringBuilder();
     while (count > 0) {
       sb.append(SPACE);
       count--;
     }
+    return sb;
   }
 }
