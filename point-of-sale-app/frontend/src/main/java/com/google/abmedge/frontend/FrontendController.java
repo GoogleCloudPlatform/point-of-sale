@@ -31,8 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FrontendController {
 
-  private static final Logger LOGGER =
-      LogManager.getLogger(FrontendController.class);
+  private static final Logger LOGGER = LogManager.getLogger(FrontendController.class);
 
   /**
    * Readiness probe endpoint.

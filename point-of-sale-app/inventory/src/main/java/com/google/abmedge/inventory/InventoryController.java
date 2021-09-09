@@ -59,9 +59,12 @@ public class InventoryController {
   private static final String IN_MEMORY_CONNECTOR = "IN_MEMORY";
   private static final String ALL_ITEMS = "ALL";
   private static final Gson GSON = new Gson();
-  private static final Map<String, InventoryStoreConnector> inventoryMap = new HashMap<>() {{
-    put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
-  }};
+  private static final Map<String, InventoryStoreConnector> inventoryMap =
+      new HashMap<>() {
+        {
+          put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
+        }
+      };
   // the context of the inventory service (e.g. textile, food, electronics, etc)
   private String activeItemsType;
   private InventoryStoreConnector activeConnector;
@@ -102,10 +105,11 @@ public class InventoryController {
 
   @GetMapping(value = "/items", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> items() {
-    List<Item> inventoryItems = activeItemsType.equals(ALL_ITEMS) ?
-        activeConnector.getAll() : activeConnector.getAllByType(activeItemsType);
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
-    }.getType());
+    List<Item> inventoryItems =
+        activeItemsType.equals(ALL_ITEMS)
+            ? activeConnector.getAll()
+            : activeConnector.getAllByType(activeItemsType);
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -114,10 +118,10 @@ public class InventoryController {
    * group items into a single context. The grouping can be based on any aspect that makes sense for
    * the deployment (e.g. textile, food, electronics, etc).
    *
-   * This method takes in a specific inventory type and changes the current context of the inventory
-   * service to that specific type by setting the {@link InventoryController#activeItemsType}
-   * variable. The inventory service APIs respond to requests by only loading and looking at the
-   * items in the inventory that match the current active 'type'.
+   * <p>This method takes in a specific inventory type and changes the current context of the
+   * inventory service to that specific type by setting the {@link
+   * InventoryController#activeItemsType} variable. The inventory service APIs respond to requests
+   * by only loading and looking at the items in the inventory that match the current active 'type'.
    *
    * @param type the type to which the current context is to be switched to
    * @return HTTP 200 if the switch is done without any errors
@@ -125,8 +129,8 @@ public class InventoryController {
   @PostMapping(value = "/switch/{type}")
   public ResponseEntity<Void> switchType(@PathVariable String type) {
     this.activeItemsType = type;
-    LOGGER
-        .info(String.format("The active inventory type has been changed to: %s", activeItemsType));
+    LOGGER.info(
+        String.format("The active inventory type has been changed to: %s", activeItemsType));
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -143,15 +147,17 @@ public class InventoryController {
           long newQuantity = currentQuantity - pi.getItemCount();
           i.setQuantity(newQuantity);
           updated &= activeConnector.update(i);
-          LOGGER.info(String.format("Updated item '%s - %s' with new quantity '%s'",
-              itemId, i.getName(), newQuantity));
+          LOGGER.info(
+              String.format(
+                  "Updated item '%s - %s' with new quantity '%s'",
+                  itemId, i.getName(), newQuantity));
           continue;
         }
-        LOGGER.error(String.format(
-            "Failed to update item '%s - %s'. "
-                + "The requested count '%s' is more than whats available '%s'",
-            itemId, i.getName(), pi.getItemCount(), currentQuantity
-        ));
+        LOGGER.error(
+            String.format(
+                "Failed to update item '%s - %s'. "
+                    + "The requested count '%s' is more than whats available '%s'",
+                itemId, i.getName(), pi.getItemCount(), currentQuantity));
       } else {
         LOGGER.warn(String.format("Update attempt with invalid item id: '%s'", itemId));
         updated = false;
@@ -167,18 +173,22 @@ public class InventoryController {
   private void initInventoryItems() {
     String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR);
     if (StringUtils.isBlank(inventoryList)) {
-      LOGGER.warn(String.format(
-          "No items found under inventory list env var '%s'", INVENTORY_ITEMS_ENV_VAR));
+      LOGGER.warn(
+          String.format(
+              "No items found under inventory list env var '%s'", INVENTORY_ITEMS_ENV_VAR));
       return;
     }
     LOGGER.debug(inventoryList);
     Yaml yaml = new Yaml(new Constructor(Inventory.class));
     Inventory inventory = yaml.load(inventoryList);
-    inventory.getItems().forEach(i -> {
-      i.setId(UUID.randomUUID());
-      activeConnector.insert(i);
-      LOGGER.info(String.format("Inserting new item: %s", i.toString()));
-    });
+    inventory
+        .getItems()
+        .forEach(
+            i -> {
+              i.setId(UUID.randomUUID());
+              activeConnector.insert(i);
+              LOGGER.info(String.format("Inserting new item: %s", i.toString()));
+            });
   }
 
   /**
@@ -189,8 +199,10 @@ public class InventoryController {
   private void initConnectorType() {
     String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
     if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {
-      LOGGER.warn(String.format("'%s' environment variable is not set; "
-          + "thus defaulting to: %s", CONNECTOR_TYPE_ENV_VAR, IN_MEMORY_CONNECTOR));
+      LOGGER.warn(
+          String.format(
+              "'%s' environment variable is not set; " + "thus defaulting to: %s",
+              CONNECTOR_TYPE_ENV_VAR, IN_MEMORY_CONNECTOR));
       connectorType = IN_MEMORY_CONNECTOR;
     }
     activeConnector = inventoryMap.get(connectorType);
@@ -200,8 +212,10 @@ public class InventoryController {
   private void initItemsType() {
     activeItemsType = System.getenv(ACTIVE_TYPE_ENV_VAR);
     if (StringUtils.isBlank(activeItemsType)) {
-      LOGGER.warn(String.format("'%s' environment variable is not set; "
-          + "thus defaulting to: %s", ACTIVE_TYPE_ENV_VAR, ALL_ITEMS));
+      LOGGER.warn(
+          String.format(
+              "'%s' environment variable is not set; " + "thus defaulting to: %s",
+              ACTIVE_TYPE_ENV_VAR, ALL_ITEMS));
       activeItemsType = ALL_ITEMS;
     }
     LOGGER.info(String.format("Active items type is: %s", activeItemsType));
