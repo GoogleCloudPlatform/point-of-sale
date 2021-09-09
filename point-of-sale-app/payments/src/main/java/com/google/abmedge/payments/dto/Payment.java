@@ -17,6 +17,12 @@ package com.google.abmedge.payments.dto;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This class contains a single payment unit for a purchase done via the Point-Of-Sales UI. A single
+ * payment can contain the purchase of multiple items describes as {@link PaymentUnit}s inside the
+ * {@link #unitList} collection. An object of this class also carries information about the type of
+ * payment (as defined by {@link PaymentType}) and the total amount paid.
+ */
 public class Payment {
   private UUID id;
   private List<PaymentUnit> unitList;

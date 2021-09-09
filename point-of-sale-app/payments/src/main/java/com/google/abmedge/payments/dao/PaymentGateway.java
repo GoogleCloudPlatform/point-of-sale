@@ -18,7 +18,22 @@ import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.dto.Payment;
 import com.google.abmedge.payments.util.PaymentProcessingFailedException;
 
+/**
+ * This interface explains the APIs exposed by any implementation that connects to a payment gateway
+ * to process payment events.
+ */
 public interface PaymentGateway {
 
+  /**
+   * This method enables processing of a payment activity expressed by a {@link Payment} object. The
+   * method will connect to the available underlying payment gateway, process the payment and return
+   * a {@link Bill} describing the results of processing the payment.
+   *
+   * @param payment the {@link Payment} object containing the details of the purchase for which the
+   *     payment is being processed
+   * @return a {@link Bill} instance that explains the status of the payment request
+   * @throws PaymentProcessingFailedException in the event of any failures or errors with processing
+   *     the payment through the payment gateway
+   */
   Bill pay(Payment payment) throws PaymentProcessingFailedException;
 }
