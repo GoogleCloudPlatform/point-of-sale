@@ -18,6 +18,7 @@ import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
 import com.google.abmedge.payments.dao.PaymentGateway;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.dto.Payment;
+import com.google.abmedge.payments.util.PaymentProcessingFailedException;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,8 +86,16 @@ public class PaymentsController {
 
   @PostMapping(value = "/pay")
   public ResponseEntity<String> pay(@RequestBody Payment payment) {
-    Bill bill = this.activePaymentGateway.pay(payment);
-    String jsonString = GSON.toJson(bill, Bill.class);
+    String jsonString = null;
+    try {
+      Bill bill = this.activePaymentGateway.pay(payment);
+      jsonString = GSON.toJson(bill, Bill.class);
+    } catch (Exception ex) {
+      String msg = String.format("Failed to process payment id '%s' with amount $%s",
+          payment.getId(), payment.getPaidAmount());
+      LOGGER.error(msg, ex);
+      return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
