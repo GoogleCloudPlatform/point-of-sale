@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * An instance of the {@link Item} class is a representation of an item as it will be stored in the
+ * inventory. This class describes the information about a specific item that is available and
+ * provides a utility method to get a deep copy of it.
+ */
 public class Item {
   private UUID id;
   private String name;

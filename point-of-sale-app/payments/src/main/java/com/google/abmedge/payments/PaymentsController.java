@@ -119,7 +119,9 @@ public class PaymentsController {
   /**
    * This method initializes the payment gateway type. There can be multiple payment gateways
    * available at the same time. Each of them will be an implementation of the {@link
-   * PaymentGateway} interface. However, only one of them will be active at any given time.
+   * PaymentGateway} interface. However, only one of them will be active at any given time. In order
+   * to change/reconfigure the {@link #activePaymentGateway} a restart of the application is
+   * required.
    *
    * <p>The payment gateway type which is active is decided at startup time by looking at the
    * 'PAYMENT_GW' environment variable. If this environment variable is not set or if an invalid
