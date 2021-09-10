@@ -72,6 +72,10 @@ public class FrontendController {
       .version(HttpClient.Version.HTTP_1_1)
       .connectTimeout(Duration.ofSeconds(10))
       .build();
+  /**
+   * default service endpoints to use if they cannot be read from environment variables in {@link
+   * #initServiceEndpoints()}
+   */
   private static String INVENTORY_SERVICE = "http://inventory-svc:8080";
   private static String PAYMENTS_SERVICE = "http://payments-svc:8080";
   private static final Gson GSON = new Gson();
