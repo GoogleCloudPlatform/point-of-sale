@@ -14,6 +14,11 @@
 
 package com.google.abmedge.dto;
 
+/**
+ * This enum represents the different types of payment methods that are accepted. A {@link Payment}
+ * in a '/pay' request is expected to indicate the type of payment being made as supported by this
+ * enum.
+ */
 public enum PaymentType {
   CARD("CARD"),
   CASH("CASH");

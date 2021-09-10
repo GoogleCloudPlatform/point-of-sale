@@ -17,6 +17,13 @@ package com.google.abmedge.inventory.dto;
 import com.google.abmedge.dto.Item;
 import java.util.List;
 
+/**
+ * This class is a container to represent a yaml definition that holds all the items to be loaded
+ * into the inventory on startup. This class is used to deserialize a string yaml configuration
+ * loaded from an environment variable as described in {@link
+ * com.google.abmedge.inventory.InventoryController#initInventoryItems()}. This class contains a
+ * collection of {@link Item}s as expected from the yaml definition.
+ */
 public class Inventory {
 
   private List<Item> items;
