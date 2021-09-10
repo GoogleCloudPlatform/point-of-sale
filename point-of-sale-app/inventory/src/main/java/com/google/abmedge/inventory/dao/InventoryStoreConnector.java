@@ -15,6 +15,7 @@
 package com.google.abmedge.inventory.dao;
 
 import com.google.abmedge.inventory.dto.Item;
+import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,13 +33,13 @@ public interface InventoryStoreConnector {
 
   Optional<Item> getById(UUID id);
 
-  boolean insert(Item item);
+  void insert(Item item) throws InventoryStoreConnectorException;
 
-  boolean insert(List<Item> items);
+  void insert(List<Item> items) throws InventoryStoreConnectorException;
 
-  boolean update(Item item);
+  void update(Item item) throws InventoryStoreConnectorException;
 
-  boolean delete(UUID id);
+  void delete(UUID id) throws InventoryStoreConnectorException;
 
   void delete(List<UUID> ids);
 }

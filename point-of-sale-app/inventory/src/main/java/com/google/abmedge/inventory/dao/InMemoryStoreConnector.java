@@ -15,6 +15,7 @@
 package com.google.abmedge.inventory.dao;
 
 import com.google.abmedge.inventory.dto.Item;
+import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +38,12 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   @Override
   public List<Item> getAll() {
-    return idToItemsMap.values()
-        .stream()
-        .map(Item::from)
-        .collect(Collectors.toList());
+    return idToItemsMap.values().stream().map(Item::from).collect(Collectors.toList());
   }
 
   @Override
   public List<Item> getAllByType(String type) {
-    return idToItemsMap.values()
-        .stream()
+    return idToItemsMap.values().stream()
         .filter(i -> i.getType().equals(type))
         .map(Item::from)
         .collect(Collectors.toList());
@@ -54,36 +51,38 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   @Override
   public Optional<Item> getById(UUID id) {
-    return idToItemsMap.values()
-        .stream()
+    return idToItemsMap.values().stream()
         .filter(i -> i.getId().equals(id))
         .map(Item::from)
         .findAny();
   }
 
   @Override
-  public boolean insert(Item item) {
+  public void insert(Item item) throws InventoryStoreConnectorException {
     UUID itemId = item.getId();
     String itemType = item.getType();
     if (itemId == null || StringUtils.isEmpty(itemType)) {
-      LOGGER.error("Cannot insert item. Item must have both 'id' and 'type'. "
-          + "Passed in item is missing one or both of these attributes");
-      return false;
+      String errMsg =
+          "Cannot insert item. Item must have both 'id' and 'type'. "
+              + "Passed in item is missing one or both of these attributes";
+      LOGGER.error(errMsg);
+      throw new InventoryStoreConnectorException(errMsg);
     }
     Item toInsertItem = Item.from(item);
     idToItemsMap.put(itemId, toInsertItem);
-    return true;
   }
 
   @Override
-  public boolean insert(List<Item> items) {
+  public void insert(List<Item> items) throws InventoryStoreConnectorException {
     for (Item it : items) {
       UUID itemId = it.getId();
       String itemType = it.getType();
       if (itemId == null || StringUtils.isEmpty(itemType)) {
-        LOGGER.error("Cannot insert items. Items must have both 'id' and 'type'. "
-            + "One of the passed in item is missing one or both of these attributes");
-        return false;
+        String errMsg =
+            "Cannot insert items. Items must have both 'id' and 'type'. "
+                + "One of the passed in item is missing one or both of these attributes";
+        LOGGER.error(errMsg);
+        throw new InventoryStoreConnectorException(errMsg);
       }
     }
     for (Item it : items) {
@@ -91,30 +90,31 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
       Item toInsertItem = Item.from(it);
       idToItemsMap.put(itemId, toInsertItem);
     }
-    return true;
   }
 
   @Override
-  public boolean update(Item item) {
+  public void update(Item item) throws InventoryStoreConnectorException {
     UUID itemId = item.getId();
     String itemType = item.getType();
     if (itemId == null || StringUtils.isEmpty(itemType)) {
-      LOGGER.error("Cannot update item. Item must have both 'id' and 'type'. "
-          + "Passed in item is missing one or both of these attributes");
-      return false;
+      String errMsg =
+          "Cannot update item. Item must have both 'id' and 'type'. "
+              + "Passed in item is missing one or both of these attributes";
+      LOGGER.error(errMsg);
+      throw new InventoryStoreConnectorException(errMsg);
     }
     Item toUpdateItem = Item.from(item);
     idToItemsMap.put(itemId, toUpdateItem);
-    return true;
   }
 
   @Override
-  public boolean delete(UUID id) {
+  public void delete(UUID id) throws InventoryStoreConnectorException {
     if (id == null) {
-      LOGGER.error("Cannot delete item. Item 'id' cannot be null");
+      String errMsg = "Cannot delete item. Item 'id' cannot be null";
+      LOGGER.error(errMsg);
+      throw new InventoryStoreConnectorException(errMsg);
     }
     Item removed = idToItemsMap.remove(id);
-    return removed != null;
   }
 
   @Override
