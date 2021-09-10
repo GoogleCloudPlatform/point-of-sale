@@ -14,6 +14,11 @@
 
 package com.google.abmedge.payments.dto;
 
+/**
+ * This enum is holds a list of statuses that the different {@link
+ * com.google.abmedge.payments.dao.PaymentGateway} implementations may use on the {@link Bill}
+ * object they return.
+ */
 public enum PaymentStatus {
   SUCCESS("SUCCESS"),
   FAILED("FAILED");

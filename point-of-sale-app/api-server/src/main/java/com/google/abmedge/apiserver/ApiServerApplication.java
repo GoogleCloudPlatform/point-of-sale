@@ -24,6 +24,15 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+/**
+ * The main entry point into the api-server of the point-of-sale application stack. This class
+ * serves the key requirement of starting the Springboot service and the embedded web server along
+ * wih to start accepting requests
+ *
+ * <p>The api-server service APIs are the only publicly-accessible APIs in stack. All requests to the
+ * other services essentially pass-through this service. The static files from the UI consume the
+ * api-server APIs to load items and process payment
+ */
 @SpringBootApplication
 public class ApiServerApplication {
 	private static final Logger LOGGER =
@@ -33,6 +42,7 @@ public class ApiServerApplication {
 		SpringApplication.run(ApiServerApplication.class, args);
 	}
 
+	/** A utility method to print out a log message when the Springboot application terminates */
 	@PreDestroy
 	public void destroy() {
 		LOGGER.info("Api-Server is shutting down");

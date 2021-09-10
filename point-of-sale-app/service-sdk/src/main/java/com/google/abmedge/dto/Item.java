@@ -19,7 +19,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * An instance of the {@link Item} class is a representation of an item as it will be stored in the
+ * inventory. This class describes the information about a specific item that is available and
+ * provides a utility method to get a deep copy of it.
+ */
 public class Item {
+
   private UUID id;
   private String name;
   private String type;
@@ -28,16 +34,14 @@ public class Item {
   private long quantity;
   private List<String> labels;
 
-  public Item() { }
-
-  public Item(UUID id, String type) {
-    this.id = id;
-    this.type = type;
+  public Item() {
     this.labels = new ArrayList<>();
   }
 
   public static Item from(Item item) {
-    Item copyItem = new Item(item.getId(), item.getType());
+    Item copyItem = new Item();
+    copyItem.id = item.id;
+    copyItem.type = item.type;
     copyItem.name = item.name;
     copyItem.price = item.price;
     copyItem.imageUrl = item.imageUrl;
@@ -111,8 +115,10 @@ public class Item {
       return false;
     }
     Item item = (Item) o;
-    return id.equals(item.id) && name.equals(item.name) && type.equals(item.type) && price
-        .equals(item.price);
+    return id.equals(item.id)
+        && name.equals(item.name)
+        && type.equals(item.type)
+        && price.equals(item.price);
   }
 
   @Override
@@ -122,14 +128,24 @@ public class Item {
 
   @Override
   public String toString() {
-    return "Item{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", type='" + type + '\'' +
-        ", price=" + price +
-        ", imageUrl='" + imageUrl + '\'' +
-        ", quantity=" + quantity +
-        ", labels=" + labels +
-        '}';
+    return "Item{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", type='"
+        + type
+        + '\''
+        + ", price="
+        + price
+        + ", imageUrl='"
+        + imageUrl
+        + '\''
+        + ", quantity="
+        + quantity
+        + ", labels="
+        + labels
+        + '}';
   }
 }
