@@ -16,6 +16,12 @@ package com.google.abmedge.dto;
 
 import java.util.UUID;
 
+/**
+ * This class represents a payment for a specific item that is being purchased. It contains
+ * information such as the item, the number of it being purchased and the total cost for all of
+ * them. Usually a {@link Payment} includes a collection of {@link PaymentUnit}s making up a bill
+ * which shows multiple purchased items.
+ */
 public class PaymentUnit {
 
   private UUID itemId;

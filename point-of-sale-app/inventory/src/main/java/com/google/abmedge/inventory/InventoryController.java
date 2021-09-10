@@ -70,6 +70,9 @@ public class InventoryController {
   private String activeItemsType;
   private InventoryStoreConnector activeConnector;
 
+  /**
+   * This method runs soon after the object for this class is created on startup of the application.
+   */
   @PostConstruct
   void init() {
     initConnectorType();
@@ -135,6 +138,16 @@ public class InventoryController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * This method serves as the mapping of the '/update' API in the controller. This method takes in
+   * a list of {@link PurchaseItem}s and updates them in the underlying datastore exposed via the
+   * active {@link InventoryStoreConnector}. The details as to how/what the update operation does is
+   * specific to the implementation of {@link InventoryStoreConnector} that is used.
+   *
+   * @param purchaseList a list of {@link PurchaseItem} objects that needs to be updated in the
+   *     underlying datastore
+   * @return an object of {@link ResponseEntity} that only has an HTTP code without any payload
+   */
   @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> update(@RequestBody List<PurchaseItem> purchaseList) {
     boolean updated = true;
@@ -171,6 +184,85 @@ public class InventoryController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * This method initializes the connector that will be used to connect to the storage system that
+   * holds all the items' information. The connector should implement the interface {@link
+   * InventoryStoreConnector}. A running instance of the application shall can have multiple
+   * implementations of {@link InventoryStoreConnector}. However, only one of them will be active at
+   * any single given time. Once, set to change the connector type a restart of the application is
+   * required.
+   *
+   * <p>On startup, the {@link #activeConnector} is identified by looking at the environment
+   * variable 'CONNECTOR'. If either this environment variable is unset/empty or an invalid value is
+   * set, then the {@link InMemoryStoreConnector} is set as the default {@link #activeConnector}.
+   *
+   * <p>The {@link InMemoryStoreConnector} is an implementation of the {@link
+   * InventoryStoreConnector} that maintains all information about the inventory in an in-memory
+   * data-structure. A connector type value that is set against the environment variable 'CONNECTOR'
+   * is deemed invalid if there exists no key entry matchign that type in the {@link #inventoryMap}.
+   */
+  private void initConnectorType() {
+    String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
+    if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {
+      LOGGER.warn(
+          String.format(
+              "'%s' environment variable is not set; " + "thus defaulting to: %s",
+              CONNECTOR_TYPE_ENV_VAR, IN_MEMORY_CONNECTOR));
+      connectorType = IN_MEMORY_CONNECTOR;
+    }
+    activeConnector = inventoryMap.get(connectorType);
+    LOGGER.info(String.format("Active connector type is: %s", connectorType));
+  }
+
+  /**
+   * This method initializes the type of items to be served via the inventory API. Each item in the
+   * inventory has a type associated to it. Thus, the inventory API can be configured to serve only
+   * items of a certain type. Thus, on startup the decision for which item types are to be served is
+   * decided by looking at the value of the environment variable 'ACTIVE_ITEM_TYPE'.
+   *
+   * <p>If this environment variable is not set then by default the inventory API is configured to
+   * serve all types of items without any filtering. Any value that is set for this environment
+   * variable should be an exact match to the value that is set against the 'type' attribute of each
+   * item that set against the 'ITEMS' environment variable as explained in {@link
+   * #initInventoryItems()}
+   */
+  private void initItemsType() {
+    activeItemsType = System.getenv(ACTIVE_TYPE_ENV_VAR);
+    if (StringUtils.isBlank(activeItemsType)) {
+      LOGGER.warn(
+          String.format(
+              "'%s' environment variable is not set; " + "thus defaulting to: %s",
+              ACTIVE_TYPE_ENV_VAR, ALL_ITEMS));
+      activeItemsType = ALL_ITEMS;
+    }
+    LOGGER.info(String.format("Active items type is: %s", activeItemsType));
+  }
+
+  /**
+   * This method loads the list of supported inventory items from the environmental variable
+   * 'ITEMS'. If the variable is not set or is empty then there is nothing that is added to the
+   * inventory store via the {@link #activeConnector}. The expected format for the environment
+   * variable's value is that of a yaml file containing multiple 'item' definitions. Once, set to
+   * reload new items into the inventory a restart of the application is required.
+   *
+   * <pre>
+   * E.g:
+   *    {@code System.getenv('ITEMS')} should return something as follows:
+   *    items:
+   *      - name: "BigBurger"
+   *        type: "burgers"
+   *        price: 5.50
+   *        imageUrl: "usr/lib/images/bigburger.png"
+   *        quantity: 200
+   *        labels: [ "retail", "restaurant", "food" ]
+   *      - name: "DoubleBurger"
+   *        type: "burgers"
+   *        price: 7.20
+   *        imageUrl: "usr/lib/images/burgers.png"
+   *        quantity: 200
+   *        ....
+   * </pre>
+   */
   private void initInventoryItems() {
     String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR);
     if (StringUtils.isBlank(inventoryList)) {
@@ -190,35 +282,5 @@ public class InventoryController {
               activeConnector.insert(i);
               LOGGER.info(String.format("Inserting new item: %s", i.toString()));
             });
-  }
-
-  /**
-   * Initializes the connector that will be used to connect to the storage system that holds all the
-   * items' information. The connector should implement the interface {@link
-   * InventoryStoreConnector}
-   */
-  private void initConnectorType() {
-    String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
-    if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {
-      LOGGER.warn(
-          String.format(
-              "'%s' environment variable is not set; " + "thus defaulting to: %s",
-              CONNECTOR_TYPE_ENV_VAR, IN_MEMORY_CONNECTOR));
-      connectorType = IN_MEMORY_CONNECTOR;
-    }
-    activeConnector = inventoryMap.get(connectorType);
-    LOGGER.info(String.format("Active connector type is: %s", connectorType));
-  }
-
-  private void initItemsType() {
-    activeItemsType = System.getenv(ACTIVE_TYPE_ENV_VAR);
-    if (StringUtils.isBlank(activeItemsType)) {
-      LOGGER.warn(
-          String.format(
-              "'%s' environment variable is not set; " + "thus defaulting to: %s",
-              ACTIVE_TYPE_ENV_VAR, ALL_ITEMS));
-      activeItemsType = ALL_ITEMS;
-    }
-    LOGGER.info(String.format("Active items type is: %s", activeItemsType));
   }
 }
