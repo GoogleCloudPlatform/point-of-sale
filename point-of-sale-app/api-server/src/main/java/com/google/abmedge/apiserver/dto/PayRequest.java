@@ -19,6 +19,7 @@ import com.google.abmedge.dto.PurchaseItem;
 import java.util.List;
 
 public class PayRequest {
+
   private List<PurchaseItem> items;
   private PaymentType type;
   private Number paidAmount;
