@@ -26,6 +26,7 @@ import java.util.List;
  * and the amount paid.
  */
 public class PayRequest {
+
   private List<PurchaseItem> items;
   private PaymentType type;
   private Number paidAmount;

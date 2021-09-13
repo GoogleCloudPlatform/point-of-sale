@@ -75,6 +75,10 @@ public class ApiServerController {
       .version(HttpClient.Version.HTTP_1_1)
       .connectTimeout(Duration.ofSeconds(11))
       .build();
+  /**
+   * default service endpoints to use if they cannot be read from environment variables in {@link
+   * #initServiceEndpoints()}
+   */
   private static String INVENTORY_SERVICE = "http://inventory-svc:8080";
   private static String PAYMENTS_SERVICE = "http://payments-svc:8080";
   private static final Gson GSON = new Gson();
@@ -168,6 +172,27 @@ public class ApiServerController {
     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  /**
+   * This method serves as the mapping of the '/pay' API in the Springboot controller. Any requests
+   * to the pay endpoint will be attempted to bind to this method by Springboot request handlers.
+   * The method expects a 'JSON' request body matching the {@link PayRequest} class attributes. The
+   * {@link PayRequest} object can have a JSON array of items that have the same structure as {@link
+   * PurchaseItem}.
+   *
+   * @param payRequest a deserialized JSON object that matches the class structure of {@link
+   *                   PayRequest} that contains details of the specific purchase for which a
+   *                   payment is being made
+   * @return the JSON serialized form of the {@link ResponseEntity} that contains an HTTP code
+   * indicating the status of the request and a string body representing the result of the pay
+   * event. The string body on the response can differ based on the request type and the status.
+   * <pre>
+   *   1. No purchase items on the request body -> an empty response body
+   *   2. Failure to fetch details of the purchase items -> a simple failure message
+   *   3. Failure to update the purchase items -> a simple failure message
+   *   4. Fail to process the payment -> a simple failure message
+   *   5. Successfully update and make payment -> the bill for the processed payment with item details
+   * </pre>
+   */
   @PostMapping(value = "/pay")
   public ResponseEntity<String> pay(@RequestBody PayRequest payRequest) {
     double totalCost = 0;
