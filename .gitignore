@@ -28,3 +28,4 @@ point-of-sale-app/api-server/src/main/resources/public/*
 
 # exception to the rule
 !point-of-sale-app/api-server/src/main/resources/public/.gitkeep
+diff
