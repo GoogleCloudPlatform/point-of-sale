@@ -85,7 +85,7 @@ public class InMemoryPaymentGateway implements PaymentGateway {
     billBuilder.append(BILL_HEADER);
     float tax = new Double(total * TAX_VALUE).floatValue();
     float paid = payment.getPaidAmount().floatValue();
-    float balance = paid - total - tax;
+    float balance = paid - total;
     billBuilder.append(infoLine(TOTAL, total));
     billBuilder.append(infoLine(TAX, tax));
     billBuilder.append(infoLine(PAID, paid));
