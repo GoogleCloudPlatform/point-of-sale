@@ -17,7 +17,7 @@
 
 # envsubt < inventory-cloud-example.yaml > inventory/gcp.yaml
 
-plugin: gcp_compute
+plugin: google.cloud.compute
 projects:
   - "${PROJECT_ID}"
 regions:
