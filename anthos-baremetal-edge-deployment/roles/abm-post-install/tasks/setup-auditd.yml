@@ -1,0 +1,33 @@
+- name: Install auditd 
+  become: yes
+  command:
+    cmd: apt-get install -y auditd audispd-plugins
+  tags:
+  - observability-audit-install
+  - observability-setup
+
+- name: Copy auditd rules
+  become: yes
+  template:
+    src: audit.rules.tf
+    dest: "/etc/audit/rules.d/audit.rules"
+    owner: root
+    group: root
+    mode: '0640'
+  tags:
+  - observability-audit-install
+  - observability-setup
+  - auditd-config
+
+- name: Restart auditd service
+  become: yes
+  ansible.builtin.service:
+    name: auditd
+    enabled: yes
+    state: restarted
+  tags:
+  - observability-audit-install
+  - observability-audit-service-reset
+  - observability-setup
+
+

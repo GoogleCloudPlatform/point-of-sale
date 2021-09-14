@@ -1,0 +1,20 @@
+
+- name: Copy cdi-check-node script
+  template:
+    src: cdi-check-node.sh.j2
+    dest: "/var/cdi-check-node.sh"
+    owner: root
+    group: root
+    mode: '0744'
+  tags:
+  - cdi-fix
+
+- name: Create cron-job to run CDI script
+  template:
+    src: cdi-check-cron-script.j2
+    dest: /etc/cron.d/cdi-node-cron-job
+    owner: root
+    group: root
+    mode: '0744'
+  tags:
+  - cdi-fix
