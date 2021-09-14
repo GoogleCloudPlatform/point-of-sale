@@ -24,7 +24,7 @@ npm.logs
 !.env.development.sample
 
 # exclude everything
-api-server/src/main/resources/public/*
+point-of-sale-app/api-server/src/main/resources/public/*
 
 # exception to the rule
-!api-server/src/main/resources/public/.gitkeep
+!point-of-sale-app/api-server/src/main/resources/public/.gitkeep
