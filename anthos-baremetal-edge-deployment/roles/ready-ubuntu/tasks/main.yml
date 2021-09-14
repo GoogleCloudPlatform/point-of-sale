@@ -28,10 +28,14 @@
     pkg:
     - apt-transport-https
     - ca-certificates
+    - net-tools
+    - nmap
     - curl
     - wget
     - gnupg-agent
     - software-properties-common
+    - network-manager
+    - vlan
     state: present
     update_cache: yes
   tags:
@@ -78,7 +82,7 @@
     ssh_key_file: .ssh/{{ ssh_key_name }}
   tags:
   - abm-install
-  - abm-ssh
+  - abm-user
 
 ## Setup password less SSH into same box
 - name: "Place ssh config with no-host-check turned on"
@@ -89,7 +93,7 @@
     owner: "{{ abm_install_user }}"
   tags:
   - abm-install
-  - abm-ssh
+  - abm-user
 
 ### Add the new user to the no-password sudoers list
 - name: Add user to sudoers list
@@ -98,72 +102,15 @@
     dest: "/etc/sudoers.d/{{ abm_install_user }}"
   tags:
   - abm-install
-  - abm-ssh
+  - abm-user
 
-### cat {{ ssh_key_path }}.pub >> {{ ssh_user_home }}/authorized_keys
-- name: Set authorized key taken from file
-  shell: |
-    # remove existing authorized_keys
-    rm -rf {{ ssh_user_home }}/authorized_keys || true
-    touch {{ ssh_user_home }}/authorized_keys
-    cat {{ ssh_key_path_pub }} >> {{ ssh_user_home }}/authorized_keys
-    # make files user access only
-    chown {{ abm_install_user }}.{{ abm_install_user }} {{ ssh_user_home }}/authorized_keys
-    # SSH Key itself, make only read/write from current user
-    chmod 400 {{ ssh_key_path }}
-  args:
-    executable: /bin/bash
-    creates: /var/nothing
+## TODO: This does not allow for multiple cnucs to be setup at one time
+## TODO: This also does not skip non cnucs
+- name: "SSH Key access to other nodes"
+  include: setup-ssh-pub-key-access.yml
   tags:
   - abm-install
   - abm-ssh
-
-# Copy the public key to all other cluster machines
-- name: Pull {{ ssh_user_home }}/{{ ssh_key_name }}.pub to local box
-  fetch:
-    src: "{{ ssh_user_home }}/{{ ssh_key_name }}.pub"
-    dest: "/tmp/{{ ssh_key_name }}-{{ control_plane_ip }}.pub"
-    flat: yes
-  when: "(primary_cluster_machine is defined) and (primary_cluster_machine == true)"
-  tags:
-  - abm-install
-  - abm-ssh
-  - debug-ssh
-
-- name: Copy the ssh pub file to the other users
-  ansible.builtin.copy:
-    src: "/tmp/{{ ssh_key_name }}-{{ primary_ip }}.pub"
-    dest: "{{ ssh_user_home }}/{{ ssh_key_name }}.pub.other"
-    remote_src: no
-  when: "(primary_cluster_machine is not defined) or (primary_cluster_machine == false)"
-  tags:
-  - abm-install
-  - abm-ssh
-  - debug-ssh
-
-- name: Add primary's SSH pub key to authorized_keys
-  shell: |
-    cat {{ ssh_user_home }}/{{ ssh_key_name }}.pub.other >> {{ ssh_user_home }}/authorized_keys
-  when: "(primary_cluster_machine is not defined) or (primary_cluster_machine == false)"
-  tags:
-  - abm-install
-  - abm-ssh
-  - debug-ssh
-
-- name: Setup keyless SSH from primary to all others in group
-  command:
-    cmd: ssh-keyscan {{ machine }} >> {{ ssh_user_home }}/known_hosts
-  when:
-    - (primary_cluster_machine is defined)
-    - (primary_cluster_machine == true)
-    - (control_plane_ip != machine)
-  loop: "{{ control_plane_ips }}"
-  loop_control:
-    loop_var: machine
-  tags:
-  - abm-install
-  - abm-ssh
-  - debug-ssh
 
 ## TODO: Take this out after the official fix has been committed
 - name: Setup kernel in response to b/192342102
@@ -174,8 +121,34 @@
   - temp-fix
   - ubuntu-setup
 
-- name: "Setup docker on host machine"
-  include: setup-docker-apt.yml
+# Copy over the vxlan status verify script
+- name: Copy VXLAN status script
+  template:
+    src: vxlan-status-check.sh.j2
+    dest: "/var/vxlan-status-check.sh"
+    mode: '0755' # read/write/execute owner, everyone else read/execute
+  when:
+    - is_cloud_resource is defined
+    - is_cloud_resource == True
+  tags:
+  - network-vxlan
+  - ubuntu-setup
+
+- name: get version
+  shell: "docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1"
+  register: docker_version
   tags:
   - docker
-  # - never
+
+- name: "Setup docker on host machine"
+  include: setup-docker-apt.yml
+  when: ( docker_version.stdout == "" or docker_version.stdout is version('20.9.0', '<') )
+  tags:
+  - docker
+
+- name: "Setup VLAN Interfaces on Physical Hosts"
+  include: setup-vlan-interfaces.yml
+  when:
+  - (is_cloud_resource is undefined or is_cloud_resource == False)
+  tags:
+  - vlan-setup

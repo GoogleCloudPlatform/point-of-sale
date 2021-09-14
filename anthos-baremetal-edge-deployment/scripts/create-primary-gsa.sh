@@ -60,6 +60,16 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:${GSA_EMAIL}" \
     --role="roles/secretmanager.secretAccessor" --no-user-output-enabled
 
+echo "Adding roles/secretmanager.secretAccessor"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${GSA_EMAIL}" \
+    --role="roles/gkehub.gatewayAdmin" --no-user-output-enabled
+
+echo "Adding roles/secretmanager.secretAccessor"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${GSA_EMAIL}" \
+    --role="roles/gkehub.viewer" --no-user-output-enabled
+
 # We should have a GSA enabled or created or ready-to-go by here
 
 echo -e "\n====================\n"

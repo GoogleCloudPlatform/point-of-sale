@@ -139,13 +139,16 @@ echo "Final Cluster Count = $CLUSTER_COUNT"
 #####   MAIN   ################
 ###############################
 
+# enable any services needed
+gcloud services enable anthos.googleapis.com cloudresourcemanager.googleapis.com serviceusage.googleapis.com compute.googleapis.com secretmanager.googleapis.com
+
 # Create init script bucket for GCE instances to use
 setup_init_bucket
 
-copy_init_script
+# Create backup bucket for volume backups
+setup_init_bucket ${BACKUP_BUCKET_NAME} ${PROJECT_ID}
 
-# enable any services needed
-gcloud services enable secretmanager.googleapis.com
+copy_init_script
 
 # setup default compute to view secrets
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")

@@ -12,7 +12,7 @@ This step is intended to describe how to create a CNUC machine that is a replica
 
     * -c {number of machines in multiples of 3}
     * -z {GCP Zone} (optional)
-    * -p {create Preemptive machines} (optional)
+    * -t {create Preemptive machines} (optional)
 
     > NOTE: The count of machines needs to be a multiple of 3. Any other configuration will/should fail
 
@@ -49,7 +49,7 @@ This step is intended to describe how to create a CNUC machine that is a replica
 There is currently no surgerical removal of CNUC clusters, there is a script that is a remove-all option. The script un-registers the CNUCs from the `gke hub` and removes the GCE machines.
 
 ```bash
-./script/cloud/delete-cloud-gce-baseline.sh`
+./scripts/cloud/delete-cloud-gce-baseline.sh`
 ```
 
 > NOTE: If you manually remove CNUC(s) you will need to deregister clusters from the GKE Hub (GKE screen in Console)

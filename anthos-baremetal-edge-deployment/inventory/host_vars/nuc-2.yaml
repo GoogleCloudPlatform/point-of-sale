@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# Cluster name
+cluster_name: "nuc-1"
+# Used for logging/metrics
+machine_label: "nuc-2"
 
-cluster_name: "nuc-2"
-cluster_index: 1
-acm_cluster_name: "store-1-2"
+# This machine's IP
 control_plane_ip: "192.168.1.12"
-
-primary_ip: "192.168.1.11"
