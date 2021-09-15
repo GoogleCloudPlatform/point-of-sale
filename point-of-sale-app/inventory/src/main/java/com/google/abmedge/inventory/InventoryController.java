@@ -19,6 +19,7 @@ import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.dto.Item;
 import com.google.abmedge.inventory.dto.PurchaseItem;
+import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
@@ -70,7 +71,8 @@ public class InventoryController {
   private InventoryStoreConnector activeConnector;
 
   /**
-   * This method runs soon after the object for this class is created on startup of the application.
+   * This method runs soon after the object for this class is created on startup of the
+   * application.
    */
   @PostConstruct
   void init() {
@@ -112,7 +114,8 @@ public class InventoryController {
         activeItemsType.equals(ALL_ITEMS)
             ? activeConnector.getAll()
             : activeConnector.getAllByType(activeItemsType);
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
+    }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -122,9 +125,9 @@ public class InventoryController {
    * the deployment (e.g. textile, food, electronics, etc).
    *
    * <p>This method takes in a specific inventory type and changes the current context of the
-   * inventory service to that specific type by setting the {@link
-   * InventoryController#activeItemsType} variable. The inventory service APIs respond to requests
-   * by only loading and looking at the items in the inventory that match the current active 'type'.
+   * inventory service to that specific type by setting the {@link InventoryController#activeItemsType}
+   * variable. The inventory service APIs respond to requests by only loading and looking at the
+   * items in the inventory that match the current active 'type'.
    *
    * @param type the type to which the current context is to be switched to
    * @return HTTP 200 if the switch is done without any errors
@@ -144,43 +147,50 @@ public class InventoryController {
    * specific to the implementation of {@link InventoryStoreConnector} that is used.
    *
    * @param purchaseList a list of {@link PurchaseItem} objects that needs to be updated in the
-   *     underlying datastore
+   *                     underlying datastore
    * @return an object of {@link ResponseEntity} that only has an HTTP code without any payload
    */
   @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> update(@RequestBody List<PurchaseItem> purchaseList) {
-    boolean updated = true;
     for (PurchaseItem pi : purchaseList) {
       UUID itemId = pi.getItemId();
       Optional<Item> loadedItem = activeConnector.getById(itemId);
-      if (loadedItem.isPresent()) {
-        Item i = loadedItem.get();
-        long currentQuantity = i.getQuantity();
-        if (currentQuantity >= pi.getItemCount()) {
-          long newQuantity = currentQuantity - pi.getItemCount();
-          i.setQuantity(newQuantity);
-          updated &= activeConnector.update(i);
-          LOGGER.info(
-              String.format(
-                  "Updated item '%s - %s' with new quantity '%s'",
-                  itemId, i.getName(), newQuantity));
-          continue;
+      try {
+        if (loadedItem.isEmpty() || !updateItem(loadedItem.get(), pi)) {
+          LOGGER.warn(String.format("Update attempt with invalid item id: '%s'", itemId));
+          throw new Exception();
         }
-        LOGGER.error(
-            String.format(
-                "Failed to update item '%s - %s'. "
-                    + "The requested count '%s' is more than whats available '%s'",
-                itemId, i.getName(), pi.getItemCount(), currentQuantity));
-      } else {
-        LOGGER.warn(String.format("Update attempt with invalid item id: '%s'", itemId));
-        updated = false;
+      } catch (Exception e) {
+        LOGGER.error("Failed to update one or more items in the purchase list!", e);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-    if (!updated) {
-      LOGGER.error("Failed to update one or more items in the purchase list!");
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  private boolean updateItem(Item item, PurchaseItem purchaseItem)
+      throws InventoryStoreConnectorException {
+    long currentQuantity = item.getQuantity();
+    if (currentQuantity < purchaseItem.getItemCount()) {
+      LOGGER.error(
+          String.format(
+              "Failed to update item '%s - %s'. "
+                  + "The requested count '%s' is more than whats available '%s'",
+              purchaseItem.getItemId(),
+              item.getName(),
+              purchaseItem.getItemCount(),
+              currentQuantity));
+      return false;
+    }
+
+    long newQuantity = currentQuantity - purchaseItem.getItemCount();
+    item.setQuantity(newQuantity);
+    activeConnector.update(item);
+    LOGGER.info(
+        String.format(
+            "Updated item '%s - %s' with new quantity '%s'",
+            purchaseItem.getItemId(), item.getName(), newQuantity));
+    return true;
   }
 
   /**
@@ -198,7 +208,8 @@ public class InventoryController {
    * <p>The {@link InMemoryStoreConnector} is an implementation of the {@link
    * InventoryStoreConnector} that maintains all information about the inventory in an in-memory
    * data-structure. A connector type value that is set against the environment variable 'CONNECTOR'
-   * is deemed invalid if there exists no key entry matchign that type in the {@link #inventoryMap}.
+   * is deemed invalid if there exists no key entry matchign that type in the {@link
+   * #inventoryMap}.
    */
   private void initConnectorType() {
     String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
@@ -278,8 +289,15 @@ public class InventoryController {
         .forEach(
             i -> {
               i.setId(UUID.randomUUID());
-              activeConnector.insert(i);
-              LOGGER.info(String.format("Inserting new item: %s", i.toString()));
+              try {
+                activeConnector.insert(i);
+              } catch (InventoryStoreConnectorException e) {
+                String errMsg =
+                    String.format(
+                        "Failed to insert item '%s' of type '%s'", i.getName(), i.getType());
+                LOGGER.error(errMsg, e);
+              }
+              LOGGER.info(String.format("Inserting new item: %s", i));
             });
   }
 }
