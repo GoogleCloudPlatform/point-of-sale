@@ -2,8 +2,31 @@
 .idea
 *.iml
 target
-dev.yaml
-.settings
 .classpath
 .factorypath
 .project
+.settings
+
+test-server
+test-server.yaml
+dev.yaml
+
+node
+package-lock.json
+node_modules
+dist/
+npm.logs
+.appengine.env
+
+# local env files
+.env.local
+.env*
+!.env.development.sample
+
+# exclude everything
+point-of-sale-app/api-server/src/main/resources/public/*
+
+# exception to the rule
+!point-of-sale-app/api-server/src/main/resources/public/.gitkeep
+diff
+remote-gsa-key.json

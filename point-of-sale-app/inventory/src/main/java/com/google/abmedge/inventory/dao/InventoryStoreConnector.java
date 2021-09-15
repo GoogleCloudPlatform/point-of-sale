@@ -15,6 +15,7 @@
 package com.google.abmedge.inventory.dao;
 
 import com.google.abmedge.inventory.dto.Item;
+import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public interface InventoryStoreConnector {
    * @param item the item to be inserted into the store
    * @return true if the insert operation was successful and false if not
    */
-  boolean insert(Item item);
+  void insert(Item item) throws InventoryStoreConnectorException;
 
   /**
    * This method takes in a list of {@link Item} objects and inserts them into the underlying store.
@@ -72,7 +73,7 @@ public interface InventoryStoreConnector {
    * @return true if all the items were inserted successfully; false if insertion of atleast one of
    *     the items failed
    */
-  boolean insert(List<Item> items);
+  void insert(List<Item> items) throws InventoryStoreConnectorException;
 
   /**
    * This method takes in an {@link Item} object and carries out an update operation of that item in
@@ -83,7 +84,7 @@ public interface InventoryStoreConnector {
    * @param item the item to be updated
    * @return true if the item was successfully updated in the store and false if not
    */
-  boolean update(Item item);
+  void update(Item item) throws InventoryStoreConnectorException;
 
   /**
    * THis method takes in the ID of an {@link Item} and deletes this item from the underlying store.
@@ -94,7 +95,7 @@ public interface InventoryStoreConnector {
    * @return true if the item was successfully deleted from the store and false if the item was not
    *     found in the store or if the deletion failed
    */
-  boolean delete(UUID id);
+  void delete(UUID id) throws InventoryStoreConnectorException;
 
   /**
    * This method takes in a list of {@link Item} IDs and deletes them from the underlying store.
