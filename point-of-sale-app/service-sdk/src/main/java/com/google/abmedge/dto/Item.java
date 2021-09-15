@@ -17,6 +17,7 @@ package com.google.abmedge.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 /**
@@ -128,24 +129,14 @@ public class Item {
 
   @Override
   public String toString() {
-    return "Item{"
-        + "id="
-        + id
-        + ", name='"
-        + name
-        + '\''
-        + ", type='"
-        + type
-        + '\''
-        + ", price="
-        + price
-        + ", imageUrl='"
-        + imageUrl
-        + '\''
-        + ", quantity="
-        + quantity
-        + ", labels="
-        + labels
-        + '}';
+    return new StringJoiner(", ", Item.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("type='" + type + "'")
+        .add("price=" + price)
+        .add("imageUrl='" + imageUrl + "'")
+        .add("quantity=" + quantity)
+        .add("labels=" + labels)
+        .toString();
   }
 }
