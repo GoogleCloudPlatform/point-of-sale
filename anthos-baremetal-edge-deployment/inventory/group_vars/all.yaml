@@ -21,7 +21,7 @@
 ####
 #### Anthos Config Management
 ####
-acm_root_repo: "{{ lookup('env', 'ROOT_REPO_URL') | default('https://gitlab.com/gcp-solutions/app-mod/sm002-consumer-edge/consumer-retail-edge/root-repo-usa-market.git', True) }}"
+acm_root_repo: "{{ lookup('env', 'ROOT_REPO_URL') | default('https://github.com/GoogleCloudPlatform/anthos-edge-usecases', True) }}"
 
 
 #######
