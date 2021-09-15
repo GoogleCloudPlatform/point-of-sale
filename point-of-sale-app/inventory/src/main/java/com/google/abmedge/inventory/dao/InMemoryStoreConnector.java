@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   private static final Logger LOGGER = LogManager.getLogger(InMemoryStoreConnector.class);
-  private static final Map<UUID, Item> idToItemsMap = new HashMap<>();
+  private static final Map<UUID, Item> idToItemsMap = new ConcurrentHashMap<>();
 
   @Override
   public List<Item> getAll() {

@@ -16,6 +16,11 @@ package com.google.abmedge.inventory.dto;
 
 import java.util.UUID;
 
+/**
+ * An instance of this class represents a purchase unit. A purchase unit would reference an ID,
+ * identifying the item in the inventory that is being purchased and a count indicating how many of
+ * this item is being purchased.
+ */
 public class PurchaseItem {
   private UUID itemId;
   private long itemCount;

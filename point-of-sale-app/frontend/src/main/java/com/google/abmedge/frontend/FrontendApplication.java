@@ -25,33 +25,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * serves the key requirement of starting the Springboot service and the embedded web server along
  * wih to start accepting requests
  *
- * The frontend service APIs are the only publicly-accessible APIs in stack. All requests to the
+ * <p>The frontend service APIs are the only publicly-accessible APIs in stack. All requests to the
  * other services essentially pass-through this service. The static files from the UI consume the
  * frontend APIs to load items and process payment
- *
- *                                 --------------
- *                    |----------> |  inventory |
- *                    |            --------------
- *            --------------
- *  --------> |  frontend  |
- *            --------------
- *                   |             --------------
- *                   |----------> |  payments  |
- *                                --------------
  */
 @SpringBootApplication
 public class FrontendApplication {
 
-  private static final Logger LOGGER =
-      LogManager.getLogger(FrontendApplication.class);
+  private static final Logger LOGGER = LogManager.getLogger(FrontendApplication.class);
 
   public static void main(String[] args) {
     SpringApplication.run(FrontendApplication.class, args);
   }
 
-  /**
-   * A utility method to print out a log message when the Springboot application terminates
-   */
+  /** A utility method to print out a log message when the Springboot application terminates */
   @PreDestroy
   public void destroy() {
     LOGGER.info("FrontendApplication is shutting down");

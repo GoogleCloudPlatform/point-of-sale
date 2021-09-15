@@ -20,6 +20,11 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
+/**
+ * An instance of the {@link Item} class is a representation of an item as it will be stored in the
+ * inventory. This class describes the information about a specific item that is available and
+ * provides a utility method to get a deep copy of it.
+ */
 public class Item {
   private UUID id;
   private String name;
@@ -110,8 +115,10 @@ public class Item {
       return false;
     }
     Item item = (Item) o;
-    return id.equals(item.id) && name.equals(item.name) && type.equals(item.type) && price
-        .equals(item.price);
+    return id.equals(item.id)
+        && name.equals(item.name)
+        && type.equals(item.type)
+        && price.equals(item.price);
   }
 
   @Override
