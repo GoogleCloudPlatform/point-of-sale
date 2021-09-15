@@ -14,11 +14,12 @@
 
 package com.google.abmedge.inventory;
 
+
+import com.google.abmedge.dto.PurchaseItem;
 import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.dto.Item;
-import com.google.abmedge.inventory.dto.PurchaseItem;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

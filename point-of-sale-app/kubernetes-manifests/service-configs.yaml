@@ -15,8 +15,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: inventory-configmap
+  name: service-configs
 data:
+  INVENTORY_EP: "http://inventory-svc:8080"
+  PAYMENTS_EP: "http://payments-svc:8080"
   CONNECTOR: "IN_MEMORY"
   ACTIVE_ITEM_TYPE: "burgers"
   ITEMS: |

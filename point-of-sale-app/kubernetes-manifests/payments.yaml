@@ -55,11 +55,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: payments-service
+  name: payments-svc
 spec:
   type: ClusterIP
   selector:
-    app: payments-service
+    app: payments
   ports:
   - name: http
     port: 8080

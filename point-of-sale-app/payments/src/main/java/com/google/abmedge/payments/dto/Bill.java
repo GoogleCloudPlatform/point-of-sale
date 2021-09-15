@@ -14,6 +14,8 @@
 
 package com.google.abmedge.payments.dto;
 
+import com.google.abmedge.dto.Payment;
+
 /**
  * An instance of this class describes the bill for a single payment event that was expressed by one
  * instance of {@link Payment}. The bill object contains the original {@link Payment} object that
@@ -22,6 +24,7 @@ package com.google.abmedge.payments.dto;
  * representation of the bill.
  */
 public class Bill {
+
   private Payment payment;
   private PaymentStatus status;
   private Number balance;

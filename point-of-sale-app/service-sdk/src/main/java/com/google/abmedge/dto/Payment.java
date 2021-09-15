@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.payments.dto;
+package com.google.abmedge.dto;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +24,7 @@ import java.util.UUID;
  * payment (as defined by {@link PaymentType}) and the total amount paid.
  */
 public class Payment {
+
   private UUID id;
   private List<PaymentUnit> unitList;
   private PaymentType type;

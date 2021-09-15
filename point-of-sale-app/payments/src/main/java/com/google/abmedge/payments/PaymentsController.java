@@ -14,10 +14,10 @@
 
 package com.google.abmedge.payments;
 
+import com.google.abmedge.dto.Payment;
 import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
 import com.google.abmedge.payments.dao.PaymentGateway;
 import com.google.abmedge.payments.dto.Bill;
-import com.google.abmedge.payments.dto.Payment;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;

@@ -34,17 +34,17 @@ spec:
         - name: CONNECTOR
           valueFrom:
             configMapKeyRef:
-              name: inventory-configmap
+              name: service-configs
               key: CONNECTOR
         - name: ACTIVE_ITEM_TYPE
           valueFrom:
             configMapKeyRef:
-              name: inventory-configmap
+              name: service-configs
               key: ACTIVE_ITEM_TYPE
         - name: ITEMS
           valueFrom:
             configMapKeyRef:
-              name: inventory-configmap
+              name: service-configs
               key: ITEMS
         resources:
           requests:
@@ -71,11 +71,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: inventory-service
+  name: inventory-svc
 spec:
   type: ClusterIP
   selector:
-    app: inventory-service
+    app: inventory
   ports:
   - name: http
     port: 8080
