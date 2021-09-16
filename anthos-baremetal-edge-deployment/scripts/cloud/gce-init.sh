@@ -50,7 +50,6 @@ chown -R ${ANSIBLE_USER}.users /home/${ANSIBLE_USER}/.ssh
 VXLAN_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/vxlanid -H "Metadata-Flavor: Google")
 INSTANCE_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/instance -H "Metadata-Flavor: Google")
 CLUSTER_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/cluster_id -H "Metadata-Flavor: Google")
-PROXY_PORT=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/proxy_port -H "Metadata-Flavor: Google")
 
 VXLANIP="10.200.0.${CLUSTER_ID}"
 MACHINE_NAME="cnuc-${INSTANCE_ID}"
@@ -122,37 +121,3 @@ if [[ $? -gt 0 ]]; then
     echo "Cannot ping the vxlan IP address"
     exit 1
 fi
-
-# setup nginx to enable public access of the pods running inside the Anthos Bare
-# Metal user-cluster
-IS_CLUSTER_FIRST=$(gcloud compute instances list --filter='tags:public-ingress AND tags:public-egress' | grep -c "${MACHINE_NAME}")
-if [[ ${IS_CLUSTER_FIRST} == 1 ]]; then
-    echo "Skipping nginx installation..."
-    exit 0
-fi
-
-apt install nginx
-cat <<EOF > /etc/nginx/nginx.conf.template
-user www-data;
-worker_processes auto;
-pid /run/nginx.pid;
-include /etc/nginx/modules-enabled/*.conf;
-
-events {
-	worker_connections 768;
-}
-
-http {
-	upstream pos-api-server-lb {
-		server <K8_LB_IP>:80;
-	}
-
-	server {
-		listen ${PROXY_PORT};
-		server_name abm-edge-1.io;
-		location / {
-		  proxy_pass http://pos-api-server-lb;
-		}
-	}
-}
-EOF
