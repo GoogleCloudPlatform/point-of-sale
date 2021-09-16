@@ -131,7 +131,7 @@ if [[ ${IS_CLUSTER_FIRST} != 1 ]]; then
     exit 0
 fi
 
-apt install nginx
+apt install nginx -y
 cat <<EOF > /etc/nginx/nginx.conf.template
 user www-data;
 worker_processes auto;
