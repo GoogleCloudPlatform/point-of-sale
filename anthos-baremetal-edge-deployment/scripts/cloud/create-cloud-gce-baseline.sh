@@ -139,16 +139,13 @@ echo "Final Cluster Count = $CLUSTER_COUNT"
 #####   MAIN   ################
 ###############################
 
-# enable any services needed
-gcloud services enable anthos.googleapis.com cloudresourcemanager.googleapis.com serviceusage.googleapis.com compute.googleapis.com secretmanager.googleapis.com
-
 # Create init script bucket for GCE instances to use
 setup_init_bucket
 
-# Create backup bucket for volume backups
-setup_init_bucket ${BACKUP_BUCKET_NAME} ${PROJECT_ID}
-
 copy_init_script
+
+# enable any services needed
+gcloud services enable secretmanager.googleapis.com
 
 # setup default compute to view secrets
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
@@ -162,5 +159,8 @@ store_public_key_secret ${SSH_PUB_KEY_LOCATION}
 
 # Create the GCE instances
 create_gce_vms $GCE_COUNT
+
+# Setup firewall rules to allow public pod access
+setup_proxy_firewall
 
 display_gce_vms_ips

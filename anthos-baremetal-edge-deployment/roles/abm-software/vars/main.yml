@@ -19,7 +19,7 @@ acm_config_files: "/var/acm-configs"
 # Home directory for external secrets download and operations
 external_secrets_files: "/var/external-secrets"
 
-root_repository_branch: "main"
+root_repository_branch: "sync-gitlab"
 root_repository_policy_dir: "/anthos-baremetal-edge-deployment/acm-config-sink"
 root_repository_git_auth_type: "token"
 # NOTE: This is a tight coupling with the "Root Repo" that contains "ExternalSecret" instances with the `git-creds` name
