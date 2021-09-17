@@ -1,0 +1,32 @@
+## TODO: This should run on each of the clusters, but only one of them should apply at once so
+##       there isn't a rush on kubeapi calls to adding node labels
+
+- name: Copy script over to machine
+  become: true
+  template:
+    src: "cdi-node-check.sh.j2"
+    dest: "/var/cdi-node-check.sh"
+    owner: root
+    group: root
+    mode: "0700"
+  when:
+    - primary_cluster_machine is defined
+    - primary_cluster_machine == True
+  tags:
+    - post-install
+    - cdi-node-hack
+
+- name: Copy Cron Tab for CDI Check
+  become: true
+  template:
+    src: "cdi-node-cron-job.j2"
+    dest: "/etc/cron.d/cdi-node-cron-job"
+    owner: root
+    group: root
+    mode: "0700"
+  when:
+    - primary_cluster_machine is defined
+    - primary_cluster_machine == True
+  tags:
+    - post-install
+    - cdi-node-hack
