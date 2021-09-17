@@ -147,14 +147,14 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Imk2X3duZ3BzckQyWmszb09sZHFMN0FoWU9mV1kzOWNGZzMyb0x2
 ```
 
 Once you have run the above steps, copy the `Token` that is printed out and login
-to the kubernetes cluster from the [`Kubernetes clusters`](https://pantheon.corp.google.com/kubernetes/list/overview) page in the Google Cloud
+to the kubernetes cluster from the [`Kubernetes clusters`](https://console.cloud.google.com/kubernetes/list/overview) page in the Google Cloud
 console.
 
 ![gitlab token](docs/images/login-k8s.png)
 ![gitlab token](docs/images/login-k8s-token.png)
 
 Verify that the cluster has `synced` with the [configurations from this repository](/acm-config-sink)
-using **Anthos Config Management**
+using [**Anthos Config Management**](https://console.cloud.google.com/anthos/config_management)
 
 ![gitlab token](docs/images/acm-sync.png)
 
