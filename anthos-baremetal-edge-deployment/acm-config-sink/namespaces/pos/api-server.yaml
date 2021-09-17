@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: api-server
-        image: us-central1-docker.pkg.dev/abm-edge-test/abm-edge-point-of-sale/gcr.io/abm-edge-test/api-server
+        image: us-central1-docker.pkg.dev/abm-edge-test/abm-edge-point-of-sale/gcr.io/abm-edge-test/api-server:latest
         env:
         - name: INVENTORY_EP
           valueFrom:

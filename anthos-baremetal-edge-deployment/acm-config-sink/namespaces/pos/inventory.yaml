@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: inventory
-        image: us-central1-docker.pkg.dev/abm-edge-test/abm-edge-point-of-sale/gcr.io/abm-edge-test/inventory
+        image: us-central1-docker.pkg.dev/abm-edge-test/abm-edge-point-of-sale/gcr.io/abm-edge-test/inventory:latest
         env:
         - name: CONNECTOR
           valueFrom:
