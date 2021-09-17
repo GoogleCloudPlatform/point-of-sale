@@ -133,10 +133,21 @@ ssh -i ~/.ssh/cnucs-cloud abm-admin@cnuc-1
 
 # execute the script and copy token that is printed out
 ./cnuc-k8s-login-setup.sh
+
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+...
+...
+💡 Retreiving Kubernetes Service Account Token
+
+🚀 ------------------------------TOKEN-------------------------------- 🚀
+eyJhbGciOiJSUzI1NiIsImtpZCI6Imk2X3duZ3BzckQyWmszb09sZHFMN0FoWU9mV1kzOWNGZzMyb0x2WlMyalkifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImVkZ2Etc2EtdG9rZW4tc2R4MmQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZWRnYS1zYSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjQwYWQxNDk2LWM2MzEtNDhiNi05YmUxLWY5YzgwODJjYzgzOSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmVkZ2Etc2EifQ.IXqXwX5pg9RIyNHJZTM6cBKTEWOMfQ4IQQa398f0qwuYlSe12CA1l6P8TInf0S1aood7NJWxxe-5ojRvcG8pdOuINq2yHyQ5hM7K7R4h2qRwUznRwuzOp_eXC0z0Yg7VVXCkaqnUR1_NzK7qSu4LJcuLzkCYkFdSnvKIQABHSvfvZMrJP4CwanGlof6s-fbu8IUy1_bTgCminylNKuFcfsx1trq0GqpjVwH_WgrhgwJgh9UCH-BvM1h_H1uz4P-hDEKURb5O6IxulTXWH6dxYxg66xMgyLOd9FJyhZgjbf-a-3cbDci5YABEzioJlHVnV8GOX_q-MnIagA9-t1KpHA
+🚀 ------------------------------------------------------------------- 🚀
 ```
 
-Once you have run the above steps, copy the `token` that is printed out and login
-to the kubernetes cluster from the `Kubernetes clusters` page in the Google Cloud
+Once you have run the above steps, copy the `Token` that is printed out and login
+to the kubernetes cluster from the [`Kubernetes clusters`](https://pantheon.corp.google.com/kubernetes/list/overview) page in the Google Cloud
 console.
 
 ![gitlab token](docs/images/login-k8s.png)
