@@ -5,21 +5,22 @@
 ### Prerequisites
 
 - Make sure you have the following already installed in your workstation
-  - [Python](https://www.python.org/) [>=2.7.16]
+  - **[Python](https://www.python.org/)** [>=2.7.16]
   - Following Python modules _(`pip install --upgrade pip` # upgrade pip just-in-case)_
-    - ansible _(install with `pip install ansible`)_
-    - dnspython _(install with `pip install dnspython`)_
-    - requests _(install with `pip install requests`)_
-    - google-auth _(install with `pip install google-auth`)_
-  - [Google Cloud SDK]((https://cloud.google.com/sdk/docs/install#linux)) (aka: gcloud)
-  - envsubst CLI tool _(usually already installed in *nix based OSes)_
-  - [skaffold](https://skaffold.dev/docs/install/) [>=1.30.0] _(Optional: only needed for developement)_
-  - [maven](https://maven.apache.org/install.html) [>=3.6.3] _(Optional: only needed for developement)_
-  - [Java](https://www.oracle.com/java/technologies/downloads/#java11) [11.*] _(Optional: only needed for developement)_
+    - **ansible** _(install with `pip install ansible`)_
+    - **dnspython** _(install with `pip install dnspython`)_
+    - **requests** _(install with `pip install requests`)_
+    - **google-auth** _(install with `pip install google-auth`)_
+  - **[Google Cloud SDK]((https://cloud.google.com/sdk/docs/install#linux))** (aka: gcloud)
+  - **envsubst** CLI tool _(usually already installed in *nix based OSes)_
+  - **[skaffold](https://skaffold.dev/docs/install/)** [>=1.30.0] _(Optional: only needed for developement)_
+  - **[maven](https://maven.apache.org/install.html)** [>=3.6.3] _(Optional: only needed for developement)_
+  - **[Java](https://www.oracle.com/java/technologies/downloads/#java11)** [11.*] _(Optional: only needed for developement)_
 ---
 
 ## Quick starter
 
+The following quickstarter will approximately take **45-50 minutes** to complete if you have the _prerequisites_ already setup.
 ### 1. Setup Google Cloud Environment
 1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. Github, Gitlab, Bitbucket etc.)_
 
@@ -64,10 +65,11 @@ export SCM_TOKEN_TOKEN="<ACCESS_TOKEN_FOR_YOUR_GIT_REPO>"
 > - Used the link to your forked Github repository for `ROOT_REPO_URL`
 > - Use your Github username for `SCM_TOKEN_USER`
 > - Use [this link](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a personal access token and use that for `SCM_TOKEN_TOKEN`
+>   - Under the **"Select scopes"** section for creating a token _only_ select the **"public_repo"** scope
 
 1.3) Choose and configure the Google Cloud Project, Region and Zone you would like to use
 
-> **Note:** _This step can take upto 90 seconds to complete_
+> **Note:** _This step can take upto ***90 seconds*** to complete_
 
 ```sh
 gcloud config set project "${PROJECT_ID}"
@@ -86,7 +88,9 @@ gcloud config set compute/zone "${ZONE}"
 
 ### 2. Provision the GCE instances
 2.1) Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
-> **Note:** _This step can take upto 2 minutes to complete_
+
+> **Note:** _This step can take upto ***2 minutes*** to complete for a setup with $MACHINE_COUNT=3_
+
 ```sh
 # just press the return key when asked for a passphrase for the SSH key (i.e. empty string)
 ./scripts/cloud/easy-install.sh
@@ -140,10 +144,26 @@ Proceed!!
 ```
 
 3.2) Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
+
+> **Note:** _This step can take upto X minutes to complete for a setup with $MACHINE_COUNT=3_
+> - ***Pre-install configuration of the GCE instances:*** ~10 minutes</br>
+> - ***Installing Anthos BareMetal:*** ~20 minutes</br>
+> - ***Post-install configuration of the GCE instances:*** ~5 minutes
+
 ```sh
 # this will configure the GCE instances with all the necessary tools, install Anthos BareMetal, install Anthos
 # Config Management and configure it to sync with the configs at $ROOT_REPO_URL/anthos-baremetal-edge-deployment/acm-config-sink
 ansible-playbook -i inventory cloud-full-install.yml
+
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+...
+...
+PLAY RECAP ********************************************************************************************************
+cnuc-1                     : ok=136  changed=106  unreachable=0    failed=0    skipped=33   rescued=0    ignored=8
+cnuc-2                     : ok=86   changed=67   unreachable=0    failed=0    skipped=71   rescued=0    ignored=2
+cnuc-3                     : ok=86   changed=67   unreachable=0    failed=0    skipped=71   rescued=0    ignored=2
 ```
 ---
 ### 4. Login to the ABM kubernetes cluster in the Google Cloud console
@@ -195,6 +215,9 @@ using [**Anthos Config Management**](https://console.cloud.google.com/anthos/con
 
 ### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal loadbalancer
 5.1)  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
+
+> **Note:** _The following commands are run inside the admin GCE instance (**cnuc-1**). You must already be SSH'ed into it from the previous steps_
+
 ```sh
 # get the IP address of the LoadBalancer type kubernetes service
 ABM_INTERNAL_IP=$(kubectl get services api-server-lb -n pos | awk '{print $4}' | tail -n 1)
@@ -237,6 +260,9 @@ exit
 
 ### 6. Access the Point of Sale application
 11. Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
+
+> **Note:** _The following commands are run in your local workstations. If you still inside the admin GCE instance via SSH, then type **exit** to end the SSH session_
+
 ```sh
 EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" | awk '{print $5}' | tail -n 1)
 echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
