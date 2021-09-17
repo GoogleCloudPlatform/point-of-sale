@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: payments
-        image: us-central1-docker.pkg.dev/abm-edge-test/abm-edge-point-of-sale/payments
+        image: us-central1-docker.pkg.dev/abm-edge-test/abm-edge-point-of-sale/gcr.io/abm-edge-test/payments:latest
         resources:
           requests:
             cpu: 100m
