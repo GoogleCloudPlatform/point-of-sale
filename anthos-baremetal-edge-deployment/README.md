@@ -14,13 +14,13 @@
 
 ## Quick starter
 
-### Setup Google Cloud Environment
-1. Make a copy of this repository into any `git` based version control system you use _(e.g. Github, Gitlab, Bitbucket etc.)_
+### 1. Setup Google Cloud Environment
+1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. Github, Gitlab, Bitbucket etc.)_
 
 > **Note:** If you want to continue with Github, see [forking a repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) for creating
 > your own copy of this repository in Github.
 
-2. Setup environment variables _(example values are set for some variables; you can change them if you want to name them something else)_
+1.2) Setup environment variables _(example values are set for some variables; you can change them if you want to name them something else)_
 ```sh
 export PROJECT_ID="<YOUR_GCP_PROJECT_ID>"
 export REGION="us-central1"
@@ -50,7 +50,7 @@ export SCM_TOKEN_TOKEN="<ACCESS_TOKEN_FOR_YOUR_GIT_REPO>"
 > - Use your Github username for `SCM_TOKEN_USER`
 > - Use [this link](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a personal access token and use that for `SCM_TOKEN_TOKEN`
 
-3. Choose and configure the Google Cloud Project, Region and Zone you would like to use
+1.3) Choose and configure the Google Cloud Project, Region and Zone you would like to use
 ```sh
 gcloud config set project "${PROJECT_ID}"
 gcloud services enable compute.googleapis.com
@@ -59,19 +59,21 @@ gcloud config set compute/region "${REGION}"
 gcloud config set compute/zone "${ZONE}"
 ```
 
-4. Setup up GCP Service Account used by the GCE instances
+1.4) Setup up GCP Service Account used by the GCE instances
 ```sh
 # when asked "Create a new key for GSA? [y/N]" type "y" and press
 ./scripts/create-primary-gsa.sh
 ```
+---
 
-5. Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
+### 2. Provision the GCE instances
+2.1) Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
 ```sh
 # just press the return key when asked for a passphrase for the SSH key (i.e. empty string)
 ./scripts/cloud/easy-install.sh
 ```
 
-6. Test SSH connectivity to the GCE instances
+2.2) Test SSH connectivity to the GCE instances
 ```sh
 # If the checks fail the first time with errors like "sh: connect to host cnuc-1 port 22: Connection refused"
 # then wait a few seconds and retry
@@ -96,8 +98,10 @@ PING google.com (108.177.112.139) 56(84) bytes of data.
 ...
 ...
 ```
+---
 
-7. Generate Ansible inventory file from template and verify setup
+### 3. Install Anthos BareMetal with ansible
+3.1) Generate Ansible inventory file from template and verify setup
 ```sh
 envsubst < templates/inventory-cloud-example.yaml > inventory/gcp.yaml
 ./scripts/health-check.sh
@@ -116,14 +120,15 @@ SUCCESS!!
 Proceed!!
 ```
 
-8. Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
+3.2) Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
 ```sh
 # this will configure the GCE instances with all the necessary tools, install Anthos BareMetal, install Anthos
 # Config Management and configure it to sync with the configs at $ROOT_REPO_URL/anthos-baremetal-edge-deployment/acm-config-sink
 ansible-playbook -i inventory cloud-full-install.yml
 ```
-
-9. Login to the Kubernetes cluster running on Anthos Bare Metal in GCE
+---
+### 4. Login to the ABM kubernetes cluster in the Google Clod console
+4.1) Copy the utility script into the admin GCE instance and generate a token
 ```sh
 # Copy the utility scripts into the admin node of the cluster
 scp -i ~/.ssh/cnucs-cloud scripts/cloud/cnuc-k8s-login-setup.sh abm-admin@cnuc-1:
@@ -169,7 +174,8 @@ using [**Anthos Config Management**](https://console.cloud.google.com/anthos/con
   <img src="docs/images/acm-sync.png">
 </p>
 
-1.  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
+### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal loadbalancer
+5.1)  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
 ```sh
 # get the IP address of the LoadBalancer type kubernetes service
 ABM_INTERNAL_IP=$(kubectl get services api-server-lb -n pos | awk '{print $4}' | tail -n 1)
@@ -210,6 +216,7 @@ sudo systemctl status nginx
 exit
 ```
 
+### 6. Access the Point of Sale application
 11. Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
 ```sh
 EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" | awk '{print $5}' | tail -n 1)
