@@ -39,7 +39,7 @@ The stages are:
 
 1. **Fork** this repository
 1. This project uses Personal Access Tokens for ACM communication. [Add a token](https://docs.gitlab.com/ee/user/project/deploy_tokens/) to the Git repo with **read_repository** privilege. Remember the token name that will be used for env var **SCM_TOKEN_USER**. Copy the token string that will be uesd for env var **SCM_TOKEN_TOKEN**. Go to user **Preferences** on the top right corner.
-   ![gitlab token](docs/Gitlab_token.png)
+   ![gitlab token](docs/images/gitlab_token.png)
 
 ### One-Time Setup
 
