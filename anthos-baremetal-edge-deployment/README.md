@@ -158,15 +158,18 @@ Once you have run the above steps, copy the `Token` that is printed out and logi
 to the kubernetes cluster from the [`Kubernetes clusters`](https://console.cloud.google.com/kubernetes/list/overview) page in the Google Cloud
 console.
 
-![gitlab token](docs/images/login-k8s.png)
-![gitlab token](docs/images/login-k8s-token.png)
+<p align="center">
+  <img src="docs/images/login-k8s.png">
+  <img src="docs/images/login-k8s-token.png">
+</p>
 
 Verify that the cluster has `synced` with the [configurations from this repository](/acm-config-sink)
 using [**Anthos Config Management**](https://console.cloud.google.com/anthos/config_management)
+<p align="center">
+  <img src="docs/images/acm-sync.png">
+</p>
 
-![gitlab token](docs/images/acm-sync.png)
-
-10. Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
+1.  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
 ```sh
 # get the IP address of the LoadBalancer type kubernetes service
 ABM_INTERNAL_IP=$(kubectl get services api-server-lb -n pos | awk '{print $4}' | tail -n 1)
