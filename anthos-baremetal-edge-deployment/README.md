@@ -145,7 +145,7 @@ Proceed!!
 
 3.2) Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
 
-> **Note:** _This step can take upto X minutes to complete for a setup with $MACHINE_COUNT=3_
+> **Note:** _This step can take upto **35 minutes** to complete for a setup with $MACHINE_COUNT=3_
 > - ***Pre-install configuration of the GCE instances:*** ~10 minutes</br>
 > - ***Installing Anthos BareMetal:*** ~20 minutes</br>
 > - ***Post-install configuration of the GCE instances:*** ~5 minutes
