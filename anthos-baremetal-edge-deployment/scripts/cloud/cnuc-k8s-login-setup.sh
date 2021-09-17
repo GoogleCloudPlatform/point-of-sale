@@ -53,6 +53,7 @@ echo "💡 Retreiving Kubernetes Service Account Token"
 SECRET_NAME=$(kubectl get serviceaccount edga-sa -o jsonpath='{$.secrets[0].name}')
 TOKEN=$(kubectl get secret ${SECRET_NAME} -o jsonpath='{$.data.token}' | base64 --decode)
 
-echo "🚀 ------------------------------------------------------------------- 🚀"
+echo ""
+echo "🚀 ------------------------------TOKEN-------------------------------- 🚀"
 echo "$TOKEN"
 echo "🚀 ------------------------------------------------------------------- 🚀"
