@@ -66,6 +66,9 @@ export SCM_TOKEN_TOKEN="<ACCESS_TOKEN_FOR_YOUR_GIT_REPO>"
 > - Use [this link](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a personal access token and use that for `SCM_TOKEN_TOKEN`
 
 1.3) Choose and configure the Google Cloud Project, Region and Zone you would like to use
+
+> **Note:** _This step can take upto 90 seconds to complete_
+
 ```sh
 gcloud config set project "${PROJECT_ID}"
 gcloud services enable compute.googleapis.com
@@ -83,6 +86,7 @@ gcloud config set compute/zone "${ZONE}"
 
 ### 2. Provision the GCE instances
 2.1) Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
+> **Note:** _This step can take upto 2 minutes to complete_
 ```sh
 # just press the return key when asked for a passphrase for the SSH key (i.e. empty string)
 ./scripts/cloud/easy-install.sh

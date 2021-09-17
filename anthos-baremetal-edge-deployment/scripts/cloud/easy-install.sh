@@ -25,6 +25,7 @@ echo "
 Host cnuc-*
     User abm-admin
     StrictHostKeyChecking no
+    IdentitiesOnly=yes
     IdentityFile ~/.ssh/cnucs-cloud" >> ~/.ssh/config
 
 echo "💡 -------------------------------------------------------------------"
