@@ -18,7 +18,12 @@ echo "This will create a Google Service Account and key that is used on each of 
 
 GSA_NAME="target-machine-gsa"
 GSA_EMAIL="${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
-KEY_LOCATION="./remote-gsa-key.json"
+if [[ -z "${LOCAL_GSA_FILE}" ]]; then
+  echo "Environment variable 'PROXY_PORT' is not set. Using default remote-gsa-key.json."
+  KEY_LOCATION="./remote-gsa-key.json"
+else
+  KEY_LOCATION="${LOCAL_GSA_FILE}"
+fi
 
 EXISTS=$(gcloud iam service-accounts list --filter="email=${GSA_EMAIL}" --format="value(name, disabled)" --project="${PROJECT_ID}")
 if [[ -z "${EXISTS}" ]]; then
