@@ -2,7 +2,7 @@
 
 <TODO>
 
-### Pre-requisites
+### Prerequisites
 
 - Setup python stuff
    - python --version
