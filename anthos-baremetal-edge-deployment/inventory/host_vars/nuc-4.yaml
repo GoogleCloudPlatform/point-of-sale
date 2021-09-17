@@ -12,16 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Name of the cluster
 cluster_name: "nuc-4"
-cluster_index: 3
+# Used for logging/metrics
+machine_label: "nuc-4"
+# Indicates that this is the primary machine in the cluster (only important for provisioning)
 primary_cluster_machine: true
-acm_cluster_name: "store-2-1"
+# Name of the "store" per the ACM repo
+acm_cluster_name: "store-global"
+# This machine's IP
 control_plane_ip: "192.168.1.14"
+# The other IPs in the cluster
 control_plane_ips: [
   "192.168.1.14",
   "192.168.1.15",
   "192.168.1.16"
 ]
+# KubeAPI IP address
 control_plane_vip: "192.168.1.140"
+# Ingress (k8s) address, must be in LoadBalancer pool below
 ingress_vip: "192.168.1.141"
-load_balancer_pool_cidr: "192.168.1.141-192.168.1.149"
+# Load balancers created in this range
+load_balancer_pool_cidr: [
+  "192.168.1.141-192.168.1.149"
+]

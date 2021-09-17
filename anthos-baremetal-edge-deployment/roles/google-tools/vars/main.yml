@@ -30,10 +30,6 @@ local_gsa_key: "{{ lookup('env', 'LOCAL_GSA_FILE') }}"
 # location of the GSA credentials file for gcloud initialization
 remote_gsa_key: "/var/keys"
 
-# Latest version can be found: gsutil ls -al gs://anthos-baremetal-release/bmctl
-# bmctl binary version
-bmctl_version: "1.8.0" # ABM-Install role has this setting too, watch out if one changes
-
 kubectx_version: "0.9.3"
 
 # KubeVirt CLI tool

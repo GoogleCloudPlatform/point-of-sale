@@ -27,5 +27,6 @@
     - setup-kvm
     - abm-install
     - abm-software
+    - abm-post-install
     - abm-login-token
   vars: []

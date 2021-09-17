@@ -1,0 +1,8 @@
+# Kube PS1
+kube_ps1_version: "0.7.0"
+
+# NOTE Duplicate of google_tools vars
+abm_install_user: "el-gato"
+
+# Match with Google-Tools (by convention, not required, but good idea)
+remote_gsa_key: "/var/keys"

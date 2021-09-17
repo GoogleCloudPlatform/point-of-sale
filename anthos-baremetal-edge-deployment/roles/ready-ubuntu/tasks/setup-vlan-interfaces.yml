@@ -1,0 +1,46 @@
+- name: Print network interfaces
+  ansible.builtin.debug:
+    msg: 'allNetworkInterfaces: {{ ansible_interfaces }}'
+  tags:
+  - vlan-setup
+
+- name: Update NetworkManager interfaces
+  ansible.builtin.copy:
+    src: files/10-globally-managed-devices.conf
+    dest: /etc/NetworkManager/conf.d/10-globally-managed-devices.conf
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+  - vlan-setup
+
+- name: Reload service network-manager, pre VLAN creation
+  ansible.builtin.service:
+    name: network-manager
+    state: reloaded
+  tags:
+  - vlan-setup
+
+- name: Add VLAN interface 410 in linux
+  nmcli:
+    type: vlan
+    conn_name: '{{ prinetint }}.410'
+    method4: auto
+    vlanid: '410'
+    vlandev: '{{ prinetint }}'
+    state: present
+  tags:
+  - vlan-setup
+
+- name: Reload service network-manager, post VLAN creation
+  ansible.builtin.service:
+    name: network-manager
+    state: reloaded
+  tags:
+  - vlan-setup
+
+- name: Print network interfaces
+  ansible.builtin.debug:
+    msg: 'allNetworkInterfaces: {{ ansible_interfaces }}'
+  tags:
+  - vlan-setup
