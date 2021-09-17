@@ -26,6 +26,15 @@
 > **Note:** If you want to continue with Github, see [forking a repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) for creating
 > your own copy of this repository in Github.
 
+```sh
+# once you have forked this repository, clone it to your local machine
+git clone https://github.com/<YOUR_GITHUB_USERNAME>/anthos-edge-usecases
+
+# move into the root of the infrastructure setup directory
+cd anthos-baremetal-edge-deployment
+```
+
+
 1.2) Setup environment variables _(example values are set for some variables; you can change them if you want to name them something else)_
 ```sh
 export PROJECT_ID="<YOUR_GCP_PROJECT_ID>"
