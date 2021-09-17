@@ -15,12 +15,10 @@
 
 ## Vars specifically for CNUC5
 
-cluster_name: "cnuc-5"
-#cluster_index: 10
-acm_cluster_name: "store-5-2"
-control_plane_ip: "10.200.0.3" # TODO: Not functional yet, hardcoded in the config file right now
-control_plane_vip: "10.200.0.49"
-ingress_vip: "10.200.0.50"
-load_balancer_pool_cidr: "10.200.0.50-10.200.0.70"
+# Name of the cluster
+cluster_name: "cnuc-4"
+# Used for logging/metrics
+machine_label: "cnuc-5"
 
-primary_ip: "10.200.0.2"
+# This machine's IP
+control_plane_ip: "10.200.0.3"

@@ -19,6 +19,12 @@
   tags:
   - verify
 
+- name: Verify there is a ROOT_REPO_URL variable
+  debug:
+    var: acm_root_repo
+  tags:
+  - verify
+
 - name: Fail if local PROJECT_ID ENV is not defined
   assert:
     that:

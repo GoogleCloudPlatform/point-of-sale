@@ -1,0 +1,26 @@
+
+# Name of the cluster
+cluster_name: "edge-1"
+# Used for logging/metrics
+machine_label: "edge-1"
+# Indicates that this is the primary machine in the cluster (only important for provisioning)
+primary_cluster_machine: true
+# Name of the "store" per the ACM repo
+acm_cluster_name: "store-chicago"
+# This machine's IP
+control_plane_ip: "10.223.62.231"
+# The other IPs in the cluster
+control_plane_ips: [
+  "10.223.62.231",
+  "10.223.62.232",
+  "10.223.62.233"
+]
+# KubeAPI IP address
+control_plane_vip: "10.223.62.230"
+# Ingress (k8s) address, must be in LoadBalancer pool below
+ingress_vip: "10.223.62.227"
+# Load balancers created in this range
+load_balancer_pool_cidr: [
+  "10.223.62.227-10.223.62.229",
+  "10.223.62.234-10.223.62.238"
+]

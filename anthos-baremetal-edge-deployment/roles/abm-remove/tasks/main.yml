@@ -24,6 +24,9 @@
     cmd: bmctl reset -c {{ cluster_name }}
   args:
     chdir: "{{ abm_install_folder }}"
+  when:
+    - primary_cluster_machine is defined
+    - primary_cluster_machine == True
   environment:
     KUBECONFIG: "{{ kubeconfig_shared_location }}"
     GOOGLE_APPLICATION_CREDENTIALS: "/var/keys/gsa-key.json"
@@ -42,6 +45,23 @@
 - name: Remove ACM Config files
   ansible.builtin.file:
     path: "{{ acm_config_files }}"
+    state: absent
+  tags:
+    - abm-remove
+    - never # must specify `--tags never` on the CLI to run this
+
+- name: Remove kubeconfig folder
+  ansible.builtin.file:
+    path: "{{ kubeconfig_shared_root }}"
+    state: absent
+  tags:
+  - abm-remove
+  - kubeconfig-remove
+  - never
+
+- name: Remove ABM Workspace
+  ansible.builtin.file:
+    path: "{{ abm_install_folder }}/bmctl-workspace"
     state: absent
   tags:
     - abm-remove

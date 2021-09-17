@@ -46,6 +46,30 @@
   - abm-config
   - onetime
 
+### TODO: This is a fix for a pre-release functionality targeted for 1.8.3
+- name: "Update CDI deployment for future software release"
+  run_once: true
+  shell: |
+    kubectl get deployment -n cdi cdi-operator -o yaml > cdi-operator-change.yaml
+
+    sed -i "s|v1.34.0-gke.1|v1.34.1-gke.5|" cdi-operator-change.yaml
+    sed -i "s|{{ cdi_staging_project }}|{{ google_project_id }}|" cdi-operator-change.yaml
+
+    kubectl apply -f cdi-operator-change.yaml
+    kubectl delete po -n cdi --all
+    touch /var/.has-cdi-update
+    rm -rf cdi-operator-change.yaml
+  args:
+    executable: /bin/bash
+    creates: /var/.has-cdi-update
+  environment:
+    PATH: "{{ tools_base_path }}/google-cloud-sdk/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "{{ kubeconfig_shared_location }}"
+  tags:
+  - abm-software
+  - future-bug-fix
+  - cdi-install
+
 - name: Folder for ACM configurations
   file:
     path: '{{ acm_config_files }}'
@@ -56,14 +80,87 @@
   - abm-software
   - abm-config
 
-- name: "Enable ACM"
+### Add External Secrets
+
+- name: Create folder for External Secrets files
+  file:
+    path: '{{ external_secrets_files }}'
+    state: directory
+    mode: '0755'
+  tags:
+  - external-secrets-operator
+  - external-secrets-copy
+
+# Copy over the external secrets operator and CRD to all inventory
+- name: Copy External Secrets Operator and CRD files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ external_secrets_files }}"
+    mode: '0444' # read/write/execute owner, everyone else read/execute
+  with_fileglob: "external-secrets-c*.yaml"
+  tags:
+  - external-secrets-operator
+  - external-secrets-copy
+
+- name: "Install External Secrets Operator (b/185519826)"
+  shell: |
+      kubectl apply -f {{ external_secrets_files }}/external-secrets-crd.yaml
+      # Allow for the API to register the API
+      sleep 5s
+      kubectl wait --for=condition=established --timeout=600s crd externalsecrets.kubernetes-client.io
+      exit $?
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: "{{ kubeconfig_shared_location }}"
+  when:
+    - (primary_cluster_machine is defined)
+    - (primary_cluster_machine == true)
+  retries: 3
+  register: result
+  until: result.rc == 0
+  tags:
+  - external-secrets-operator
+  - external-secrets-apply
+
+ ###  Longhorn
+ #
+- name: Copy Longhorn namespace and configmap
+  template:
+    src: longhorn-default-setting.yml.j2
+    dest: "{{ acm_config_files }}/longhorn-default-setting.yml"
+  when:
+    - (primary_cluster_machine is defined)
+    - (primary_cluster_machine == true)
+  tags:
+  - longhorn-config-management
+
+
+- name: Create Longhorn namespace and configmap
+  shell: |
+    kubectl apply -f {{ acm_config_files }}/longhorn-default-setting.yml
+    exit $?
+  when:
+    - (primary_cluster_machine is defined)
+    - (primary_cluster_machine == true)
+  retries: 3
+  register: cmc_result
+  until: cmc_result.rc == 0
+  environment:
+    KUBECONFIG: "{{ kubeconfig_shared_location }}"
+  tags:
+  - longhorn-config-management
+
+
+
+### ACM
+- name: "Enable ACM API in GCP"
   command:
     cmd: gcloud alpha container hub config-management enable
   run_once: true # only needs to run once
   when: "(primary_cluster_machine is defined) and (primary_cluster_machine == true)"
   environment:
     PATH: "{{ tools_base_path }}/google-cloud-sdk/bin:{{ ansible_env.PATH }}"
-    GOOGLE_APPLICATION_CREDENTIALS: "/var/keys/gsa-key.json"
   tags:
   - abm-software
   - enable-acm
@@ -75,7 +172,6 @@
     creates: "{{ acm_config_files }}/config-management-operator.yaml"
   environment:
     PATH: "{{ tools_base_path }}/google-cloud-sdk/bin:{{ ansible_env.PATH }}"
-    GOOGLE_APPLICATION_CREDENTIALS: "/var/keys/gsa-key.json"
   when: "(primary_cluster_machine is defined) and (primary_cluster_machine == true)"
   tags:
   - abm-software
@@ -85,7 +181,7 @@
 - name: "Test for config-management operator presence"
   include: kubectl-presence.yml
   vars:
-    name: "crds"
+    name: "config-management"
     type: "configmanagements.configmanagement.gke.io"
     namespace: ""
     kubeconfig: "{{ kubeconfig_shared_location }}"
@@ -149,6 +245,9 @@
     - (primary_cluster_machine is defined)
     - (primary_cluster_machine == true)
     - (has_config_management == false)
+  retries: 3
+  register: cmc_result
+  until: cmc_result.rc == 0
   environment:
     KUBECONFIG: "{{ kubeconfig_shared_location }}"
   tags:
@@ -234,9 +333,16 @@
   - abm-software
   - external-secrets
 
+- name: "Add CPU Monitor KubeVirt service files"
+  include: cpumonitor-service.yaml
+  tags:
+  - cpu-monitor
+  - cdi
+
 ################# Setup secrets for git-creds and namespace repos per each franchise
 
 - name: "Create git-cred secrets in GCP Secret Manager"
+  run_once: true # only need to run on one machine, create all of the secets
   shell: |
     EXISTS=$(gcloud secrets list --filter="{{ item.git_creds_gcp_secret_name }}" --format="value(name)" --project="{{ google_project_id }}")
     if [ -z "${EXISTS}" ]]; then
@@ -247,18 +353,17 @@
   changed_when: '"ADDED" in out.stdout_lines'
   environment:
     PATH: "{{ tools_base_path }}/google-cloud-sdk/bin:{{ ansible_env.PATH }}"
-    GOOGLE_APPLICATION_CREDENTIALS: "/var/keys/gsa-key.json"
   loop: "{{ franchises }}"
   when:
     - (primary_cluster_machine is defined)
     - (primary_cluster_machine == true)
-    - (cluster_name == item.stores[0])
   tags:
   - abm-software
   - enable-acm
   - post-acm
 
 - name: "Add new version to git-cred franchise secret in GCP Secret Manager IF no current or active versions exists"
+  run_once: true # only need to run on one machine, create all of the secets
   shell: |
     EXISTS=$(gcloud secrets versions list {{ item.git_creds_gcp_secret_name }} --filter="state=enabled" --format="value(name)"  --project="{{ google_project_id }}")
     if [ -z "${EXISTS}" ]; then
@@ -269,13 +374,14 @@
   changed_when: '"ADDED" in out.stdout_lines'
   loop: "{{ franchises }}"
   when:
-    - (cluster_name == item.stores[0])
     - (primary_cluster_machine is defined)
     - (primary_cluster_machine == true)
   environment:
     PATH: "{{ tools_base_path }}/google-cloud-sdk/bin:{{ ansible_env.PATH }}"
-    GOOGLE_APPLICATION_CREDENTIALS: "/var/keys/gsa-key.json"
   tags:
   - abm-software
   - enable-acm
   - post-acm
+
+
+

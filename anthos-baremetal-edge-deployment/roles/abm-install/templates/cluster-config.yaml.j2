@@ -34,6 +34,7 @@ spec:
       {% endfor %}
   # Cluster networking configuration
   clusterNetwork:
+    multipleNetworkInterfaces: {{ multi_network_enabled }}
     pods:
       cidrBlocks:
       - {{ pod_cidr }}
@@ -50,7 +51,9 @@ spec:
     addressPools:
     - name: load-balance-pool
       addresses:
-      - {{ load_balancer_pool_cidr }}
+      {% for range in load_balancer_pool_cidr %}
+      - {{ range }}
+      {% endfor %}
   # Proxy configuration
   # proxy:
   #   url: http://[username:password@]domain
@@ -81,7 +84,7 @@ spec:
     containerRuntime: {{ container_runtime }}
   # KubeVirt configuration, uncomment this section if you want to install kubevirt to the cluster
   kubevirt:
-    useEmulation: true
+    useEmulation: {{ kubevirt_use_emulation }}
 
   # Authentication; uncomment this section if you wish to enable authentication to the cluster with OpenID Connect.
   # authentication:
@@ -140,4 +143,3 @@ spec:
 #  nodes:
 #  - address: <Machine 2 IP>
 #  - address: <Machine 3 IP>
-
