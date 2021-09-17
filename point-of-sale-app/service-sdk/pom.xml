@@ -35,18 +35,18 @@
   <distributionManagement>
     <snapshotRepository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-maven.pkg.dev/google-samples/anthos-edge-workload</url>
+      <url>artifactregistry://us-central1-maven.pkg.dev/abm-edge-test/anthos-baremetal-edge</url>
     </snapshotRepository>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-maven.pkg.dev/google-samples/anthos-edge-workload</url>
+      <url>artifactregistry://us-central1-maven.pkg.dev/abm-edge-test/anthos-baremetal-edge</url>
     </repository>
   </distributionManagement>
 
   <repositories>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-maven.pkg.dev/google-samples/anthos-edge-workload</url>
+      <url>artifactregistry://us-central1-maven.pkg.dev/abm-edge-test/anthos-baremetal-edge</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -65,5 +65,4 @@
       </extension>
     </extensions>
   </build>
-
 </project>
