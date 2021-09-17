@@ -14,6 +14,8 @@
 
 package com.google.abmedge.inventory.dao;
 
+import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
+import java.util.HashMap;
 import com.google.abmedge.dto.Item;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,30 +59,39 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
   }
 
   @Override
+<<<<<<< HEAD
   public Set<String> getTypes() {
     return typeToItemsMap.keySet();
   }
 
   @Override
   public boolean insert(Item item) {
+=======
+  public void insert(Item item) throws InventoryStoreConnectorException {
+>>>>>>> ui
     UUID itemId = item.getId();
     String itemType = item.getType();
     if (itemId == null || StringUtils.isEmpty(itemType)) {
-      LOGGER.error(
+      String errMsg =
           "Cannot insert item. Item must have both 'id' and 'type'. "
-              + "Passed in item is missing one or both of these attributes");
-      return false;
+              + "Passed in item is missing one or both of these attributes";
+      LOGGER.error(errMsg);
+      throw new InventoryStoreConnectorException(errMsg);
     }
     Item toInsertItem = Item.from(item);
     idToItemsMap.put(itemId, toInsertItem);
+<<<<<<< HEAD
     List<Item> itemsOfType = typeToItemsMap.computeIfAbsent(itemType, k -> new ArrayList<>());
     itemsOfType.add(toInsertItem);
     return true;
+=======
+>>>>>>> ui
   }
 
   @Override
-  public boolean insert(List<Item> items) {
+  public void insert(List<Item> items) throws InventoryStoreConnectorException {
     for (Item it : items) {
+<<<<<<< HEAD
       boolean inserted = insert(it);
       if (!inserted) {
         LOGGER.error(
@@ -90,30 +101,48 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
       }
     }
     return true;
+=======
+      UUID itemId = it.getId();
+      String itemType = it.getType();
+      if (itemId == null || StringUtils.isEmpty(itemType)) {
+        String errMsg =
+            "Cannot insert items. Items must have both 'id' and 'type'. "
+                + "One of the passed in item is missing one or both of these attributes";
+        LOGGER.error(errMsg);
+        throw new InventoryStoreConnectorException(errMsg);
+      }
+    }
+    for (Item it : items) {
+      UUID itemId = it.getId();
+      Item toInsertItem = Item.from(it);
+      idToItemsMap.put(itemId, toInsertItem);
+    }
+>>>>>>> ui
   }
 
   @Override
-  public boolean update(Item item) {
+  public void update(Item item) throws InventoryStoreConnectorException {
     UUID itemId = item.getId();
     String itemType = item.getType();
     if (itemId == null || StringUtils.isEmpty(itemType)) {
-      LOGGER.error(
+      String errMsg =
           "Cannot update item. Item must have both 'id' and 'type'. "
-              + "Passed in item is missing one or both of these attributes");
-      return false;
+              + "Passed in item is missing one or both of these attributes";
+      LOGGER.error(errMsg);
+      throw new InventoryStoreConnectorException(errMsg);
     }
     Item toUpdateItem = Item.from(item);
     idToItemsMap.put(itemId, toUpdateItem);
-    return true;
   }
 
   @Override
-  public boolean delete(UUID id) {
+  public void delete(UUID id) throws InventoryStoreConnectorException {
     if (id == null) {
-      LOGGER.error("Cannot delete item. Item 'id' cannot be null");
+      String errMsg = "Cannot delete item. Item 'id' cannot be null";
+      LOGGER.error(errMsg);
+      throw new InventoryStoreConnectorException(errMsg);
     }
     Item removed = idToItemsMap.remove(id);
-    return removed != null;
   }
 
   @Override

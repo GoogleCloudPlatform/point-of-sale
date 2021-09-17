@@ -1,92 +1,229 @@
 # Overview
 
-This project is an opinionated installation of Anthos bare metal designed specifically for Consumer Edge requirements.
+<TODO>
 
-This project is a group of Ansible playbooks and bash scripts that are used to provision and manage Anthos bare metal instances given a hardware or cloud inventory.
+### Pre-requisites
 
-There are two deployment types: Hardware and Cloud. Both deployment types can co-exist. Communication between any of the ABM instances are supported over the LAN supporting the hardware or cloud instances. Networking is not configured to communicate cross network boundaries (nothing prevents this being built, just not in the scope of this project)
+- Setup python stuff
+   - python --version
+   - pip install --upgrade pip # upgrade pip just-in-case
+   - pip install ansible
+   - pip install dnspython
+   - pip install requests
+   - pip install google-auth
 
-> **Hardware** - Scripts and Playbooks designed to deploy onto hardware servers meeting requirements.
-* In this project, all hardware machines will have "nuc" as a prefix for hostname and varaible names.
+## Quick starter
 
-> **Cloud** - Scripts and Playbooks designed to be deployed into GCE Virtual Machines.
-* In this project, all cloud machines will have "cnuc" as a prefix for hostname and varaible names.
+### 1. Setup Google Cloud Environment
+1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. Github, Gitlab, Bitbucket etc.)_
 
-## Terms to know
+> **Note:** If you want to continue with Github, see [forking a repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) for creating
+> your own copy of this repository in Github.
 
-> **Target machine(s)** - The machine that the cluster is being installed into/onto (ie, NUC, GCE, etc). This is often called the "host" in public documentation.
+1.2) Setup environment variables _(example values are set for some variables; you can change them if you want to name them something else)_
+```sh
+export PROJECT_ID="<YOUR_GCP_PROJECT_ID>"
+export REGION="us-central1"
+export ZONE="us-central1-a"
 
-> **Provisioning machine** - The machine that initiates the `ansible` run. This is typically a laptop or the cloud shell within the GCP console
+# path to which the Google Service Account key file will be downloaded to
+export LOCAL_GSA_FILE="$(pwd)/remote-gsa-key.json"
 
-## Provisioning
+# port on the GCE instance we will use to setup the nginx proxy to allow traffic into the AnthosBareMetal cluster
+export PROXY_PORT="8082"
 
-The following steps are broken into **one-time** and **repeatable steps** used to provision the ***target machine(s)***. Most of the steps are common scross both Hardware and Cloud deployment options, but will note when a specific step is needed for either.
+# should be a multiple of 3 since N/3 clusters are created with each having 3 nodes
+export MACHINE_COUNT="3"
 
-Please proceed through each of the installation stages.
+# fork of this repository: https://github.com/GoogleCloudPlatform/anthos-edge-usecases
+export ROOT_REPO_URL="<LINK_TO_YOUR_FORK_OF_THIS_REPO>"
 
-## Installation Stages
+# this is the username used to authenticate to your fork of this repository
+export SCM_TOKEN_USER="<YOUR_GIT_VERSION_CONTROL_USERNAME>"
 
-The installation of the Consumer Edge has a series of stages that need to be completed in sequence. Some are one-time stages, other are idempotent and therefore repeatable, but all have a test to verify the stage has been completed.
-
-The stages are:
-1. [Pre-installation Steps](#pre-installation-steps)
-1. [One-time Setup](docs/ONE_TIME_SETUP.md)
-1. [Install Anthos bare metal](#installing-anthos-bare-metal)
-
-> NOTE: This solution requires `3n` machines to form a High Availability single cluster (ie: 3 instances, 6 instances, 9 instances, ...)
-
-### Pre-Installation Steps
-
-1. **Fork** this repository
-1. This project uses Personal Access Tokens for ACM communication. [Add a token](https://docs.gitlab.com/ee/user/project/deploy_tokens/) to the Git repo with **read_repository** privilege. Remember the token name that will be used for env var **SCM_TOKEN_USER**. Copy the token string that will be uesd for env var **SCM_TOKEN_TOKEN**. Go to user **Preferences** on the top right corner.
-   ![gitlab token](docs/Gitlab_token.png)
-
-### One-Time Setup
-
-1. Review and complete the [one-time setup](docs/ONE_TIME_SETUP.md) steps
-    1. Result should be baseline provisioned inventory resources (ie, GCE instances and/or hardware machines with passwordless SSH access)
-
-    ```bash
-    # Test one-time-setup script (should see "success")
-    ./scripts/verify-pre-installation.sh
-    ```
-
-## Installing Anthos Bare Metal
-
-### Install ALL Inventory
-
-The `site.yml` playbook is used to quickly provision ALL inventory assets (ie, `cloud` and `hardware`)
-
-```bash
-ansible-playbook -i inventory site.yml
+# this is the access token that will be used to authenticate against your fork of this repository
+export SCM_TOKEN_TOKEN="<ACCESS_TOKEN_FOR_YOUR_GIT_REPO>"
 ```
 
-## Playbooks
+> **Note:** If you are trying this out with Github as your git version control and have forked this repository into your Github account then:
+> - Used the link to your forked Github repository for `ROOT_REPO_URL`
+> - Use your Github username for `SCM_TOKEN_USER`
+> - Use [this link](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a personal access token and use that for `SCM_TOKEN_TOKEN`
 
-Below is a list of playbooks and what they are intended to be used for
+1.3) Choose and configure the Google Cloud Project, Region and Zone you would like to use
+```sh
+gcloud config set project "${PROJECT_ID}"
+gcloud services enable compute.googleapis.com
+
+gcloud config set compute/region "${REGION}"
+gcloud config set compute/zone "${ZONE}"
+```
+
+1.4) Setup up GCP Service Account used by the GCE instances
+```sh
+# when asked "Create a new key for GSA? [y/N]" type "y" and press
+./scripts/create-primary-gsa.sh
+```
+---
+
+### 2. Provision the GCE instances
+2.1) Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
+```sh
+# just press the return key when asked for a passphrase for the SSH key (i.e. empty string)
+./scripts/cloud/easy-install.sh
+```
+
+2.2) Test SSH connectivity to the GCE instances
+```sh
+# If the checks fail the first time with errors like "sh: connect to host cnuc-1 port 22: Connection refused"
+# then wait a few seconds and retry
+for i in `seq $MACHINE_COUNT`; do
+  HOSTNAME="cnuc-$i"
+  ssh abm-admin@${HOSTNAME} 'ping -c 3 google.com'
+done
+
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+PING google.com (74.125.124.113) 56(84) bytes of data.
+64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=1 ttl=115 time=1.10 ms
+64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=2 ttl=115 time=1.10 ms
+64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=3 ttl=115 time=0.886 ms
+
+--- google.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 0.886/1.028/1.102/0.100 ms
+PING google.com (108.177.112.139) 56(84) bytes of data.
+...
+...
+...
+```
+---
+
+### 3. Install Anthos BareMetal with ansible
+3.1) Generate Ansible inventory file from template and verify setup
+```sh
+envsubst < templates/inventory-cloud-example.yaml > inventory/gcp.yaml
+./scripts/health-check.sh
+./scripts/verify-pre-installation.sh
+
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+cnuc-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
+cnuc-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
+cnuc-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
 
 
-|     Name      |  Description    |  Inventory  | Command/Example |  Notes/Options |
-|:-------------:|:----------------|:-----------:|:----------------|:---------------|
-| Everything Install | Installs and sets up all Host requirements and then installs ABM on ALL inventory | ALL | `ansible-playbook -i inventory site.yml` | Installs and updates everything from a fresh provision. `all-full-install.yml` is called from site.yml, so has the same functionality |
-| Cloud Install | Install ABM from a recently provisioned machine group | CLOUD | `ansible-playbook -i inventory cloud-full-inventory.yml` | Same as "everything", but only targets `cnuc`s |
-| Hardware Install | Install ABM on physical hardware (NUCs) | HARDWARE | `ansible-playbook -i inventory hardware-full-inventory.yml` | Same as "everything", but only targets `nuc`s |
-| Get Remote Login Tokens | Pulls login tokens to be used in the GCP console's `Kubernetes` screen | ALL | `ansible-playbook get-login-tokens.yml -i inventory` | Use `--tags cloud` or `--tags hardware` to limit to one or the other |
-| Update Ubuntu OS | Equivalent of `apt-get update && apt-get upgrade` and `gcloud components update` | ALL | `ansible-playbook -i inventory all-update-servers.yml` | Use `--tags cloud` or `--tags hardware` to limit to one or the other |
-| Reset Logging | Removes all logs and frees up space on the machine | ALL | `ansible-playbook -i inventory all-hard-reset-logging.yml` | This is a lossy process and removes all logs not synced to GCP. This is intended to be used in emergency scenarios only (ie, pods being evicted due to "out of space") |
-| ABM Install Software | Installs only ABM on a ready OS. Does not install tools, OS requirements or anything else | ALL | `ansible-playbook -i inventory all-install-abm-software.yml` | This is idempotent and can be used to install ABM + ACM without touching the OS. OS needs to be previously setup to meet ABM host requirements |
-| ABM Remove Software | Removes only ABM. Does not change underlying OS | ALL | `ansible-playbook -i inventory all-remove-abm-software.yml` | This is idempotent and can be used to remove ABM and deregisteres cluster from GKE Hub. OS needs to be previously setup to meet ABM host requirements |
+SUCCESS!!
 
+Proceed!!
+```
 
-## Configuration Explanation
+3.2) Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
+```sh
+# this will configure the GCE instances with all the necessary tools, install Anthos BareMetal, install Anthos
+# Config Management and configure it to sync with the configs at $ROOT_REPO_URL/anthos-baremetal-edge-deployment/acm-config-sink
+ansible-playbook -i inventory cloud-full-install.yml
+```
+---
+### 4. Login to the ABM kubernetes cluster in the Google Cloud console
+4.1) Copy the utility script into the admin GCE instance and generate a token
+```sh
+# Copy the utility scripts into the admin node of the cluster
+scp -i ~/.ssh/cnucs-cloud scripts/cloud/cnuc-k8s-login-setup.sh abm-admin@cnuc-1:
 
-### Environment IPs
+# SSH into the admin node of the cluster
+ssh -i ~/.ssh/cnucs-cloud abm-admin@cnuc-1
 
-The below are IPs used in the installation process. The configuration for these exists in the `inventory/host_vars/<host>.yaml` files.
+# execute the script and copy token that is printed out
+./cnuc-k8s-login-setup.sh
 
-* control_plane_vip -- IP address that is addressable & available, not overlapping with other clusters, but not pre-allocated. This is created during the process
-* ingress_vip -- Must be in the Load Balancer pool for the cluster, same rules as control_plane_vip for availability
-* load_balancer_pool_cidr -- IP addresses for the LoadBalancers (bundled mode) can attach to, same rules as control_plane_vip
-* control_plane_ip -- different than the `control_plane_vip`, this is the IP of the box you are installing on
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+...
+...
+💡 Retreiving Kubernetes Service Account Token
 
-> NOTE: The default inventory file sets up space for 9 LBs allocated per cluster, with 1 taken for Ingress (sufficient for POC and basic work)
+🚀 ------------------------------TOKEN-------------------------------- 🚀
+eyJhbGciOiJSUzI1NiIsImtpZCI6Imk2X3duZ3BzckQyWmszb09sZHFMN0FoWU9mV1kzOWNGZzMyb0x2WlMyalkifQ.eyJpc3MiOiJrdW
+mljZS1hY2NvdW50LnVpZCI6IjQwYWQxNDk2LWM2MzEtNDhiNi05YmUxLWY5YzgwODJjYzgzOSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYW
+iZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImVkZ2Etc2EtdG9rZW4tc2R4MmQiLCJrdWJlcm5ldGVzLmlvL3Nl
+cnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZWRnYS1zYSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2Vyd
+4CwanGlof6s-fbu8IUy1_bTgCminylNKb3VudC5uYW1lIjoiZWRnYS1zYSIsImt1YmVybmV0ZXuaP-hDEKURb5O6IxulTXWH6dxYxg66x
+Njb3VudDpkZWZhdWx0OmVkZ2Etc2EifQ.IXqXwX5pg9RIyNHJZTM6cBKTEWOMfQ4IQQa398f0qwuYlSe12CA1l6P8TInf0S1aood7NJWx
+xe-5ojRvcG8pdOuINq2yHyQ5hM7K7R4h2qRwUznRwuzOp_eXC0z0Yg7VVXCkaqnUR1_NzK7qSu4LJcuLzkCYkFdSnvKIQABHSvfvZMrJP
+Jlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3V
+MgyLOd9FJyhZgjbf-a-3cbDci5YABEzioJlHVnV8GOX_q-MnIagA9-t1KpHA
+🚀 ------------------------------------------------------------------- 🚀
+```
+
+Once you have run the above steps, copy the `Token` that is printed out and login
+to the kubernetes cluster from the [`Kubernetes clusters`](https://console.cloud.google.com/kubernetes/list/overview) page in the Google Cloud
+console.
+
+<p align="center">
+  <img src="docs/images/login-k8s.png">
+  <img src="docs/images/login-k8s-token.png">
+</p>
+
+Verify that the cluster has `synced` with the [configurations from this repository](/acm-config-sink)
+using [**Anthos Config Management**](https://console.cloud.google.com/anthos/config_management)
+<p align="center">
+  <img src="docs/images/acm-sync.png">
+</p>
+
+### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal loadbalancer
+5.1)  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
+```sh
+# get the IP address of the LoadBalancer type kubernetes service
+ABM_INTERNAL_IP=$(kubectl get services api-server-lb -n pos | awk '{print $4}' | tail -n 1)
+
+# update the template configuration file with the fetched IP address
+sudo sh -c "sed 's/<K8_LB_IP>/${ABM_INTERNAL_IP}/g' /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf"
+
+# restart nginx to ensure the new configuration is picked up
+sudo systemctl restart nginx
+
+# check and verify the status of the nginx server to be "active (running)"
+sudo systemctl status nginx
+
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2021-09-17 02:41:01 UTC; 2s ago
+       Docs: man:nginx(8)
+    Process: 92571 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 92572 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 92573 (nginx)
+      Tasks: 17 (limit: 72331)
+     Memory: 13.2M
+     CGroup: /system.slice/nginx.service
+             ├─92573 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+             ├─92574 nginx: worker process
+             ├─92575 nginx: worker process
+             ├─92576 nginx: worker process
+             ├─92577 nginx: worker process
+             ├─92578 nginx: worker process
+             ├─92579 nginx: worker process
+             ├─92580 nginx: worker process
+             ├─92581 nginx: worker process
+
+# exit out of the admin instance
+exit
+```
+
+### 6. Access the Point of Sale application
+11. Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
+```sh
+EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" | awk '{print $5}' | tail -n 1)
+echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
+
+# -----------------------------------------------------
+#                   Expected Output
+# -----------------------------------------------------
+Point the browser to: 34.134.194.84:8082
+```
