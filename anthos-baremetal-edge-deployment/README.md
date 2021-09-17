@@ -127,7 +127,7 @@ Proceed!!
 ansible-playbook -i inventory cloud-full-install.yml
 ```
 ---
-### 4. Login to the ABM kubernetes cluster in the Google Clod console
+### 4. Login to the ABM kubernetes cluster in the Google Cloud console
 4.1) Copy the utility script into the admin GCE instance and generate a token
 ```sh
 # Copy the utility scripts into the admin node of the cluster
