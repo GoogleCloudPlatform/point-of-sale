@@ -4,13 +4,19 @@
 
 ### Prerequisites
 
-- Setup python stuff
-   - python --version
-   - pip install --upgrade pip # upgrade pip just-in-case
-   - pip install ansible
-   - pip install dnspython
-   - pip install requests
-   - pip install google-auth
+- Make sure you have the following already installed in your workstation
+  - [Python](https://www.python.org/) [>=2.7.16]
+  - Following Python modules _(`pip install --upgrade pip` # upgrade pip just-in-case)_
+    - ansible _(install with `pip install ansible`)_
+    - dnspython _(install with `pip install dnspython`)_
+    - requests _(install with `pip install requests`)_
+    - google-auth _(install with `pip install google-auth`)_
+  - [Google Cloud SDK]((https://cloud.google.com/sdk/docs/install#linux)) (aka: gcloud)
+  - envsubst CLI tool _(usually already installed in *nix based OSes)_
+  - [skaffold](https://skaffold.dev/docs/install/) [>=1.30.0] _(Optional: only needed for developement)_
+  - [maven](https://maven.apache.org/install.html) [>=3.6.3] _(Optional: only needed for developement)_
+  - [Java](https://www.oracle.com/java/technologies/downloads/#java11) [11.*] _(Optional: only needed for developement)_
+---
 
 ## Quick starter
 
