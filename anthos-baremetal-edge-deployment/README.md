@@ -2,6 +2,10 @@
 
 <TODO>
 
+<p align="center">
+  <img src="docs/images/abm-edge-arch.png">
+</p>
+
 ### Prerequisites
 
 - Make sure you have the following already installed in your workstation
