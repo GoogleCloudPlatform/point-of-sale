@@ -217,6 +217,7 @@ using [**Anthos Config Management**](https://console.cloud.google.com/anthos/con
   <img src="docs/images/acm-sync.png">
 </p>
 
+---
 ### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal loadbalancer
 5.1)  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
 
@@ -261,9 +262,10 @@ sudo systemctl status nginx
 # exit out of the admin instance
 exit
 ```
+---
 
 ### 6. Access the Point of Sale application
-11. Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
+6.1) Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
 
 > **Note:** _The following commands are run in your local workstations. If you still inside the admin GCE instance via SSH, then type **exit** to end the SSH session_
 
@@ -276,3 +278,20 @@ echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
 # -----------------------------------------------------
 Point the browser to: 34.134.194.84:8082
 ```
+---
+### 7. Update the API-Server version and observe the change
+
+7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml) to `v2` and push the change to the upstream repository
+
+```sh
+# update the image tag
+sed -i '' 's/api-server:v1/api-server:v2/g' acm-config-sink/namespaces/pos/api-server.yaml
+# push the change
+git add acm-config-sink/namespaces/pos/api-server.yaml
+git commit -m "chore: updated api-server version to v2"
+git push
+```
+
+7.2) Now check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) and wait for the `Pod` to be updated _(you can monitor it in the console)_.
+
+Once, the status is `OK` point your browser to the same url as earlier. This time you should see that the `V2` version of the application has been deployed!
