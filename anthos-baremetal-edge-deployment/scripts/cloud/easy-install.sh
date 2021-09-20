@@ -36,7 +36,7 @@ ${ROOT_DIR}/scripts/cloud/create-cloud-gce-baseline.sh -c ${MACHINE_COUNT}
 echo "💡 -------------------------------------------------------------------"
 echo "💡 Updating /etc/hosts with the IP addresses of the GCE instances..."
 echo "💡 -------------------------------------------------------------------"
-${ROOT_DIR}/scripts/status.sh | tail -4 > temp.log
+${ROOT_DIR}/scripts/status.sh | tail -$((${MACHINE_COUNT}+1)) > temp.log
 sudo sh -c 'cat temp.log >> /etc/hosts'
 rm -rf temp.log
 

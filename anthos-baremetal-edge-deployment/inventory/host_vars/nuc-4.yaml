@@ -15,11 +15,11 @@
 # Name of the cluster
 cluster_name: "nuc-4"
 # Used for logging/metrics
-machine_label: "nuc-4"
+machine_label: "{{ cluster_name }}"
 # Indicates that this is the primary machine in the cluster (only important for provisioning)
 primary_cluster_machine: true
 # Name of the "store" per the ACM repo
-acm_cluster_name: "store-global"
+acm_cluster_name: "{{ cluster_name }}"
 # This machine's IP
 control_plane_ip: "192.168.1.14"
 # The other IPs in the cluster
