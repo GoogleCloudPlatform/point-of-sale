@@ -281,7 +281,7 @@ Point the browser to: 34.134.194.84:8082
 ---
 ### 7. Update the API-Server version and observe the change
 
-7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml) to `v2` and push the change to the upstream repository
+7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml#L33) to `v2` and push the change to the upstream repository
 
 ```sh
 # update the image tag
