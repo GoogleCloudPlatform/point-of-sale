@@ -18,13 +18,13 @@ metadata:
   name: backend # module defining backend services
 build:
   artifacts:
-  - image: gcr.io/abm-edge-test/api-server
+  - image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/api-server
     jib:
       project: api-server
-  - image: gcr.io/abm-edge-test/inventory
+  - image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/inventory
     jib:
       project: inventory
-  - image: gcr.io/abm-edge-test/payments
+  - image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/payments
     jib:
       project: payments
   tagPolicy:
