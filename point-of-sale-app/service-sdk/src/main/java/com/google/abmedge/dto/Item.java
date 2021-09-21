@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.inventory.dto;
+package com.google.abmedge.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ import java.util.UUID;
  * provides a utility method to get a deep copy of it.
  */
 public class Item {
+
   private UUID id;
   private String name;
   private String type;

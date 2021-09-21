@@ -30,6 +30,16 @@ public class Payment {
   private PaymentType type;
   private Number paidAmount;
 
+  public Payment() {
+  }
+
+  public Payment(UUID id, List<PaymentUnit> unitList, PaymentType type, Number paidAmount) {
+    this.id = id;
+    this.unitList = unitList;
+    this.type = type;
+    this.paidAmount = paidAmount;
+  }
+
   public UUID getId() {
     return id;
   }

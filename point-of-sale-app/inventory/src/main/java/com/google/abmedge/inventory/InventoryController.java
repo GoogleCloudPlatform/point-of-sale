@@ -14,20 +14,21 @@
 
 package com.google.abmedge.inventory;
 
-
+import com.google.abmedge.dto.Item;
 import com.google.abmedge.dto.PurchaseItem;
 import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
-import com.google.abmedge.inventory.dto.Item;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -115,6 +116,19 @@ public class InventoryController {
         activeItemsType.equals(ALL_ITEMS)
             ? activeConnector.getAll()
             : activeConnector.getAllByType(activeItemsType);
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
+    }.getType());
+    return new ResponseEntity<>(jsonString, HttpStatus.OK);
+  }
+
+  @PostMapping(value = "/items_by_id",
+      consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> items(@RequestBody List<String> idList) {
+    List<Item> inventoryItems = idList.stream()
+        .map(id -> activeConnector.getById(UUID.fromString(id)))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
     String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
     }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);

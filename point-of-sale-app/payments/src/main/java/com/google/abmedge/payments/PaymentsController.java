@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,7 +100,7 @@ public class PaymentsController {
    *     in this payment, the amount paid and the type of payment
    * @return a bill for the payment that was processed in string format
    */
-  @PostMapping(value = "/pay")
+  @PostMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> pay(@RequestBody Payment payment) {
     String jsonString;
     try {

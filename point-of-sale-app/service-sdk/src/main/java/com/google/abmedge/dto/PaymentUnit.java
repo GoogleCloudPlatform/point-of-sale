@@ -29,6 +29,15 @@ public class PaymentUnit {
   private long quantity;
   private Number totalCost;
 
+  public PaymentUnit() {}
+
+  public PaymentUnit(UUID itemId, String name, long quantity, Number totalCost) {
+    this.itemId = itemId;
+    this.name = name;
+    this.quantity = quantity;
+    this.totalCost = totalCost;
+  }
+
   public UUID getItemId() {
     return itemId;
   }

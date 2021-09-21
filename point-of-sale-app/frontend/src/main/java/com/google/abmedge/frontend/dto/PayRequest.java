@@ -12,27 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.inventory.dto;
+package com.google.abmedge.frontend.dto;
 
-import com.google.abmedge.dto.Item;
+import com.google.abmedge.dto.PaymentType;
+import com.google.abmedge.dto.PurchaseItem;
 import java.util.List;
 
-/**
- * This class is a container to represent a yaml definition that holds all the items to be loaded
- * into the inventory on startup. This class is used to deserialize a string yaml configuration
- * loaded from an environment variable as described in {@link
- * com.google.abmedge.inventory.InventoryController#initInventoryItems()}. This class contains a
- * collection of {@link Item}s as expected from the yaml definition.
- */
-public class Inventory {
+public class PayRequest {
 
-  private List<Item> items;
+  private List<PurchaseItem> items;
+  private PaymentType type;
+  private Number paidAmount;
 
-  public List<Item> getItems() {
+  public List<PurchaseItem> getItems() {
     return items;
   }
 
-  public void setItems(List<Item> items) {
+  public void setItems(List<PurchaseItem> items) {
     this.items = items;
+  }
+
+  public PaymentType getType() {
+    return type;
+  }
+
+  public void setType(PaymentType type) {
+    this.type = type;
+  }
+
+  public Number getPaidAmount() {
+    return paidAmount;
+  }
+
+  public void setPaidAmount(Number paidAmount) {
+    this.paidAmount = paidAmount;
   }
 }
