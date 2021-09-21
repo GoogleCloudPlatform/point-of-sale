@@ -29,7 +29,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: inventory
-        image: gcr.io/abm-edge-test/inventory
+        image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/inventory
         env:
         - name: CONNECTOR
           valueFrom:
