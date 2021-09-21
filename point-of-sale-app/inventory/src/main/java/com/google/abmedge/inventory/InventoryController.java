@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -123,12 +124,11 @@ public class InventoryController {
   @PostMapping(value = "/items_by_id",
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> items(@RequestBody List<String> idList) {
-    List<Item> inventoryItems = new ArrayList<>();
-    idList.stream()
+    List<Item> inventoryItems = idList.stream()
         .map(id -> activeConnector.getById(UUID.fromString(id)))
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .forEach(inventoryItems::add);
+        .collect(Collectors.toList());
     String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
     }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
