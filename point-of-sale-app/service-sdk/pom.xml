@@ -35,18 +35,18 @@
   <distributionManagement>
     <snapshotRepository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-maven.pkg.dev/google-samples/anthos-edge-workload</url>
+      <url>artifactregistry://us-maven.pkg.dev/google-samples/abm-edge-pos-jars</url>
     </snapshotRepository>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-maven.pkg.dev/google-samples/anthos-edge-workload</url>
+      <url>artifactregistry://us-maven.pkg.dev/google-samples/abm-edge-pos-jars</url>
     </repository>
   </distributionManagement>
 
   <repositories>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-maven.pkg.dev/google-samples/anthos-edge-workload</url>
+      <url>artifactregistry://us-maven.pkg.dev/google-samples/abm-edge-pos-jars</url>
       <releases>
         <enabled>true</enabled>
       </releases>
