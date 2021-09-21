@@ -18,14 +18,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.5.3</version>
+  </parent>
 
   <groupId>com.google.abm-edge</groupId>
   <artifactId>abm-edge-usecase</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
 
+  <name>abm-edge-usecase-workload</name>
+  <description>Workload for running on the edge Anthos Bare Metal clusters</description>
+
+  <properties>
+    <main.basedir>${project.basedir}</main.basedir>
+    <build-plugin.jacoco.version>0.8.7</build-plugin.jacoco.version>
+  </properties>
   <modules>
-    <module>frontend</module>
+    <module>api-server</module>
+    <module>test-server</module>
     <module>inventory</module>
     <module>payments</module>
   </modules>
@@ -51,7 +64,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.5</version>
+          <version>${build-plugin.jacoco.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
