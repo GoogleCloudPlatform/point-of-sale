@@ -15,8 +15,8 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -26,7 +26,7 @@
 
   <groupId>com.google.abm-edge</groupId>
   <artifactId>abm-edge-usecase</artifactId>
-  <version>1.0</version>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>abm-edge-usecase-workload</name>
@@ -37,8 +37,9 @@
     <build-plugin.jacoco.version>0.8.7</build-plugin.jacoco.version>
   </properties>
   <modules>
+    <module>service-sdk</module>
+    <module>ui</module>
     <module>api-server</module>
-    <module>test-server</module>
     <module>inventory</module>
     <module>payments</module>
   </modules>
@@ -51,23 +52,38 @@
           <artifactId>jib-maven-plugin</artifactId>
           <version>2.1.0</version>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
-          <configuration>
-            <compilerArgs>
-              <arg>-Xlint:all</arg>
-            </compilerArgs>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>${build-plugin.jacoco.version}</version>
-        </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>com.google.cloud.artifactregistry</groupId>
+        <artifactId>artifactregistry-maven-wagon</artifactId>
+        <version>2.1.1</version>
+      </extension>
+    </extensions>
   </build>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>artifact-registry</id>
+      <url>artifactregistry://us-maven.pkg.dev/google-samples/abm-edge-pos-jars</url>
+    </snapshotRepository>
+    <repository>
+      <id>artifact-registry</id>
+      <url>artifactregistry://us-maven.pkg.dev/google-samples/abm-edge-pos-jars</url>
+    </repository>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>artifact-registry</id>
+      <url>artifactregistry://us-maven.pkg.dev/google-samples/abm-edge-pos-jars</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

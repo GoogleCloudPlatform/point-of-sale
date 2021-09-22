@@ -43,6 +43,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +66,7 @@ public class ApiServerController {
   private static final String INVENTORY_EP_ENV = "INVENTORY_EP";
   private static final String PAYMENTS_EP_ENV = "PAYMENTS_EP";
   private static final String ITEMS_EP = "/items";
+  private static final String TYPES_EP = "/types";
   private static final String ITEMS_BY_ID_EP = "/items_by_id";
   private static final String SWITCH_EP = "/switch";
   private static final String UPDATE_EP = "/update";
@@ -92,7 +94,7 @@ public class ApiServerController {
     return "Hello Anthos BareMetal - Api-Server Controller";
   }
 
-  @GetMapping(value = "/home", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/items", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> items() {
     String itemsEndpoint = INVENTORY_SERVICE + ITEMS_EP;
     try {
@@ -115,6 +117,33 @@ public class ApiServerController {
     } catch (IOException | InterruptedException e) {
       LOGGER.error(
           String.format("Failed to fetch items list from '%s'", itemsEndpoint), e);
+    }
+    return new ResponseEntity<>(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @GetMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> types() {
+    String itemsEndpoint = INVENTORY_SERVICE + TYPES_EP;
+    try {
+      HttpRequest request = HttpRequest.newBuilder()
+          .GET()
+          .uri(URI.create(itemsEndpoint))
+          .build();
+      HttpResponse<String> response = HTTP_CLIENT
+          .send(request, HttpResponse.BodyHandlers.ofString());
+      int statusCode = response.statusCode();
+      if (statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NO_CONTENT.value()) {
+        String responseTypes = response.body();
+        LOGGER.info(String.format("Inventory service response for endpoint '%s' is: \n%s",
+            itemsEndpoint, responseTypes));
+        return new ResponseEntity<>(responseTypes, HttpStatus.OK);
+      }
+      LOGGER.error(
+          String.format("Failed to fetch store types from '%s'. Status code '%s'",
+              itemsEndpoint, statusCode));
+    } catch (IOException | InterruptedException e) {
+      LOGGER.error(
+          String.format("Failed to fetch store types from '%s'", itemsEndpoint), e);
     }
     return new ResponseEntity<>(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
   }

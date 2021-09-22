@@ -28,6 +28,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * This is Springboot configuration for filtering incoming requests. The class defines the filters
+ * that must be used along with the URL patterns for which the filters apply to. This class also
+ * defines the behavior for redirecting requests to static files and api requests appropriately.
+ */
 @Configuration
 public class RedirectFilterConfiguration {
 
@@ -43,16 +48,26 @@ public class RedirectFilterConfiguration {
     return registration;
   }
 
+  /**
+   * This method handles request redirection to ensure that API requests are forwarded to the
+   * controller classes (e.g. {@link com.google.abmedge.apiserver.ApiServerController}) and static
+   * file requests to be served from the resources in the class path.
+   *
+   * @return a filter that handles the redirection logic
+   */
   private OncePerRequestFilter createRedirectFilter() {
     //noinspection NullableProblems
     return new OncePerRequestFilter() {
-      // Forwards all routes except '/index.html', '/200.html', '/favicon.ico', '/sw.js' '/api/', '/api/**'
-      private final String REGEX = "(?!/actuator|/api|/_nuxt|/static|/index\\.html|/200\\.html|/favicon\\.ico|/sw\\.js).*$";
+      // Forwards all routes except '/index.html', '/200.html', '/favicon.ico', '/sw.js' '/api/',
+      // '/api/**'
+      private final String REGEX =
+          "(?!/actuator|/api|/_nuxt|/static|/index\\.html|/200\\.html|/favicon\\.ico|/sw\\.js).*$";
       private final Pattern pattern = Pattern.compile(REGEX);
 
       @Override
-      protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
-          FilterChain chain) throws ServletException, IOException {
+      protected void doFilterInternal(
+          HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+          throws ServletException, IOException {
         String uri = req.getRequestURI();
         if (pattern.matcher(uri).matches() && !uri.equals("/")) {
           // Delegate/Forward to `/` if `pattern` matches and it is not `/`

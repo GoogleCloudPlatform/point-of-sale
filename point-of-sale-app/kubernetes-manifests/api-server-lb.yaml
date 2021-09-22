@@ -1,4 +1,3 @@
-#!/bin/bash
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,10 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-ROOT=$(pwd)
-cd "$ROOT/service-sdk" || exit
-mvn clean install
-
-cd "$ROOT/ui" || exit
-mvn clean install
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-server-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: api-server
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080

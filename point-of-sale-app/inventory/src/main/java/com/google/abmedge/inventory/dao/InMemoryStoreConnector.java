@@ -14,12 +14,13 @@
 
 package com.google.abmedge.inventory.dao;
 
-import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
-import java.util.HashMap;
 import com.google.abmedge.dto.Item;
+import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   private static final Logger LOGGER = LogManager.getLogger(InMemoryStoreConnector.class);
   private static final Map<UUID, Item> idToItemsMap = new ConcurrentHashMap<>();
+  private static final Map<String, List<Item>> typeToItemsMap = new ConcurrentHashMap<>();
 
   @Override
   public List<Item> getAll() {
@@ -44,10 +46,7 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
 
   @Override
   public List<Item> getAllByType(String type) {
-    return idToItemsMap.values().stream()
-        .filter(i -> i.getType().equals(type))
-        .map(Item::from)
-        .collect(Collectors.toList());
+    return typeToItemsMap.get(type);
   }
 
   @Override
@@ -59,6 +58,10 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
   }
 
   @Override
+  public Set<String> getTypes() {
+    return typeToItemsMap.keySet();
+  }
+
   public void insert(Item item) throws InventoryStoreConnectorException {
     UUID itemId = item.getId();
     String itemType = item.getType();
@@ -71,6 +74,8 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
     }
     Item toInsertItem = Item.from(item);
     idToItemsMap.put(itemId, toInsertItem);
+    List<Item> itemsOfType = typeToItemsMap.computeIfAbsent(itemType, k -> new ArrayList<>());
+    itemsOfType.add(toInsertItem);
   }
 
   @Override
@@ -85,11 +90,7 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
         LOGGER.error(errMsg);
         throw new InventoryStoreConnectorException(errMsg);
       }
-    }
-    for (Item it : items) {
-      UUID itemId = it.getId();
-      Item toInsertItem = Item.from(it);
-      idToItemsMap.put(itemId, toInsertItem);
+      insert(it);
     }
   }
 

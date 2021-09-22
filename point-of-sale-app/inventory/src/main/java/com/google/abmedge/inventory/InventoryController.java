@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -121,16 +122,24 @@ public class InventoryController {
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
-  @PostMapping(value = "/items_by_id",
-      consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> types() {
+    Set<String> itemTypes = activeConnector.getTypes();
+    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {}.getType());
+    return new ResponseEntity<>(jsonString, HttpStatus.OK);
+  }
+
+  @PostMapping(
+      value = "/items_by_id",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> items(@RequestBody List<String> idList) {
     List<Item> inventoryItems = idList.stream()
         .map(id -> activeConnector.getById(UUID.fromString(id)))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
-    }.getType());
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 

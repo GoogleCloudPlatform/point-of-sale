@@ -18,13 +18,17 @@
   <div class="container">
     <div class="row" id="pos">
       <div class="col-md-8 col-md-offset-2">
-        <h1>Point of Sale</h1>
+        <div class="header-container">
+          <h1 class="h1-flex">Point of Sale</h1>
+        </div>
         <div class="row">
           <div class="col-md-6">
             <transaction
               :items="currentItems"
               @remove="removeItem"
               @edit="toggleEdit"
+              @pay="pay"
+              @clear="clear"
             ></transaction>
           </div>
           <div class="col-md-6">
@@ -33,16 +37,21 @@
         </div>
       </div>
     </div>
+    <div v-if="hasBill" class="bill-container">
+      <h2>Bill:</h2>
+      <pre class="print-container">{{ bill }}</pre>
+    </div>
   </div>
 </template>
 
 <script>
+import RetailEdgeAppApi from "@/services/RetailEdge";
 import ItemList from "./ItemList.vue";
 import Transaction from "./Transaction.vue";
 
 export default {
   name: "Main",
-  title: 'Retail Edge POS',
+  title: "Retail Edge POS",
   components: {
     ItemList,
     Transaction,
@@ -50,28 +59,51 @@ export default {
   props: {},
   data: () => {
     return {
-      title: 'Foo Page',
-      items: [
-        { id: 1, name: "Apple", price: 2.99 },
-        { id: 2, name: "Orange", price: 0.99 },
-        { id: 3, name: "Banana", price: 5.99 },
-        { id: 4, name: "TV", price: 199.99 },
-        { id: 5, name: "X-Box One", price: 299.99 },
-        { id: 6, name: "iPhone 6 Plus", price: 299.99 },
-        { id: 7, name: "Cup", price: 3.99 },
-        { id: 8, name: "Yogurt", price: 0.49 },
-        { id: 9, name: "Hat", price: 9.99 },
-      ],
+      items: [],
       lineItems: [],
+      storeTypes: [],
+      printedBill: null,
     };
   },
   computed: {
     currentItems() {
       return [...this.lineItems];
     },
+    bill() {
+      return this.printedBill;
+    },
+    hasBill() {
+      return !!this.bill;
+    },
   },
-  created() {},
+  async created() {
+    await this.loadStoreTypes();
+    await this.loadItems();
+  },
   methods: {
+    async loadStoreTypes() {
+      const response = await RetailEdgeAppApi.types();
+      if (response.status !== 200 && response.status !== 204) {
+        this.notifyFailure("Failed to load store types!");
+        return;
+      }
+      const data = await response.json();
+      this.storeTypes = data.reduce((acc, curr) => {
+        return [{ value: curr }, ...acc];
+      }, []);
+    },
+    async loadItems() {
+      const response = await RetailEdgeAppApi.items();
+      if (response.status !== 200 && response.status !== 204) {
+        this.notifyFailure("Failed to load items!");
+        return;
+      }
+      const data = await response.json();
+      this.items = data.reduce((acc, curr) => {
+        acc = [curr, ...acc];
+        return acc;
+      }, []);
+    },
     addItem(item) {
       let found = false;
       for (let i = 0; i < this.lineItems.length; i++) {
@@ -96,6 +128,66 @@ export default {
     toggleEdit(item) {
       item.editing = !item.editing;
     },
+    async pay(total) {
+      if (this.lineItems.length == 0) {
+        this.notifyWarning("No items in cart!");
+        return;
+      }
+      const cartItems = this.lineItems.reduce((acc, curr) => {
+        acc = [
+          {
+            itemId: curr.item.id,
+            itemCount: curr.numberOfItems,
+          },
+          ...acc,
+        ];
+        return acc;
+      }, []);
+      const payRequest = {
+        paidAmount: total,
+        type: "CASH",
+        items: cartItems,
+      };
+      const response = await RetailEdgeAppApi.pay(payRequest);
+      if (response.status !== 200 && response.status !== 204) {
+        this.notifyFailure("Payment API failed!");
+        return;
+      }
+      const responseData = await response.json();
+      if (responseData.status !== "SUCCESS") {
+        this.notifyFailure("Payment attempt failed!");
+        return;
+      }
+      this.notifySuccess("Payment successfull!");
+      this.printedBill = responseData.printedBill;
+      setTimeout(() => {
+        this.clearBill();
+      }, 3000);
+    },
+    clear() {
+      this.lineItems = [];
+      this.clearBill();
+    },
+    clearBill() {
+      this.printedBill = null;
+    },
+    notifySuccess(message) {
+      this.notify(message, "success");
+    },
+    notifyWarning(message) {
+      this.notify(message, "default");
+    },
+    notifyFailure(message) {
+      this.notify(message, "error");
+    },
+    notify(message, type) {
+      this.$toast.open({
+        message,
+        type,
+        position: "top",
+        duration: 1500,
+      });
+    },
   },
 };
 </script>
@@ -105,5 +197,27 @@ export default {
 .col-md-8 {
   max-width: 100%;
   flex: 100%;
+}
+
+.h1-flex {
+  flex: 1;
+}
+
+.header-container {
+  display: flex;
+  margin-top: 18px;
+  margin-bottom: 24px;
+}
+
+.bill-container {
+  margin-top: 28px;
+}
+
+.print-container {
+  background-color: beige;
+  text-align: center;
+  border-radius: 30px;
+  padding-bottom: 20px;
+  padding-top: 20px;
 }
 </style>

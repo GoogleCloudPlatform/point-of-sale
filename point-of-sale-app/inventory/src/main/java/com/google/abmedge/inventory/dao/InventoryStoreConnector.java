@@ -18,6 +18,7 @@ import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.abmedge.dto.Item;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -43,6 +44,13 @@ public interface InventoryStoreConnector {
    * @return a list of all items in the store that are of the type passed in as argument
    */
   List<Item> getAllByType(String type);
+
+  /**
+   * This method returns all the different types of items that are present in the inventory.
+   *
+   * @return a set of strings consisting of all the different item types
+   */
+  Set<String> getTypes();
 
   /**
    * This method fetches the item from the underlying store that has the ID matching the input

@@ -40,8 +40,10 @@ public class InMemoryPaymentGateway implements PaymentGateway {
       "----------------------------------------------------------------------------\n";
   private static final String SPACE = " ";
   private static final String TOTAL = "  Total:";
+  private static final String TAX = "  Tax:";
   private static final String PAID = "  Paid:";
   private static final String BALANCE = "  Balance:";
+  private static final double TAX_VALUE = 0.1495;
 
   @Override
   public Bill pay(Payment payment) {
@@ -64,7 +66,7 @@ public class InMemoryPaymentGateway implements PaymentGateway {
    *
    * @param paymentId an identifier for the {@link Payment} event to be processed
    * @param payment the {@link Payment} activity to be processed that contains all the details about
-   *     the items, amount and {@link com.google.abmedge.payments.dto.PaymentType}
+   *     the items, amount and {@link com.google.abmedge.dto.PaymentType}
    * @return a string {@link Pair} of items where the {@link Pair#getLeft()} contains the string
    *     representation of the bill and the {@link Pair#getRight()} contains the formatted string
    *     value of balance on the bill
@@ -81,9 +83,11 @@ public class InMemoryPaymentGateway implements PaymentGateway {
       itemIndex++;
     }
     billBuilder.append(BILL_HEADER);
+    float tax = new Double(total * TAX_VALUE).floatValue();
     float paid = payment.getPaidAmount().floatValue();
-    float balance = paid - total;
+    float balance = paid - total - tax;
     billBuilder.append(infoLine(TOTAL, total));
+    billBuilder.append(infoLine(TAX, tax));
     billBuilder.append(infoLine(PAID, paid));
     billBuilder.append(infoLine(BALANCE, balance));
     billBuilder.append(BILL_HEADER);
@@ -95,8 +99,9 @@ public class InMemoryPaymentGateway implements PaymentGateway {
     //      2. 4x DoubleBurger (4df41297-a96f-4602-8059-df3b0e4071cb):         $21.2
     //  ----------------------------------------------------------------------------
     //    Total:                                                              $55.64
+    //    Tax:                                                                 $8.31
     //    Paid:                                                             $5000.00
-    //    Balance:                                                          $4944.36
+    //    Balance:                                                          $4936.04
     //  ----------------------------------------------------------------------------
     return Pair.of(billBuilder.toString(), String.format("%.2f", balance));
   }
