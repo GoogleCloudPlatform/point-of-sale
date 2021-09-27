@@ -188,10 +188,11 @@ ssh -i ~/.ssh/cnucs-cloud abm-admin@cnuc-1
 
 # execute the script and copy token that is printed out
 ./cnuc-k8s-login-setup.sh
-
-# -----------------------------------------------------
-#                   Expected Output
-# -----------------------------------------------------
+```
+```sh
+💡 -----------------------------------------------------💡
+💡                   Expected Output                    💡
+💡 -----------------------------------------------------💡
 ...
 ...
 💡 Retrieving Kubernetes Service Account Token
@@ -242,10 +243,11 @@ sudo systemctl restart nginx
 
 # check and verify the status of the nginx server to be "active (running)"
 sudo systemctl status nginx
-
-# -----------------------------------------------------
-#                   Expected Output
-# -----------------------------------------------------
+```
+```sh
+💡 -----------------------------------------------------💡
+💡                   Expected Output                    💡
+💡 -----------------------------------------------------💡
 ● nginx.service - A high performance web server and a reverse proxy server
      Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
      Active: active (running) since Fri 2021-09-17 02:41:01 UTC; 2s ago
@@ -279,10 +281,11 @@ exit
 ```sh
 EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" | awk '{print $5}' | tail -n 1)
 echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
-
-# -----------------------------------------------------
-#                   Expected Output
-# -----------------------------------------------------
+```
+```sh
+💡 -----------------------------------------------------💡
+💡                   Expected Output                    💡
+💡 -----------------------------------------------------💡
 Point the browser to: 34.134.194.84:8082
 ```
 ---
