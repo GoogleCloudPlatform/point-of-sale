@@ -204,7 +204,7 @@ cnuc-2                     : ok=86   changed=67   unreachable=0    failed=0    s
 cnuc-3                     : ok=86   changed=67   unreachable=0    failed=0    skipped=71   rescued=0    ignored=2
 ```
 ---
-### 4. Login to the ABM kubernetes cluster in the Google Cloud console
+### 4. Log in to the ABM kubernetes cluster in the Google Cloud console
 #### 4.1) Copy the utility script into the admin GCE instance and generate a token
 ```sh
 # Copy the utility scripts into the admin node of the cluster
@@ -309,7 +309,7 @@ exit
 ### 6. Access the Point of Sale application
 #### 6.1) Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
 
-> **Note:** _The following commands are run in your local workstations. If you still inside the admin GCE instance via SSH, then type **exit** to end the SSH session_
+> **Note:** _The following commands are run in your local workstations. If you are still inside the admin GCE instance via SSH, then type **exit** to end the SSH session_
 
 ```sh
 EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" | awk '{print $5}' | tail -n 1)
