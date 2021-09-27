@@ -300,11 +300,25 @@ Point the browser to: 34.134.194.84:8082
 ---
 ### 7. Update the API-Server version and observe the change
 
-7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml#L33) to `v2` and push the change to the upstream repository
+7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml#L33) to `v2` from `v1` and push the change to the upstream repository
+
+```yaml
+# portion of interest in the api-server.yaml file is shown here
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+spec:
+  selector:
+  template:
+    spec:
+      # [START api_server_image]
+      - name: api-server
+        image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/api-server:v1
+      # [END api_server_image]
+```
 
 ```sh
-# update the image tag
-sed -i '' 's/api-server:v1/api-server:v2/g' acm-config-sink/namespaces/pos/api-server.yaml
 # push the change
 git add acm-config-sink/namespaces/pos/api-server.yaml
 git commit -m "chore: updated api-server version to v2"
