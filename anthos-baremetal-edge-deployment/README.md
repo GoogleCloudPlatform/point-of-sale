@@ -363,14 +363,17 @@ First, check if the latest commit has been synched in the [Anthos Config Managem
 ---
 ### Clean up
 
-- If you used a fresh Google Cloud Project, then you can simply delete it
-- If you used an existing Google Cloud Project, then you have to delete the
-  following resources:
-  * All [Kubernetes clusters](https://console.cloud.google.com/kubernetes/list/overview) with a name prefixed by **"cnuc-"**
-  * All [Compute Engine VMs](https://console.cloud.google.com/compute/instances) with a name prefixed by **"cnuc-"**
-  * The [Cloud Storage](https://console.cloud.google.com/storage) bucket with a name prefixed by **"abm-edge-boot"**
-  * The [Firewall Rules](https://console.cloud.google.com/networking/firewalls/list) `allow-pod-ingress` and `allow-pod-egress`
-  * The [Secrets Manager](https://console.cloud.google.com/security/secret-manager?project=abm-edge-test) secret `install-pub-key`
+#### Google Cloud
+  - If you used a fresh Google Cloud Project, then you can simply delete it
+  - If you used an existing Google Cloud Project, then you have to delete the
+    following resources:
+    * All [Kubernetes clusters](https://console.cloud.google.com/kubernetes/list/overview) with a name prefixed by **"cnuc-"**
+    * All [Compute Engine VMs](https://console.cloud.google.com/compute/instances) with a name prefixed by **"cnuc-"**
+    * The [Cloud Storage](https://console.cloud.google.com/storage) bucket with a name prefixed by **"abm-edge-boot"**
+    * The [Firewall Rules](https://console.cloud.google.com/networking/firewalls/list) `allow-pod-ingress` and `allow-pod-egress`
+    * The [Secrets Manager](https://console.cloud.google.com/security/secret-manager?project=abm-edge-test) secret `install-pub-key`
+
+#### Local workstation
 - In addition, you might also want to cleanup the following changes made in your local workstation:
   * Remove the GCE VM IP addresses added to the `/etc/hosts` file
   * Remove the SSH configuration for `cnuc-*` in the `~/.ssh/config` file
