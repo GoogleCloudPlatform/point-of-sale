@@ -327,9 +327,9 @@ git commit -m "chore: updated api-server version to v2"
 git push
 ```
 
-#### 7.2) Now check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) and wait for the `Pod` to be updated _(you can monitor it in the console)_.
+#### 7.2) Reload the application to view the changes
 
-Once the status is `OK` point your browser to the same url as earlier. This time you should see that the `V2` version of the application has been deployed!
+First, check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) _(similar to the ACM image in step [**4.1**](#41-copy-the-utility-script-into-the-admin-gce-instance-and-generate-a-token))_. Then, wait for the `Pod` to be updated _(you can monitor it in the console)_. Once the status of the `Pod` is `OK` point your browser to the same url as earlier. This time you should see that the `v2` version of the application has been deployed!
 <p align="center">
   <img src="docs/images/pos-v2.png">
 </p>
