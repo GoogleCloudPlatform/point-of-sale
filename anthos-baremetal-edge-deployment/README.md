@@ -9,34 +9,38 @@
 ### Prerequisites
 
 - Make sure you have the following already installed in your workstation
-  - **[Python](https://www.python.org/)** [>=2.7.16]
-  - Following Python modules _(`pip install --upgrade pip` # upgrade pip just-in-case)_
-    - **ansible** _(install with `pip install ansible`)_
-    - **dnspython** _(install with `pip install dnspython`)_
-    - **requests** _(install with `pip install requests`)_
-    - **google-auth** _(install with `pip install google-auth`)_
-  - **[Google Cloud SDK]((https://cloud.google.com/sdk/docs/install#linux))** (aka: gcloud)
+  - **[Python](https://www.python.org/)** [>=2.7]
+  - The following Python modules _(you can use the equivalent of `pip2` for `Python3`)_
+    - **ansible** _(install with `pip2 install ansible`)_
+    - **dnspython** _(install with `pip2 install dnspython`)_
+    - **requests** _(install with `pip2 install requests`)_
+    - **google-auth** _(install with `pip2 install google-auth`)_
+  - **[Google Cloud SDK](https://cloud.google.com/sdk/docs/install#linux)** (aka: gcloud)
   - **envsubst** CLI tool _(usually already installed in *nix based OSes)_
-  - **[skaffold](https://skaffold.dev/docs/install/)** [>=1.30.0] _(Optional: only needed for developement)_
-  - **[maven](https://maven.apache.org/install.html)** [>=3.6.3] _(Optional: only needed for developement)_
-  - **[Java](https://www.oracle.com/java/technologies/downloads/#java11)** [11.*] _(Optional: only needed for developement)_
+  - **[skaffold](https://skaffold.dev/docs/install/)** [>=1.30.0] _(Optional)_
+  - **[maven](https://maven.apache.org/install.html)** [>=3.6.3] _(Optional)_
+  - **[Java](https://www.oracle.com/java/technologies/downloads/#java11)** [11.*] _(Optional)_
+
+> _**Note:** The prerequisites marked as _(Optional)_ are only required if you
+> want to modify the source for the [Point-Of-Sales](/point-of-sale-app)
+> application. It is not required for just trying this Quick start._
 ---
 
-## Quick starter
+## Quick start
 
-The following quickstarter will approximately take **45-50 minutes** to complete if you have the _prerequisites_ already setup.
+The following quick start guide will take approximately **45-50 minutes** to complete if you have the _prerequisites_ already setup.
 ### 1. Setup Google Cloud Environment
-1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. Github, Gitlab, Bitbucket etc.)_
+1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. GitHub, GitLab, Bitbucket etc.)_
 
-> **Note:** If you want to continue with Github, see [forking a repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) for creating
-> your own copy of this repository in Github.
+> **Note:** If you want to continue with GitHub, see [forking a repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) for creating
+> your own copy of this repository in GitHub.
 
 ```sh
 # once you have forked this repository, clone it to your local machine
 git clone https://github.com/<YOUR_GITHUB_USERNAME>/anthos-edge-usecases
 
 # move into the root of the infrastructure setup directory
-cd anthos-baremetal-edge-deployment
+cd anthos-edge-usecases/anthos-baremetal-edge-deployment
 ```
 
 
@@ -65,9 +69,9 @@ export SCM_TOKEN_USER="<YOUR_GIT_VERSION_CONTROL_USERNAME>"
 export SCM_TOKEN_TOKEN="<ACCESS_TOKEN_FOR_YOUR_GIT_REPO>"
 ```
 
-> **Note:** If you are trying this out with Github as your git version control and have forked this repository into your Github account then:
-> - Used the link to your forked Github repository for `ROOT_REPO_URL`
-> - Use your Github username for `SCM_TOKEN_USER`
+> **Note:** If you are trying this out with GitHub as your git version control and have forked this repository into your GitHub account then:
+> - Used the link to your forked GitHub repository for `ROOT_REPO_URL`
+> - Use your GitHub username for `SCM_TOKEN_USER`
 > - Use [this link](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a personal access token and use that for `SCM_TOKEN_TOKEN`
 >   - Under the **"Select scopes"** section for creating a token _only_ select the **"public_repo"** scope
 
@@ -108,10 +112,11 @@ for i in `seq $MACHINE_COUNT`; do
   HOSTNAME="cnuc-$i"
   ssh abm-admin@${HOSTNAME} 'ping -c 3 google.com'
 done
-
-# -----------------------------------------------------
-#                   Expected Output
-# -----------------------------------------------------
+```
+```sh
+💡 -----------------------------------------------------💡
+💡                   Expected Output                    💡
+💡 -----------------------------------------------------💡
 PING google.com (74.125.124.113) 56(84) bytes of data.
 64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=1 ttl=115 time=1.10 ms
 64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=2 ttl=115 time=1.10 ms
@@ -133,10 +138,11 @@ PING google.com (108.177.112.139) 56(84) bytes of data.
 envsubst < templates/inventory-cloud-example.yaml > inventory/gcp.yaml
 ./scripts/health-check.sh
 ./scripts/verify-pre-installation.sh
-
-# -----------------------------------------------------
-#                   Expected Output
-# -----------------------------------------------------
+```
+```sh
+💡 -----------------------------------------------------💡
+💡                   Expected Output                    💡
+💡 -----------------------------------------------------💡
 cnuc-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
 cnuc-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
 cnuc-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
@@ -158,10 +164,11 @@ Proceed!!
 # this will configure the GCE instances with all the necessary tools, install Anthos BareMetal, install Anthos
 # Config Management and configure it to sync with the configs at $ROOT_REPO_URL/anthos-baremetal-edge-deployment/acm-config-sink
 ansible-playbook -i inventory cloud-full-install.yml
-
-# -----------------------------------------------------
-#                   Expected Output
-# -----------------------------------------------------
+```
+```sh
+💡 -----------------------------------------------------💡
+💡                   Expected Output                    💡
+💡 -----------------------------------------------------💡
 ...
 ...
 PLAY RECAP ********************************************************************************************************
@@ -187,7 +194,7 @@ ssh -i ~/.ssh/cnucs-cloud abm-admin@cnuc-1
 # -----------------------------------------------------
 ...
 ...
-💡 Retreiving Kubernetes Service Account Token
+💡 Retrieving Kubernetes Service Account Token
 
 🚀 ------------------------------TOKEN-------------------------------- 🚀
 eyJhbGciOiJSUzI1NiIsImtpZCI6Imk2X3duZ3BzckQyWmszb09sZHFMN0FoWU9mV1kzOWNGZzMyb0x2WlMyalkifQ.eyJpc3MiOiJrdW
@@ -218,8 +225,8 @@ using [**Anthos Config Management**](https://console.cloud.google.com/anthos/con
 </p>
 
 ---
-### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal loadbalancer
-5.1)  Setup the `nginx` configuration to route traffic to the `API Server Loadbalancer` service
+### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal load balancer
+5.1)  Setup the `nginx` configuration to route traffic to the `API Server Load Balancer` service
 
 > **Note:** _The following commands are run inside the admin GCE instance (**cnuc-1**). You must already be SSH'ed into it from the previous steps_
 
@@ -294,4 +301,4 @@ git push
 
 7.2) Now check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) and wait for the `Pod` to be updated _(you can monitor it in the console)_.
 
-Once, the status is `OK` point your browser to the same url as earlier. This time you should see that the `V2` version of the application has been deployed!
+Once the status is `OK` point your browser to the same url as earlier. This time you should see that the `V2` version of the application has been deployed!

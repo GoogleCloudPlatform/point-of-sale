@@ -78,7 +78,7 @@ if [[ -z "${LOCAL_GSA_FILE}" ]]; then
 fi
 
 if [[ -z "${SCM_TOKEN_USER}" || -z "${SCM_TOKEN_TOKEN}" ]]; then
-    echo "Error: Gitlab personal access token variable for USER and/or TOKEN not set. Please refer to 'Pre Installation Steps'"
+    echo "Error: GitLab personal access token variable for USER and/or TOKEN not set. Please refer to 'Pre Installation Steps'"
     ERROR=1
 fi
 
