@@ -145,10 +145,3 @@
   when: ( docker_version.stdout == "" or docker_version.stdout is version('20.9.0', '<') )
   tags:
   - docker
-
-- name: "Setup VLAN Interfaces on Physical Hosts"
-  include: setup-vlan-interfaces.yml
-  when:
-  - (is_cloud_resource is undefined or is_cloud_resource == False)
-  tags:
-  - vlan-setup
