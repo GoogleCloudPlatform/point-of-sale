@@ -136,8 +136,8 @@ PING google.com (108.177.112.139) 56(84) bytes of data.
 3.1) Generate Ansible inventory file from template and verify setup
 ```sh
 envsubst < templates/inventory-cloud-example.yaml > inventory/gcp.yaml
-./scripts/health-check.sh
 ./scripts/verify-pre-installation.sh
+./scripts/health-check.sh
 ```
 ```sh
 # -----------------------------------------------------#

@@ -23,6 +23,11 @@ if [[ ! -x $(command -v gcloud) ]]; then
     ERROR=1
 fi
 
+if [[ ! -x $(command -v ansible) ]]; then
+    echo "Error: ansible (Ansible CLI tool) command is required, but not installed."
+    ERROR=1
+fi
+
 if [[ ! -x $(command -v envsubst) ]]; then
     echo "Error: envsubst (gettext) command is required, but not installed."
     ERROR=1
