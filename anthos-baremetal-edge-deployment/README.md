@@ -23,7 +23,11 @@ _(including instructions for installing in an [Intel NUC](https://www.intel.com/
 
 <p align="center">
   <img src="docs/images/abm-edge-arch.png">
-  <em>(click image to enlarge)</em>
+  <em>
+    <b>This diagram shows the deployement state at the end of this guide</b>
+    </br>
+    (click image to enlarge)
+  </em>
 </p>
 
 ### Prerequisites
