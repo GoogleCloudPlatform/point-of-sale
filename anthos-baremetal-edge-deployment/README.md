@@ -312,3 +312,14 @@ Once the status is `OK` point your browser to the same url as earlier. This time
 <p align="center">
   <img src="docs/images/pos-v2.png">
 </p>
+
+---
+## Clean up
+
+- If you used a fresh Google Cloud Project, then you can simply delete it
+- If you used an existing Google Cloud Project, then you have to delete the
+  following resources:
+  * All [Kubernetes clusters](https://console.cloud.google.com/kubernetes/list/overview) with a name prefixed by **"cnuc-"**
+  * All [Compute Engine VMs](https://console.cloud.google.com/compute/instances) with a name prefixed by **"cnuc-"**
+  * The [Cloud Storage](https://console.cloud.google.com/storage) bucket with a name prefixed by **"abm-edge-boot"**
+  * The [Firewall Rules](https://console.cloud.google.com/networking/firewalls/list) `allow-pod-ingress` and `allow-pod-egress`
