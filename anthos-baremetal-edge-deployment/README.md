@@ -4,6 +4,7 @@
 
 <p align="center">
   <img src="docs/images/abm-edge-arch.png">
+  <em>(click image to enlarge)</em>
 </p>
 
 ### Prerequisites
@@ -216,6 +217,9 @@ console.
 
 <p align="center">
   <img src="docs/images/login-k8s.png">
+  <em>(click image to enlarge)</em>
+  </br>
+  </br>
   <img src="docs/images/login-k8s-token.png">
 </p>
 
@@ -223,6 +227,7 @@ Verify that the cluster has `synced` with the [configurations from this reposito
 using [**Anthos Config Management**](https://console.cloud.google.com/anthos/config_management)
 <p align="center">
   <img src="docs/images/acm-sync.png">
+  <em>(click image to enlarge)</em>
 </p>
 
 ---
