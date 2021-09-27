@@ -288,6 +288,10 @@ echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
 # -----------------------------------------------------#
 Point the browser to: 34.134.194.84:8082
 ```
+<p align="center">
+  <img src="docs/images/pos-v1.png">
+</p>
+
 ---
 ### 7. Update the API-Server version and observe the change
 
@@ -305,3 +309,6 @@ git push
 7.2) Now check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) and wait for the `Pod` to be updated _(you can monitor it in the console)_.
 
 Once the status is `OK` point your browser to the same url as earlier. This time you should see that the `V2` version of the application has been deployed!
+<p align="center">
+  <img src="docs/images/pos-v2.png">
+</p>
