@@ -1,6 +1,25 @@
 # Overview
 
-<TODO>
+The resources here include an advanced, ready-to-use solution _(for platform
+operators and developers)_ that uses [Anthos on Bare Metal (ABM)](https://cloud.google.com/anthos/clusters/docs/bare-metal/1.8/concepts/about-bare-metal) and [Anthos Config Management (ACM)](https://cloud.google.com/anthos-config-management/docs/overview) to deploy Kubernetes clusters on the
+edge at scale. We assume that you're familiar with the challenges of edge
+deployments, the `gcloud` and `kubectl` command-line interfaces, [Ansible](https://www.ansible.com/)
+playbooks and working with projects in Google Cloud. For a more detailed
+description of this solution, see [Rolling out clusters on the edge at scale with Anthos for Bare Metal](https://cloud.google.com/bare-metal/docs/tutorials/abm-edge-at-scale).
+
+In the quick start guide that follows we _emulate_ nodes in an edge location
+using **Google Compute Engine (GCE)** VMs and walkthrough a use-case for
+installing **Anthos on Bare Metal (ABM)** in that edge location. The
+installation process also installs **Anthos Config Management (ACM)** in the
+Anthos on Bare Metal clusters. We then show how a [**Point-Of-Sales** application](/point-of-sale-app/)
+is automatically deployed to this edge location by _syncing_ with the [configurations](acm-config-sink/)
+found in this repository using **ACM**. Finally, we experiment by updating the
+configurations in this repository to see the changes being adopted on the edge
+dynamically.
+
+You can use the scripts to replicate this deployment on your own and then
+customize it for your own requirements. A detailed description of these steps
+_(including instructions for installing in an [Intel NUC](https://www.intel.com/content/www/us/en/products/details/nuc.html))_ can be found in the [detailed readme](README_DETAILED).
 
 <p align="center">
   <img src="docs/images/abm-edge-arch.png">
