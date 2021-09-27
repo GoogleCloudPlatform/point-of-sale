@@ -127,6 +127,9 @@ gcloud config set compute/zone "${ZONE}"
 # just press the return key when asked for a passphrase for the SSH key (i.e. empty string)
 ./scripts/cloud/easy-install.sh
 ```
+> **Note:** This script updates your `/etc/hosts` file with the IP addresses of
+> the created GCE VMs. Thus, it will prompt you to provide the **password** to
+> your local workstation
 
 #### 2.2) Test SSH connectivity to the GCE instances
 ```sh
@@ -367,3 +370,7 @@ First, check if the latest commit has been synched in the [Anthos Config Managem
   * All [Compute Engine VMs](https://console.cloud.google.com/compute/instances) with a name prefixed by **"cnuc-"**
   * The [Cloud Storage](https://console.cloud.google.com/storage) bucket with a name prefixed by **"abm-edge-boot"**
   * The [Firewall Rules](https://console.cloud.google.com/networking/firewalls/list) `allow-pod-ingress` and `allow-pod-egress`
+- In addition, you might also want to cleanup the following changes made in your local workstation:
+  * Remove the GCE VM IP addresses added to the `/etc/hosts` file
+  * Remove the SSH configuration for `cnuc-*` in the `~/.ssh/config` file
+  * Remove the GCE VM fingerprints from the `~/.ssh/known_hosts` file
