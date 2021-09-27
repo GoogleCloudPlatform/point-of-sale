@@ -314,7 +314,7 @@ Once the status is `OK` point your browser to the same url as earlier. This time
 </p>
 
 ---
-## Clean up
+### Clean up
 
 - If you used a fresh Google Cloud Project, then you can simply delete it
 - If you used an existing Google Cloud Project, then you have to delete the
