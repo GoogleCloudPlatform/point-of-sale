@@ -31,7 +31,7 @@
 
 The following quick start guide will take approximately **45-50 minutes** to complete if you have the _prerequisites_ already setup.
 ### 1. Setup Google Cloud Environment
-1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. GitHub, GitLab, Bitbucket etc.)_
+#### 1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. GitHub, GitLab, Bitbucket etc.)_
 
 > **Note:** If you want to continue with GitHub, see [forking a repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) for creating
 > your own copy of this repository in GitHub.
@@ -45,7 +45,7 @@ cd anthos-edge-usecases/anthos-baremetal-edge-deployment
 ```
 
 
-1.2) Setup environment variables _(example values are set for some variables; you can change them if you want to name them something else)_
+#### 1.2) Setup environment variables _(example values are set for some variables; you can change them if you want to name them something else)_
 ```sh
 export PROJECT_ID="<YOUR_GCP_PROJECT_ID>"
 export REGION="us-central1"
@@ -76,7 +76,7 @@ export SCM_TOKEN_TOKEN="<ACCESS_TOKEN_FOR_YOUR_GIT_REPO>"
 > - Use [this link](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a personal access token and use that for `SCM_TOKEN_TOKEN`
 >   - Under the **"Select scopes"** section for creating a token _only_ select the **"public_repo"** scope
 
-1.3) Choose and configure the Google Cloud Project, Region and Zone you would like to use
+#### 1.3) Choose and configure the Google Cloud Project, Region and Zone you would like to use
 
 > **Note:** _This step can take upto ***90 seconds*** to complete_
 
@@ -88,7 +88,7 @@ gcloud config set compute/region "${REGION}"
 gcloud config set compute/zone "${ZONE}"
 ```
 
-1.4) Setup up GCP Service Account used by the GCE instances
+#### 1.4) Setup up GCP Service Account used by the GCE instances
 ```sh
 # when asked "Create a new key for GSA? [y/N]" type "y" and press
 ./scripts/create-primary-gsa.sh
@@ -96,7 +96,7 @@ gcloud config set compute/zone "${ZONE}"
 ---
 
 ### 2. Provision the GCE instances
-2.1) Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
+#### 2.1) Configure SSH keys and create the GCE instances where Anthos BareMetal will be installed
 
 > **Note:** _This step can take upto ***2 minutes*** to complete for a setup with $MACHINE_COUNT=3_
 
@@ -105,7 +105,7 @@ gcloud config set compute/zone "${ZONE}"
 ./scripts/cloud/easy-install.sh
 ```
 
-2.2) Test SSH connectivity to the GCE instances
+#### 2.2) Test SSH connectivity to the GCE instances
 ```sh
 # If the checks fail the first time with errors like "sh: connect to host cnuc-1 port 22: Connection refused"
 # then wait a few seconds and retry
@@ -134,7 +134,7 @@ PING google.com (108.177.112.139) 56(84) bytes of data.
 ---
 
 ### 3. Install Anthos BareMetal with ansible
-3.1) Generate Ansible inventory file from template and verify setup
+#### 3.1) Generate Ansible inventory file from template and verify setup
 ```sh
 envsubst < templates/inventory-cloud-example.yaml > inventory/gcp.yaml
 ./scripts/verify-pre-installation.sh
@@ -154,7 +154,7 @@ SUCCESS!!
 Proceed!!
 ```
 
-3.2) Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
+#### 3.2) Run the Ansible playbook for installing Anthos Bare Metal on the GCE instances
 
 > **Note:** _This step can take upto **35 minutes** to complete for a setup with $MACHINE_COUNT=3_
 > - ***Pre-install configuration of the GCE instances:*** ~10 minutes</br>
@@ -179,7 +179,7 @@ cnuc-3                     : ok=86   changed=67   unreachable=0    failed=0    s
 ```
 ---
 ### 4. Login to the ABM kubernetes cluster in the Google Cloud console
-4.1) Copy the utility script into the admin GCE instance and generate a token
+#### 4.1) Copy the utility script into the admin GCE instance and generate a token
 ```sh
 # Copy the utility scripts into the admin node of the cluster
 scp -i ~/.ssh/cnucs-cloud scripts/cloud/cnuc-k8s-login-setup.sh abm-admin@cnuc-1:
@@ -232,7 +232,7 @@ using [**Anthos Config Management**](https://console.cloud.google.com/anthos/con
 
 ---
 ### 5. Configure the reverse proxy to route external traffic to ABM's bundled Metal load balancer
-5.1)  Setup the `nginx` configuration to route traffic to the `API Server Load Balancer` service
+#### 5.1)  Setup the `nginx` configuration to route traffic to the `API Server Load Balancer` service
 
 > **Note:** _The following commands are run inside the admin GCE instance (**cnuc-1**). You must already be SSH'ed into it from the previous steps_
 
@@ -272,14 +272,16 @@ sudo systemctl status nginx
              ├─92579 nginx: worker process
              ├─92580 nginx: worker process
              ├─92581 nginx: worker process
+```
 
+```sh
 # exit out of the admin instance
 exit
 ```
 ---
 
 ### 6. Access the Point of Sale application
-6.1) Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
+#### 6.1) Get the external IP address of the admin GCE instance and access the UI of the **Point of Sales** application
 
 > **Note:** _The following commands are run in your local workstations. If you still inside the admin GCE instance via SSH, then type **exit** to end the SSH session_
 
@@ -300,7 +302,7 @@ Point the browser to: 34.134.194.84:8082
 ---
 ### 7. Update the API-Server version and observe the change
 
-7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml#L33) to `v2` from `v1` and push the change to the upstream repository
+#### 7.1) Update the **image tag** for the [api-server service](acm-config-sink/namespaces/pos/api-server.yaml#L33) to `v2` from `v1` and push the change to the upstream repository
 
 ```yaml
 # portion of interest in the api-server.yaml file is shown here
@@ -325,7 +327,7 @@ git commit -m "chore: updated api-server version to v2"
 git push
 ```
 
-7.2) Now check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) and wait for the `Pod` to be updated _(you can monitor it in the console)_.
+#### 7.2) Now check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) and wait for the `Pod` to be updated _(you can monitor it in the console)_.
 
 Once the status is `OK` point your browser to the same url as earlier. This time you should see that the `V2` version of the application has been deployed!
 <p align="center">
