@@ -52,7 +52,7 @@ _(including instructions for installing in an [Intel NUC](https://www.intel.com/
 
 ## Quick start
 
-The following quick start guide will take approximately **45-50 minutes** to complete if you have the _prerequisites_ already setup.
+The following quick start guide will take approximately **55-60 minutes** to complete if you have the _prerequisites_ already setup.
 ### 1. Setup Google Cloud Environment
 #### 1.1) Make a copy of this repository into any `git` based version control system you use _(e.g. GitHub, GitLab, Bitbucket etc.)_
 
@@ -355,11 +355,13 @@ git push
 
 #### 7.2) Reload the application to view the changes
 
-First, check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) _(similar to the ACM image in step [**4.1**](#41-copy-the-utility-script-into-the-admin-gce-instance-and-generate-a-token))_. Then, wait for the `Pod` to be updated _(you can monitor it in the console)_. Once the status of the `Pod` changes to `OK`, point your browser to the same url as earlier. This time you should see that the `v2` version of the application has been deployed!
+First, check if the latest commit has been synched in the [Anthos Config Management page](https://console.cloud.google.com/anthos/config_management) _(similar to the ACM image in step [**4.1**](#41-copy-the-utility-script-into-the-admin-gce-instance-and-generate-a-token))_. Then, wait for the `Pod` to be updated _(you can monitor it in the console)_. Once the status of the `Pod` changes to `Running`, point your browser to the same url as earlier. This time you should see that the `v2` version of the application has been deployed!
+
 <p align="center">
   <img src="docs/images/pos-v2.png">
 </p>
 
+> **Note:** You might have to do a [hard refresh](https://www.namecheap.com/support/knowledgebase/article.aspx/10078/2194/how-to-do-a-hard-refresh-in-chrome-firefox-and-ie/) for the browser to reload the new content.
 ---
 ### Clean up
 
