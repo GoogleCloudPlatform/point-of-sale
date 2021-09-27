@@ -114,9 +114,9 @@ for i in `seq $MACHINE_COUNT`; do
 done
 ```
 ```sh
-💡 -----------------------------------------------------💡
-💡                   Expected Output                    💡
-💡 -----------------------------------------------------💡
+# -----------------------------------------------------#
+#                   Expected Output                    #
+# -----------------------------------------------------#
 PING google.com (74.125.124.113) 56(84) bytes of data.
 64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=1 ttl=115 time=1.10 ms
 64 bytes from jp-in-f113.1e100.net (74.125.124.113): icmp_seq=2 ttl=115 time=1.10 ms
@@ -140,9 +140,9 @@ envsubst < templates/inventory-cloud-example.yaml > inventory/gcp.yaml
 ./scripts/verify-pre-installation.sh
 ```
 ```sh
-💡 -----------------------------------------------------💡
-💡                   Expected Output                    💡
-💡 -----------------------------------------------------💡
+# -----------------------------------------------------#
+#                   Expected Output                    #
+# -----------------------------------------------------#
 cnuc-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
 cnuc-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
 cnuc-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},"changed": false,"ping": "pong"}
@@ -166,9 +166,9 @@ Proceed!!
 ansible-playbook -i inventory cloud-full-install.yml
 ```
 ```sh
-💡 -----------------------------------------------------💡
-💡                   Expected Output                    💡
-💡 -----------------------------------------------------💡
+# -----------------------------------------------------#
+#                   Expected Output                    #
+# -----------------------------------------------------#
 ...
 ...
 PLAY RECAP ********************************************************************************************************
@@ -190,12 +190,12 @@ ssh -i ~/.ssh/cnucs-cloud abm-admin@cnuc-1
 ./cnuc-k8s-login-setup.sh
 ```
 ```sh
-💡 -----------------------------------------------------💡
-💡                   Expected Output                    💡
-💡 -----------------------------------------------------💡
+# -----------------------------------------------------#
+#                   Expected Output                    #
+# -----------------------------------------------------#
 ...
 ...
-💡 Retrieving Kubernetes Service Account Token
+# Retrieving Kubernetes Service Account Token
 
 🚀 ------------------------------TOKEN-------------------------------- 🚀
 eyJhbGciOiJSUzI1NiIsImtpZCI6Imk2X3duZ3BzckQyWmszb09sZHFMN0FoWU9mV1kzOWNGZzMyb0x2WlMyalkifQ.eyJpc3MiOiJrdW
@@ -245,9 +245,9 @@ sudo systemctl restart nginx
 sudo systemctl status nginx
 ```
 ```sh
-💡 -----------------------------------------------------💡
-💡                   Expected Output                    💡
-💡 -----------------------------------------------------💡
+# -----------------------------------------------------#
+#                   Expected Output                    #
+# -----------------------------------------------------#
 ● nginx.service - A high performance web server and a reverse proxy server
      Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
      Active: active (running) since Fri 2021-09-17 02:41:01 UTC; 2s ago
@@ -283,9 +283,9 @@ EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="na
 echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
 ```
 ```sh
-💡 -----------------------------------------------------💡
-💡                   Expected Output                    💡
-💡 -----------------------------------------------------💡
+# -----------------------------------------------------#
+#                   Expected Output                    #
+# -----------------------------------------------------#
 Point the browser to: 34.134.194.84:8082
 ```
 ---
