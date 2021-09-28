@@ -22,7 +22,7 @@ customize it for your own requirements. A detailed description of these steps
 _(including instructions for installing in an [Intel NUC](https://www.intel.com/content/www/us/en/products/details/nuc.html))_ can be found in the [detailed readme](README_DETAILED.md).
 
 <p align="center">
-  <img src="docs/images/abm-edge-arch.svg">
+  <img src="docs/images/abm-edge-arch.png">
   <em>
     <b>This diagram shows the deployement state at the end of this guide</b>
     </br>
