@@ -27,8 +27,8 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      containers:
       # [START api_server_image]
+      containers:
       - name: api-server
         image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/api-server:v1
       # [END api_server_image]
