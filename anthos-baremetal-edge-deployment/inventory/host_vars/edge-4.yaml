@@ -8,19 +8,18 @@ primary_cluster_machine: true
 # Name of the "store" per the ACM repo
 acm_cluster_name: "{{ cluster_name }}"
 # This machine's IP
-control_plane_ip: "10.120.5.231"
+control_plane_ip: "10.200.0.2"
 # The other IPs in the cluster
 control_plane_ips: [
-  "10.120.5.231",
-  "10.120.5.232",
-  "10.120.5.233"
+  "10.200.0.2",
+  "10.200.0.3",
+  "10.200.0.4"
 ]
 # KubeAPI IP address
-control_plane_vip: "10.120.5.230"
+control_plane_vip: "10.200.0.49"
 # Ingress (k8s) address, must be in LoadBalancer pool below
-ingress_vip: "10.120.5.227"
+ingress_vip: "10.200.0.50"
 # Load balancers created in this range
 load_balancer_pool_cidr: [
-  "10.120.5.227-10.120.5.229",
-  "10.120.5.234-10.120.5.238"
+  "10.200.0.50-10.200.0.70"
 ]
