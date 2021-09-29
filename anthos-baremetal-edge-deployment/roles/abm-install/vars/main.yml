@@ -15,19 +15,12 @@
 ---
 # vars file for abm-install
 
-# Version can be found:
-abm_version: "1.8.0"
-
 # Folder to run installation out of
 abm_install_folder: "/var/abm-install"
 abm_workspace_folder: "{{ abm_install_folder }}/bmctl-workspace"
 
 # Match with Google-Tools (by convention, not required, but good idea)
 remote_gsa_key: "/var/keys"
-ssh_key_name: "abm-key"
-ssh_user_home: "/home/{{ abm_install_user }}/.ssh"
-ssh_key_path: "{{ ssh_user_home }}/{{ ssh_key_name }}"
-ssh_key_path_pub: "{{ ssh_user_home }}/{{ ssh_key_name }}.pub"
 
 kubeconfig_shared_root: "/var/kubeconfig"
 kubeconfig_shared_location: "{{ kubeconfig_shared_root }}/kubeconfig"
@@ -37,63 +30,22 @@ abm_install_user: "el-gato"
 
 # Cluster Configuration
 install_type: standalone
+multi_network_enabled: true
+enable_application_logging: true
+
 # Skip preflight checks?
 skip_preflight: false
 
-# Common across all clusters
-pod_cidr: "172.24.0.0/16"
-services_cidr: "10.50.0.0/16"    # avoid overlap with KIND IPs (10.96.0.0/16)
+# Cluster IP Ranges
+pod_cidr: "100.127.0.0/16"
+services_cidr: "192.168.30.0/23"
+
+# Cluster Persistant Volumes (outside of overlay storage options)
 local_pvc_mount: "/opt/pvc-disk"
 local_share_pvc_mount: "/opt/localpv-share" # Default value
-enable_application_logging: true
-container_runtime: "docker" # default
 
-# NOTE: Cluster-specific variables are in the inventory file
+# Cluster runtime
+container_runtime: "containerd" # docker or containerd
 
-# Service Account Configuration
-service_accounts: [
-  {
-    name: abm-gcr-agent,
-    keyfile: abm-gcr-agent-creds.json,
-    description: "ABM GCR Agent Account",
-    roles: [
-      "roles/storage.objectViewer"
-    ]
-  },
-  {
-    name: abm-gke-connect-agent,
-    keyfile: abm-gke-connect-agent-creds.json,
-    description: "ABM GKE Connect Agent Service Account",
-    roles: [
-      "roles/gkehub.connect"
-    ]
-  },
-  {
-    name: abm-gke-register-agent,
-    keyfile: abm-gke-register-agent-creds.json,
-    description: "ABM GKE Connect Register Account",
-    roles: [
-      "roles/gkehub.admin"
-    ]
-  },
-  {
-    name: abm-cloud-operations-agent,
-    keyfile: abm-cloud-operations-agent-creds.json,
-    description: "ABM Cloud Operations Service Account",
-    roles: [
-      "roles/logging.logWriter",
-      "roles/monitoring.metricWriter",
-      "roles/stackdriver.resourceMetadata.writer",
-      "roles/monitoring.dashboardEditor"
-    ]
-  },
-  {
-    name: external-secrets-k8s,
-    keyfile: external-secrets-k8s-creds.json,
-    description: "External Secrets Service Account",
-    roles: [
-      "roles/secretmanager.secretAccessor",
-      "roles/secretmanager.viewer"
-    ]
-  }
-]
+# Secret used for Longhorn
+longhorn_secret_name: "longhorn-cloud-storage-hmac"

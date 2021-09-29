@@ -62,6 +62,7 @@ public class InMemoryStoreConnector implements InventoryStoreConnector {
     return typeToItemsMap.keySet();
   }
 
+  @Override
   public void insert(Item item) throws InventoryStoreConnectorException {
     UUID itemId = item.getId();
     String itemType = item.getType();

@@ -84,6 +84,12 @@
     - kvm-install
     - kvm-setup
 
+- name: Ensure vhost_net is enabled
+  command:
+    cmd: modprobe vhost_net
+  tags:
+  - kvm-setup
+
 - name: Create local system image folder
   file:
     # image_base_dir

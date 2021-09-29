@@ -1,0 +1,7 @@
+# Name of the cluster
+cluster_name: "edge-1"
+# Used for logging/metrics
+machine_label: "edge-2"
+
+# This machine's IP address
+control_plane_ip: "10.223.62.232"

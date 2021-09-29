@@ -14,3 +14,14 @@
 
 ---
 # vars file for ready-ubuntu
+
+# User that has sudo, password less SSH access to control_plane_ip
+abm_install_user: "el-gato"
+
+ssh_key_name: "abm-key"
+ssh_user_home: "/home/{{ abm_install_user }}/.ssh"
+ssh_key_path: "{{ ssh_user_home }}/{{ ssh_key_name }}"
+ssh_key_path_pub: "{{ ssh_user_home }}/{{ ssh_key_name }}.pub"
+
+# let's get the primary network interface
+prinetint: "{{ ansible_default_ipv4.interface }}"
