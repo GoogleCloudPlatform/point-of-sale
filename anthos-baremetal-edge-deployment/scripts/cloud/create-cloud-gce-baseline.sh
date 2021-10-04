@@ -160,4 +160,7 @@ store_public_key_secret ${SSH_PUB_KEY_LOCATION}
 # Create the GCE instances
 create_gce_vms $GCE_COUNT
 
+# Setup firewall rules to allow public pod access
+setup_proxy_firewall
+
 display_gce_vms_ips

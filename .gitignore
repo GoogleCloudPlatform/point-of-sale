@@ -30,3 +30,4 @@ point-of-sale-app/api-server/src/main/resources/public/*
 !point-of-sale-app/api-server/src/main/resources/public/.gitkeep
 diff
 remote-gsa-key.json
+gcp.yaml
