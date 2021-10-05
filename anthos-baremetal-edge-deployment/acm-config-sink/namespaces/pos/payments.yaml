@@ -29,7 +29,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: payments
-        image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/payments
+        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/payments:v1
         resources:
           requests:
             cpu: 100m

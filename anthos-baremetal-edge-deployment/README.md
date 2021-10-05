@@ -342,7 +342,7 @@ spec:
     spec:
       # [START api_server_image]
       - name: api-server
-        image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/api-server:v1
+        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/api-server:v1
       # [END api_server_image]
 ```
 
