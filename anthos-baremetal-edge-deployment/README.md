@@ -39,6 +39,7 @@ _(including instructions for installing in an [Intel NUC](https://www.intel.com/
     - **dnspython** _(install with `pip2 install dnspython`)_
     - **requests** _(install with `pip2 install requests`)_
     - **google-auth** _(install with `pip2 install google-auth`)_
+  - **[Ansible CLI tool](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
   - **[Google Cloud SDK](https://cloud.google.com/sdk/docs/install#linux)** (aka: gcloud)
   - **envsubst** CLI tool _(usually already installed in *nix based OSes)_
   - **[skaffold](https://skaffold.dev/docs/install/)** [>=1.30.0] _(Optional)_
