@@ -39,6 +39,7 @@ _(including instructions for installing in an [Intel NUC](https://www.intel.com/
     - **dnspython** _(install with `pip2 install dnspython`)_
     - **requests** _(install with `pip2 install requests`)_
     - **google-auth** _(install with `pip2 install google-auth`)_
+  - **[Ansible CLI tool](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
   - **[Google Cloud SDK](https://cloud.google.com/sdk/docs/install#linux)** (aka: gcloud)
   - **envsubst** CLI tool _(usually already installed in *nix based OSes)_
   - **[skaffold](https://skaffold.dev/docs/install/)** [>=1.30.0] _(Optional)_
@@ -312,7 +313,7 @@ exit
 > **Note:** _The following commands are run in your local workstations. If you are still inside the admin GCE instance via SSH, then type **exit** to end the SSH session_
 
 ```sh
-EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" | awk '{print $5}' | tail -n 1)
+EXTERNAL_IP=$(gcloud compute instances list --project ${PROJECT_ID} --filter="name:cnuc-1" --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
 echo "Point the browser to: ${EXTERNAL_IP}:${PROXY_PORT}"
 ```
 ```sh
@@ -342,7 +343,7 @@ spec:
     spec:
       # [START api_server_image]
       - name: api-server
-        image: us-docker.pkg.dev/google-samples/abm-edge-pos-images/api-server:v1
+        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/api-server:v1
       # [END api_server_image]
 ```
 
