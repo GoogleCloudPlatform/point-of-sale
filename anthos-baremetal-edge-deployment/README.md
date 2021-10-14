@@ -191,7 +191,7 @@ Proceed!!
 ```sh
 # this will configure the GCE instances with all the necessary tools, install Anthos BareMetal, install Anthos
 # Config Management and configure it to sync with the configs at $ROOT_REPO_URL/anthos-baremetal-edge-deployment/acm-config-sink
-ansible-playbook -i inventory cloud-full-install.yml
+ansible-playbook -i inventory cloud-full-install.yaml
 ```
 ```sh
 # -----------------------------------------------------#

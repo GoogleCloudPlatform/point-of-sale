@@ -127,8 +127,8 @@
  #
 - name: Copy Longhorn namespace and configmap
   template:
-    src: longhorn-default-setting.yml.j2
-    dest: "{{ acm_config_files }}/longhorn-default-setting.yml"
+    src: longhorn-default-setting.yaml.j2
+    dest: "{{ acm_config_files }}/longhorn-default-setting.yaml"
   when:
     - (primary_cluster_machine is defined)
     - (primary_cluster_machine == true)
@@ -138,7 +138,7 @@
 
 - name: Create Longhorn namespace and configmap
   shell: |
-    kubectl apply -f {{ acm_config_files }}/longhorn-default-setting.yml
+    kubectl apply -f {{ acm_config_files }}/longhorn-default-setting.yaml
     exit $?
   when:
     - (primary_cluster_machine is defined)
