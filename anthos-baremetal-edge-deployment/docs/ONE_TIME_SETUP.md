@@ -183,7 +183,7 @@ Inventory for GCP is dynamic, meaning the GCP module will query the project + re
 
 ### Physical Inventory file
 
-In order to create an inventory file, use the example file `inventory-physical-example.yml` and place the contents in `inventory/inventory.yaml`
+In order to create an inventory file, use the example file `inventory-physical-example.yaml` and place the contents in `inventory/inventory.yaml`
 
 ```bash
 # Example using envsubst (not required unless the example file has environment variables)

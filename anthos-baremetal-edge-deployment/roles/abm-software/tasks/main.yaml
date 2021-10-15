@@ -127,8 +127,8 @@
  #
 - name: Copy Longhorn namespace and configmap
   template:
-    src: longhorn-default-setting.yml.j2
-    dest: "{{ acm_config_files }}/longhorn-default-setting.yml"
+    src: longhorn-default-setting.yaml.j2
+    dest: "{{ acm_config_files }}/longhorn-default-setting.yaml"
   when:
     - (primary_cluster_machine is defined)
     - (primary_cluster_machine == true)
@@ -138,7 +138,7 @@
 
 - name: Create Longhorn namespace and configmap
   shell: |
-    kubectl apply -f {{ acm_config_files }}/longhorn-default-setting.yml
+    kubectl apply -f {{ acm_config_files }}/longhorn-default-setting.yaml
     exit $?
   when:
     - (primary_cluster_machine is defined)
@@ -179,7 +179,7 @@
 ### Operator
 # Check for ACM Operator
 - name: "Test for config-management operator presence"
-  include: kubectl-presence.yml
+  include: kubectl-presence.yaml
   vars:
     name: "config-management"
     type: "configmanagements.configmanagement.gke.io"
@@ -222,7 +222,7 @@
   - acm-config-management
 
 - name: "Test for config-management"
-  include: kubectl-presence.yml
+  include: kubectl-presence.yaml
   vars:
     name: "config-management"
     type: "configmanagements.configmanagement.gke.io"
@@ -266,7 +266,7 @@
   - acm-root-repo
 
 - name: "Test for Root Repo secret"
-  include: kubectl-presence.yml
+  include: kubectl-presence.yaml
   vars:
     name: "{{ root_repository_git_secret_name }}"
     type: "secrets"
@@ -292,7 +292,7 @@
   - acm-root-repo
 
 - name: "Test for Root Repo installed"
-  include: kubectl-presence.yml
+  include: kubectl-presence.yaml
   vars:
     name: "root-sync"
     type: "RootSync"

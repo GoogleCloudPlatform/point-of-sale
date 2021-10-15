@@ -15,4 +15,4 @@
 
 
 # Cloud specific
-ansible-playbook -i inventory/ cloud-full-install.yml --tags network-vxlan,update-dependencies
+ansible-playbook -i inventory/ cloud-full-install.yaml --tags network-vxlan,update-dependencies
