@@ -35,7 +35,7 @@
   <properties>
     <main.basedir>${project.basedir}</main.basedir>
     <build-plugin.jacoco.version>0.8.7</build-plugin.jacoco.version>
-    <log4j.version>2.15.0</log4j.version>
+    <log4j2.version>2.15.0</log4j2.version>
   </properties>
   <modules>
     <module>service-sdk</module>
@@ -67,17 +67,17 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
-      <version>${log4j.version}</version>
+      <version>${log4j2.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <version>${log4j.version}</version>
+      <version>${log4j2.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jul</artifactId>
-      <version>${log4j.version}</version>
+      <version>${log4j2.version}</version>
     </dependency>
   </dependencies>
 
