@@ -1,4 +1,4 @@
-#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_verify_pre_installation]
+#!/bin/bash
 
 PREFIX_DIR=$(dirname -- "$0")
 source ${PREFIX_DIR}/cloud/gce-helper.vars
@@ -93,3 +95,5 @@ if [[ "${ERROR}" -eq 1 ]]; then
 else
     echo -e "\n\nSUCCESS!!\n\nProceed!!\n"
 fi
+
+# [END anthosbaremetal_scripts_verify_pre_installation]

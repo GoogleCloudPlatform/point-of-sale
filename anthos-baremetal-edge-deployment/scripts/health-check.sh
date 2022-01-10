@@ -1,4 +1,4 @@
-#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_health_check]
+#!/bin/bash
 
 case "$1" in
 
@@ -43,3 +45,5 @@ fi
 echo $INVENTORY_DIR
 
 ansible ${GROUP} -i ${INVENTORY_DIR} -m ansible.builtin.ping --one-line
+
+# [END anthosbaremetal_scripts_health_check]

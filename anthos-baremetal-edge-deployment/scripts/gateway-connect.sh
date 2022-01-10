@@ -1,4 +1,4 @@
-#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_gateway_connect]
+#!/bin/bash
 
 CLUSTER_NAME=$1
 
@@ -33,3 +35,5 @@ fi
 
 gcloud config ${COMMAND} auth/impersonate_service_account gateway-connect-agent@${PROJECT_ID}.iam.gserviceaccount.com
 gcloud beta container hub memberships get-credentials $CLUSTER_NAME
+
+# [END anthosbaremetal_scripts_gateway_connect]

@@ -1,4 +1,4 @@
-#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_cloud_create_cloud_gce_baseline]
+#!/bin/bash
 
 # Create n-number of GCE instances with named conventions to be picked up by Ansible
 
@@ -164,3 +166,5 @@ create_gce_vms $GCE_COUNT
 setup_proxy_firewall
 
 display_gce_vms_ips
+
+# [END anthosbaremetal_cloud_create_cloud_gce_baseline]

@@ -1,4 +1,4 @@
-#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# [START anthosbaremetal_cloud_easy_install]
+#!/bin/bash
+
 
 ROOT_DIR=$(pwd)
 
@@ -41,3 +45,5 @@ sudo sh -c 'cat temp.log >> /etc/hosts'
 rm -rf temp.log
 
 echo "✅ GCE Instances setup completed!"
+
+# [END anthosbaremetal_cloud_easy_install]

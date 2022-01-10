@@ -1,3 +1,4 @@
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_point_of_sale_app_skaffold_config_backend]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
@@ -39,3 +41,5 @@ deploy:
     - kubernetes-manifests/api-server-lb.yaml
     - kubernetes-manifests/inventory.yaml
     - kubernetes-manifests/payments.yaml
+# [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
+---

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_create_primary_gsa]
+#!/bin/bash -e
 
 echo "This will create a Google Service Account and key that is used on each of the Target machines to run gcloud commands"
 
@@ -24,7 +26,6 @@ if [[ -z "${LOCAL_GSA_FILE}" ]]; then
 else
   KEY_LOCATION="${LOCAL_GSA_FILE}"
 fi
-
 
 EXISTS=$(gcloud iam service-accounts list --filter="email=${GSA_EMAIL}" --format="value(name, disabled)" --project="${PROJECT_ID}")
 if [[ -z "${EXISTS}" ]]; then
@@ -66,16 +67,6 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:${GSA_EMAIL}" \
     --role="roles/secretmanager.secretAccessor" --no-user-output-enabled
 
-echo "Adding roles/secretmanager.secretAccessor"
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:${GSA_EMAIL}" \
-    --role="roles/gkehub.gatewayAdmin" --no-user-output-enabled
-
-echo "Adding roles/secretmanager.secretAccessor"
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:${GSA_EMAIL}" \
-    --role="roles/gkehub.viewer" --no-user-output-enabled
-
 # We should have a GSA enabled or created or ready-to-go by here
 
 echo -e "\n====================\n"
@@ -88,3 +79,5 @@ if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 else
     echo "Skipping making new keys"
 fi
+
+# [END anthosbaremetal_scripts_create_primary_gsa]

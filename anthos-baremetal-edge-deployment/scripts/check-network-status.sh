@@ -1,4 +1,4 @@
-#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+# [START anthosbaremetal_scripts_check_network_status]
+#!/bin/bash
 # Cloud specific
 ansible-playbook -i inventory/ cloud-full-install.yaml --tags network-vxlan,update-dependencies
+
+# [END anthosbaremetal_scripts_check_network_status]
