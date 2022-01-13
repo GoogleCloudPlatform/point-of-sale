@@ -20,7 +20,7 @@
     "eslint": "8.6.0",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-vue": "7.20.0",
-    "lint": "0.7.0",
+    "lint": "1.1.2",
     "vue-template-compiler": "2.6.14"
   },
   "eslintConfig": {
