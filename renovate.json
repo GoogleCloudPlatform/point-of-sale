@@ -1,5 +1,11 @@
 {
   "extends": [
     "config:base"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["vue-toast-notification"],
+      "allowedVersions": "<2.0.0"
+    }
   ]
 }
