@@ -47,7 +47,8 @@
     <maven-checkstyle.plugin.version>3.1.2</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
     <jacoco-maven.plugin.version>0.8.7</jacoco-maven.plugin.version>
-    <artifactregistry-maven-wagon.extension.version>2.1.4</artifactregistry-maven-wagon.extension.version>
+    <artifactregistry-maven-wagon.extension.version>2.1.4
+    </artifactregistry-maven-wagon.extension.version>
   </properties>
 
   <modules>
@@ -110,6 +111,11 @@
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>jib-maven-plugin</artifactId>
           <version>${jib-maven.plugin.version}</version>
+          <configuration>
+            <from>
+              <image>gcr.io/distroless/java:11</image>
+            </from>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
