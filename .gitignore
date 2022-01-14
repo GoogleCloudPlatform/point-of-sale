@@ -12,7 +12,6 @@ test-server.yaml
 dev.yaml
 
 node
-package-lock.json
 node_modules
 dist/
 npm.logs
