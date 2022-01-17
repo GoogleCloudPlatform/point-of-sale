@@ -25,8 +25,12 @@
     <artifactId>abm-edge-usecase</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>service-sdk</artifactId>
   <name>service-sdk</name>
+  <description>The SDK holding the common classes used by all the services
+  </description>
+
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>

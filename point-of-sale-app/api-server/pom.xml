@@ -16,8 +16,8 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.google.abm-edge</groupId>
@@ -30,16 +30,11 @@
   <properties>
     <java.version>11</java.version>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -47,43 +42,32 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.abm-edge</groupId>
-      <artifactId>service-sdk</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.abm-edge</groupId>
-      <artifactId>ui</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.abm-edge</groupId>
+      <artifactId>ui</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.abm-edge</groupId>
+      <artifactId>service-sdk</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>3.1.4</version>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.5.3</version>
-        <configuration>
-          <addResources>true</addResources>
-        </configuration>
-      </plugin>
-      <plugin>
+        <!--The Resources Plugin handles the copying of project resources to the output directory.-->
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
@@ -97,7 +81,8 @@
               <overwrite>true</overwrite>
               <resources>
                 <resource>
-                  <directory>${project.parent.basedir}/ui/target/dist</directory>
+                  <directory>${project.parent.basedir}/ui/target/dist
+                  </directory>
                   <includes>
                     <include>static/</include>
                     <include>index.html</include>
@@ -110,33 +95,31 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
+        <!--Jib is a Maven plugin for building Docker and OCI images for your Java applications.-->
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
       </plugin>
       <plugin>
+        <!--The Spring Boot Maven Plugin provides Spring Boot support in Apache Maven.
+            It allows you to package executable jar or war archives, run Spring Boot applications,
+            generate build information and start your Spring Boot application prior to running integration tests.-->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <!--The Checkstyle Plugin generates a report regarding the code style used by the developers.-->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.1.0</version>
       </plugin>
       <plugin>
+        <!--The Surefire Plugin is used during the test phase of the build lifecycle to execute the unit tests of an application.-->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <!--JaCoCo-Maven plugin is used to provide code coverage (i.e: tests covering code) reporting-->
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.5</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

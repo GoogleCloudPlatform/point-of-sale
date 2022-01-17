@@ -12,7 +12,6 @@ test-server.yaml
 dev.yaml
 
 node
-package-lock.json
 node_modules
 dist/
 npm.logs
@@ -32,3 +31,5 @@ diff
 remote-gsa-key.json
 gcp.yaml
 rename.sh
+
+.npm_audit
