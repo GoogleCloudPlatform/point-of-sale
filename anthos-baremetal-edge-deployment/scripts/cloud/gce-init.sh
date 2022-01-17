@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Copyright 2021 Google LLC
 #
@@ -14,7 +15,6 @@
 # limitations under the License.
 
 # [START anthosbaremetal_cloud_gce_init]
-#!/bin/bash
 
 set -x
 set -e

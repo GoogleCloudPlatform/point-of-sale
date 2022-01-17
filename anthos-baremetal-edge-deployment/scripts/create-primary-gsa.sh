@@ -1,4 +1,5 @@
 
+#!/bin/bash -e
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,6 @@
 # limitations under the License.
 
 # [START anthosbaremetal_scripts_create_primary_gsa]
-#!/bin/bash -e
 
 echo "This will create a Google Service Account and key that is used on each of the Target machines to run gcloud commands"
 
@@ -26,6 +26,7 @@ if [[ -z "${LOCAL_GSA_FILE}" ]]; then
 else
   KEY_LOCATION="${LOCAL_GSA_FILE}"
 fi
+
 
 EXISTS=$(gcloud iam service-accounts list --filter="email=${GSA_EMAIL}" --format="value(name, disabled)" --project="${PROJECT_ID}")
 if [[ -z "${EXISTS}" ]]; then

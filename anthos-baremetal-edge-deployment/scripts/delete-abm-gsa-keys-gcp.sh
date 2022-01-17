@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,6 @@
 # limitations under the License.
 
 # [START anthosbaremetal_scripts_delete_abm_gsa_keys_gcp]
-#!/bin/bash
 
 # Remove all service account keys for the ABM GSAs from GCP
 
