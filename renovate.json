@@ -6,6 +6,10 @@
     {
       "matchPackageNames": ["vue-toast-notification"],
       "allowedVersions": "<2.0.0"
+    },
+    {
+      "matchPackageNames": ["npm"],
+      "allowedVersions": "<8.2.0"
     }
   ]
 }
