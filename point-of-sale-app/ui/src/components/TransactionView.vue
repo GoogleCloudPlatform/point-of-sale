@@ -74,10 +74,16 @@
       </tbody>
     </table>
     <div class="btn-container">
-      <button type="button" class="btn btn-success transaction-btn" @click="pay">
+      <button
+          type="button"
+          class="btn btn-success transaction-btn"
+          @click="pay">
         Pay
       </button>
-      <button type="button" class="btn btn-warning transaction-btn" @click="clear">
+      <button
+          type="button"
+          class="btn btn-warning transaction-btn"
+          @click="clear">
         Clear
       </button>
     </div>
@@ -85,10 +91,10 @@
 </template>
 
 <script>
-import Utils from "@/services/Util";
+import Utils from '@/services/Util';
 
 export default {
-  name: "Transaction",
+  name: 'TransactionView',
   components: {},
   props: {
     items: {
@@ -101,7 +107,7 @@ export default {
   },
   computed: {
     subtotal() {
-      var subtotal = 0;
+      let subtotal = 0;
       this.items.forEach(function(item) {
         subtotal += item.item.price * item.numberOfItems;
       });
@@ -119,16 +125,16 @@ export default {
       item.editing = !item.editing;
     },
     removeItem(item) {
-      this.$emit("remove", item);
+      this.$emit('remove', item);
     },
     currency(number) {
       return Utils.toCurrency(number);
     },
     pay() {
-      this.$emit("pay", this.total);
+      this.$emit('pay', this.total);
     },
     clear() {
-      this.$emit("clear");
+      this.$emit('clear');
     },
   },
 };

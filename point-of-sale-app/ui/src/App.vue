@@ -16,17 +16,17 @@
 
 <template>
   <div id="app">
-    <Main ref="main" />
+    <MainPage ref="main" />
   </div>
 </template>
 
 <script>
-import Main from "./components/Main.vue";
+import MainPage from './components/MainPage.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    Main,
+    MainPage,
   },
   data: () => {
     return {};

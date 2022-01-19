@@ -23,13 +23,13 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <transaction
+            <transaction-view
               :items="currentItems"
               @remove="removeItem"
               @edit="toggleEdit"
               @pay="pay"
               @clear="clear"
-            ></transaction>
+            ></transaction-view>
           </div>
           <div class="col-md-6">
             <item-list :items="items" @add="addItem"></item-list>
@@ -45,16 +45,16 @@
 </template>
 
 <script>
-import RetailEdgeAppApi from "@/services/RetailEdge";
-import ItemList from "./ItemList.vue";
-import Transaction from "./Transaction.vue";
+import RetailEdgeAppApi from '@/services/RetailEdge';
+import ItemList from './ItemList.vue';
+import TransactionView from './TransactionView.vue';
 
 export default {
-  name: "Main",
-  title: "Retail Edge POS",
+  name: 'MainPage',
+  title: 'Retail Edge POS',
   components: {
     ItemList,
-    Transaction,
+    TransactionView,
   },
   props: {},
   data: () => {
@@ -84,18 +84,18 @@ export default {
     async loadStoreTypes() {
       const response = await RetailEdgeAppApi.types();
       if (response.status !== 200 && response.status !== 204) {
-        this.notifyFailure("Failed to load store types!");
+        this.notifyFailure('Failed to load store types!');
         return;
       }
       const data = await response.json();
       this.storeTypes = data.reduce((acc, curr) => {
-        return [{ value: curr }, ...acc];
+        return [{value: curr}, ...acc];
       }, []);
     },
     async loadItems() {
       const response = await RetailEdgeAppApi.items();
       if (response.status !== 200 && response.status !== 204) {
-        this.notifyFailure("Failed to load items!");
+        this.notifyFailure('Failed to load items!');
         return;
       }
       const data = await response.json();
@@ -114,11 +114,11 @@ export default {
         }
       }
       if (!found) {
-        this.lineItems.push({ item: item, numberOfItems: 1, editing: false });
+        this.lineItems.push({item: item, numberOfItems: 1, editing: false});
       }
     },
     removeItem(item) {
-      for (var i = 0; i < this.lineItems.length; i++) {
+      for (let i = 0; i < this.lineItems.length; i++) {
         if (this.lineItems[i] === item) {
           this.lineItems.splice(i, 1);
           break;
@@ -130,7 +130,7 @@ export default {
     },
     async pay(total) {
       if (this.lineItems.length == 0) {
-        this.notifyWarning("No items in cart!");
+        this.notifyWarning('No items in cart!');
         return;
       }
       const cartItems = this.lineItems.reduce((acc, curr) => {
@@ -145,20 +145,20 @@ export default {
       }, []);
       const payRequest = {
         paidAmount: total,
-        type: "CASH",
+        type: 'CASH',
         items: cartItems,
       };
       const response = await RetailEdgeAppApi.pay(payRequest);
       if (response.status !== 200 && response.status !== 204) {
-        this.notifyFailure("Payment API failed!");
+        this.notifyFailure('Payment API failed!');
         return;
       }
       const responseData = await response.json();
-      if (responseData.status !== "SUCCESS") {
-        this.notifyFailure("Payment attempt failed!");
+      if (responseData.status !== 'SUCCESS') {
+        this.notifyFailure('Payment attempt failed!');
         return;
       }
-      this.notifySuccess("Payment successfull!");
+      this.notifySuccess('Payment successfull!');
       this.printedBill = responseData.printedBill;
       setTimeout(() => {
         this.clearBill();
@@ -172,19 +172,19 @@ export default {
       this.printedBill = null;
     },
     notifySuccess(message) {
-      this.notify(message, "success");
+      this.notify(message, 'success');
     },
     notifyWarning(message) {
-      this.notify(message, "default");
+      this.notify(message, 'default');
     },
     notifyFailure(message) {
-      this.notify(message, "error");
+      this.notify(message, 'error');
     },
     notify(message, type) {
       this.$toast.open({
         message,
         type,
-        position: "top",
+        position: 'top',
         duration: 1500,
       });
     },
