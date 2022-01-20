@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
+/**
+ * A mixin that is used to update the title of the page from the the different
+ * vue components. See https://medium.com/@Taha_Shashtari/the-easy-way-to-change-page-title-in-vue-6caf05006863
+ * more details.
+ *
+ * @param {Object} vm VueModel view instance
+ * @return {*}  The VueModel options where the tiles can be fetched from
+ */
 function getTitle(vm) {
-  const { title } = vm.$options;
+  const {title} = vm.$options;
   if (title) {
-    return typeof title === 'function'
-      ? title.call(vm)
-      : title;
+    return typeof title === 'function' ? title.call(vm) : title;
   }
 }
 export default {
@@ -28,5 +34,5 @@ export default {
     if (title) {
       document.title = title;
     }
-  }
-}
+  },
+};
