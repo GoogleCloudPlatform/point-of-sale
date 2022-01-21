@@ -1,0 +1,20 @@
+{
+    "bootstrap-sha": "5d436e10c8752861585003828d1c7c929a1f3f4c",
+    "packages": {
+        "point-of-sale-app/service-sdk": {
+            "release-type": "java-yoshi"
+        },
+        "point-of-sale-app/ui": {
+            "release-type": "node"
+        },
+        "point-of-sale-app/api-server": {
+            "release-type": "java-yoshi"
+        },
+        "point-of-sale-app/inventory": {
+            "release-type": "java-yoshi"
+        },
+        "point-of-sale-app/payments": {
+            "release-type": "java-yoshi"
+        }
+    }
+}
