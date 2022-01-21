@@ -62,10 +62,10 @@ The following quick start guide will take approximately **55-60 minutes** to com
 
 ```sh
 # once you have forked this repository, clone it to your local machine
-git clone https://github.com/<YOUR_GITHUB_USERNAME>/anthos-edge-usecases
+git clone https://github.com/<YOUR_GITHUB_USERNAME>/point-of-sale
 
 # move into the root of the infrastructure setup directory
-cd anthos-edge-usecases/anthos-baremetal-edge-deployment
+cd point-of-sale/anthos-baremetal-edge-deployment
 ```
 
 
@@ -84,7 +84,7 @@ export PROXY_PORT="8082"
 # should be a multiple of 3 since N/3 clusters are created with each having 3 nodes
 export MACHINE_COUNT="3"
 
-# fork of this repository: https://github.com/GoogleCloudPlatform/anthos-edge-usecases
+# fork of this repository: https://github.com/GoogleCloudPlatform/point-of-sale
 export ROOT_REPO_URL="<LINK_TO_YOUR_FORK_OF_THIS_REPO>"
 
 # this is the username used to authenticate to your fork of this repository
