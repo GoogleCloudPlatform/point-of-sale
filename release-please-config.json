@@ -1,5 +1,4 @@
 {
-    "bootstrap-sha": "bcb1950f05e0d0574c54ef4c6d2bdc3eaa42a2ed",
     "packages": {
         "point-of-sale-app/service-sdk": {
             "release-type": "java-yoshi"
