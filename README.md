@@ -6,7 +6,12 @@ This application is used by Google to demonstrate use cases where [Anthos](https
 
 This repository also hosts a collection of samples/walkthroughs that enables learning and experimenting with [Anthos](https://cloud.google.com/anthos) for edge use cases. All the samples/walkthroughs are built around the **Point of Sale** application.
 
-> Note: Anthos clusters means Kubernetes clusters that are managed by Anthos
+> 👓 **Note:** Anthos clusters means Kubernetes clusters that are managed by Anthos
+
+If you’re using this app, please ★Star the repository to show your interest!
+
+> 👓 **Note to Googlers:** Please fill out the form at [go/using-pos](http://go/using-pos) if you are using this application.
+
 
 ### Edge computing
 
