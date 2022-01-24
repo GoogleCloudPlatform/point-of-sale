@@ -2,7 +2,7 @@
 
 1. Use skaffold to deploy the application
 ```bash
-skaffold run
+skaffold run --default-repo=us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images
 ```
 
 2. Get the external IP of the `api-server`
