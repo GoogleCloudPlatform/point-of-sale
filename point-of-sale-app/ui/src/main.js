@@ -17,11 +17,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import App from './App.vue';
-import BootstrapVue from "bootstrap-vue";
+import BootstrapVue from 'bootstrap-vue';
 import titleMixin from './mixins/titleMixin';
 import VueToast from 'vue-toast-notification';
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import './css/app.css';
@@ -32,7 +32,7 @@ Vue.use(BootstrapVue);
 // https://vuejsexamples.com/yet-another-toast-notification-plugin-for-vue-js/
 Vue.use(VueToast);
 Vue.mixin(titleMixin);
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 new Vue({
-  render: h => h(App),
+  render: (h) => h(App),
 }).$mount('#app');

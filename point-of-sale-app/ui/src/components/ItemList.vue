@@ -28,10 +28,10 @@
 </template>
 
 <script>
-import Utils from "@/services/Util";
+import Utils from '@/services/Util';
 
 export default {
-  name: "ItemList",
+  name: 'ItemList',
   props: {
     items: {
       type: Array,
@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     add(item) {
-      this.$emit("add", item);
+      this.$emit('add', item);
     },
     currency(number) {
       return Utils.toCurrency(number);

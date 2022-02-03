@@ -20,9 +20,19 @@ const HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
 };
 
+/**
+ * Function that uses the native 'fetch' API to trigger a 'POST' HTTP request
+ * @param {String} path the URL path relative to the server's hostname
+ * @param {Object} headers an object of key-value pairs denoting the request
+ * headers
+ * @param {Object} body a JS object that will be submitted in the body of the
+ * request
+ * @return {Promise<Response>} a promise that returns the response from the API
+ * when successful
+ */
 function post(path, headers, body) {
   const promise = fetch(path, {
     method: 'POST',
@@ -32,6 +42,14 @@ function post(path, headers, body) {
   return promise.then((response) => response);
 }
 
+/**
+ * Function that uses the native 'fetch' API to trigger a 'GET' HTTP request
+ * @param {String} path the URL path relative to the server's hostname
+ * @param {Object} headers an object of key-value pairs denoting the request
+ * headers
+ * @return {Promise<Response>} a promise that returns the response from the API
+ * when successful
+ */
 function get(path, headers) {
   const promise = fetch(path, {
     method: 'GET',
@@ -49,5 +67,5 @@ export default {
   },
   async types() {
     return get(`${API_SERVER_URL}/api/types`, HEADERS);
-  }
-}
+  },
+};
