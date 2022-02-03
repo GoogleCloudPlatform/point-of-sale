@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,6 @@
 # limitations under the License.
 
 # [START anthosbaremetal_cloud_cnuc_k8s_login_setup]
-#!/bin/bash
 
 KSA_NAME=edga-sa
 
