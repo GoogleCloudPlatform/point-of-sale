@@ -47,7 +47,7 @@
     <maven-checkstyle.plugin.version>3.1.2</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
     <jacoco-maven.plugin.version>0.8.7</jacoco-maven.plugin.version>
-    <artifactregistry-maven-wagon.extension.version>2.1.4
+    <artifactregistry-maven-wagon.extension.version>2.1.5
     </artifactregistry-maven-wagon.extension.version>
   </properties>
 
