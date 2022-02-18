@@ -69,4 +69,3 @@ spec:
     port: 8080
     targetPort: 8080
 # [END anthosbaremetal_pos_payments_service_payments_svc]
----

@@ -19,4 +19,3 @@ kind: Namespace
 metadata:
   name: pos
 # [END anthosbaremetal_pos_namespace_namespace_pos]
----

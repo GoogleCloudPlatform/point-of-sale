@@ -50,4 +50,3 @@ data:
         quantity: 20
         labels: [ "retail", "textile", "clothing" ]
 # [END anthosbaremetal_pos_service_configs_configmap_service_configs]
----

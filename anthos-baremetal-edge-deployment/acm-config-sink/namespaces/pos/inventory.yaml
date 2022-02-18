@@ -85,4 +85,3 @@ spec:
     port: 8080
     targetPort: 8080
 # [END anthosbaremetal_pos_inventory_service_inventory_svc]
----

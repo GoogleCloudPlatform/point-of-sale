@@ -82,4 +82,3 @@ spec:
     port: 8080
     targetPort: 8080
 # [END anthosbaremetal_pos_api_server_service_api_server_svc]
----
