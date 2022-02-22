@@ -1,3 +1,4 @@
+
 #!/bin/bash -e
 # Copyright 2021 Google LLC
 #
@@ -13,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_create_primary_gsa]
 
 echo "This will create a Google Service Account and key that is used on each of the Target machines to run gcloud commands"
 
@@ -88,3 +90,5 @@ if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 else
     echo "Skipping making new keys"
 fi
+
+# [END anthosbaremetal_scripts_create_primary_gsa]
