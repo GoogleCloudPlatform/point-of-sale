@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_cloud_easy_install]
+
 ROOT_DIR=$(pwd)
 
 echo "💡 -------------------------------------------------------------------"
@@ -41,3 +43,5 @@ sudo sh -c 'cat temp.log >> /etc/hosts'
 rm -rf temp.log
 
 echo "✅ GCE Instances setup completed!"
+
+# [END anthosbaremetal_cloud_easy_install]
