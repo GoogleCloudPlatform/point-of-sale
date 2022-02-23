@@ -20,7 +20,7 @@
     "@fortawesome/fontawesome-free": "6.0.0",
     "@vue/cli-service": "4.5.15",
     "eslint-config-google": "0.14.0",
-    "eslint-plugin-vue": "8.4.1",
+    "eslint-plugin-vue": "8.5.0",
     "lint": "1.1.2",
     "vue-template-compiler": "2.6.14"
   },
