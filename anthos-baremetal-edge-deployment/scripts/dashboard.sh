@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_dashboard]
 
 set -eE
 
@@ -54,3 +56,4 @@ else
     echo "unknown action: ${ACTION}"
     exit 1
 fi
+# [END anthosbaremetal_scripts_dashboard]
