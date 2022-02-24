@@ -113,7 +113,7 @@
           <version>${jib-maven.plugin.version}</version>
           <configuration>
             <from>
-              <image>gcr.io/distroless/java:11</image>
+              <image>gcr.io/distroless/java11-debian11</image>
             </from>
           </configuration>
         </plugin>
