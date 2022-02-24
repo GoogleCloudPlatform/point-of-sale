@@ -5,8 +5,7 @@ steps:
   dir: 'point-of-sale-app'
 # create PR namespace
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'kubectl'
-  args: ['create', 'namespace', '$_PR_NUMBER']
+  args: ['kubectl', 'create', 'namespace', '$_PR_NUMBER']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
