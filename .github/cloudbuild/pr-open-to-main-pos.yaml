@@ -7,16 +7,34 @@ steps:
       'install'
   ]
 
+# npm install to ensure ui builds
+- name: 'node'
+  dir: 'point-of-sale-app/ui'
+  entrypoint: 'npm'
+  args: [ 'install' ]
+
 # create PR namespace
+#- name: 'gcr.io/cloud-builders/kubectl'
+#  env:
+#  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+#  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+#  args: [
+#      'create',
+#      'namespace',
+#      'pr-$_PR_NUMBER'
+#  ]
+
 - name: 'gcr.io/cloud-builders/kubectl'
+  dir: '.github/cloudbuild'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
   args: [
-      'create',
-      'namespace',
-      'pr-$_PR_NUMBER'
+      'apply',
+      '-f',
+      'namespace.yaml'
   ]
+
 
 # skaffold deploy to kubernetes cluster
 - name: 'us-docker.pkg.dev/$PROJECT_ID/cloudbuilders/skaffold:alpha'
