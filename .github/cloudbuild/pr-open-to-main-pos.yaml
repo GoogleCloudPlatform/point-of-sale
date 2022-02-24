@@ -61,16 +61,10 @@ steps:
 
 # skaffold deploy to kubernetes cluster
 - id: 'deploy-to-k8s'
-  name: 'us-docker.pkg.dev/$PROJECT_ID/cloudbuilders/skaffold:alpha'
+  name: 'gcr.io/k8s-skaffold/skaffold'
   dir: 'point-of-sale-app'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
   args: [
-      'run',
-      '-f=skaffold.yaml',
-      '--default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO',
-      '--tag=pr-$_PR_NUMBER',
-      '--namespace=pr-$_PR_NUMBER'
+      'gcloud container clusters get-credentials --zone "$_DEV_CLUSTER_ZONE" "$_DEV_CLUSTER"',
+      'skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=pr-$_PR_NUMBER --namespace=pr-$_PR_NUMBER'
   ]
-  waitFor: [ 'create-k8s-namespace' ]
+  # waitFor: commented out, so still steps waits for all previous steps
