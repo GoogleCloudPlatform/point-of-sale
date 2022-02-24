@@ -17,7 +17,7 @@ steps:
       '-f=skaffold.yaml',
       '--default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO',
       '--tag=$_PR_NUMBER',
-      '--namespace=$NAMESPACE'
+      '--namespace=$_PR_NUMBER'
   ]
   dir: 'point-of-sale-app'
   env:
