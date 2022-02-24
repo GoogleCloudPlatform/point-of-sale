@@ -41,7 +41,7 @@ steps:
     apiVersion: v1
     kind: Namespace
     metadata:
-      name: pr-$_PR_NUMBER
+      name: pr-82
     EOF
   waitFor: [ '-' ]
 
@@ -50,8 +50,8 @@ steps:
   name: 'gcr.io/cloud-builders/kubectl'
   dir: '.github/cloudbuild'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=pos-dev'
   args: [
       'apply',
       '-f',
@@ -59,7 +59,7 @@ steps:
   ]
   waitFor: [ 'create-namespace.yaml' ]
 
-# create the skaffold deploy script
+# create namespace yaml for the PR
 - id: 'create-skaffold-exec-script'
   name: ubuntu
   entrypoint: bash
@@ -68,8 +68,8 @@ steps:
   - |
     cat <<EOF > /workspace/deploy.sh -
     #!/bin/bash
-    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=pr-$_PR_NUMBER --namespace=pr-$_PR_NUMBER
+    gcloud container clusters get-credentials --zone us-central1-c pos-dev
+    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/abm-edge-pos-images --tag=pr-82 --namespace=pr-82
     EOF
   waitFor: [ '-' ]
 
@@ -78,7 +78,6 @@ steps:
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
   dir: 'point-of-sale-app'
   args: [
-      'bash',
-      '/workspace/deploy.sh'
+      'bash /workspace/deploy.sh',
   ]
   # waitFor: commented out, so still steps waits for all previous steps
