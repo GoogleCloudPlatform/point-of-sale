@@ -69,7 +69,9 @@ steps:
     cat <<EOF > /workspace/deploy.sh -
     #!/bin/bash
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=pr-$_PR_NUMBER --namespace=pr-$_PR_NUMBER
+    skaffold build -f=skaffold.yaml --file-output=tags.json
+    skaffold deploy -f=skaffold.yaml --tag=pr-$_PR_NUMBER --build-artifacts=tags.json
+    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER --tag=pr-$_PR_NUMBER
     EOF
   waitFor: [ '-' ]
 
@@ -81,4 +83,4 @@ steps:
       'bash',
       '/workspace/deploy.sh'
   ]
-  # waitFor: commented out, so still steps waits for all previous steps
+  # waitFor: commented out, so this step waits for all previous steps
