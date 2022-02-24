@@ -15,7 +15,7 @@ steps:
   args: [
       'create',
       'namespace',
-      'pr#$_PR_NUMBER'
+      'pr_$_PR_NUMBER'
   ]
 
 # skaffold deploy to kubernetes cluster
@@ -28,6 +28,6 @@ steps:
       'run',
       '-f=skaffold.yaml',
       '--default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO',
-      '--tag=pr#$_PR_NUMBER',
-      '--namespace=pr#$_PR_NUMBER'
+      '--tag=pr_$_PR_NUMBER',
+      '--namespace=pr_$_PR_NUMBER'
   ]
