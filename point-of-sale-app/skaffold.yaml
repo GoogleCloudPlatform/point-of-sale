@@ -42,4 +42,3 @@ deploy:
     - kubernetes-manifests/inventory.yaml
     - kubernetes-manifests/payments.yaml
 # [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
----
