@@ -1,5 +1,5 @@
 # https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/kubectl
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk
+FROM gcr.io/cloud-builders/kubectl
 
 RUN mkdir -p /builder/bin && \
   apt-get update && \
