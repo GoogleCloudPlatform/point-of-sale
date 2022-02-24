@@ -59,24 +59,25 @@ steps:
   ]
   waitFor: [ 'create-namespace.yaml' ]
 
+# create namespace yaml for the PR
+- id: 'create-skaffold-exec-script'
+  name: ubuntu
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/deploy.sh -
+    #!/bin/bash
+    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=pr-$_PR_NUMBER --namespace=pr-$_PR_NUMBER
+    EOF
+  waitFor: [ '-' ]
+
 # skaffold deploy to kubernetes cluster
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
   dir: 'point-of-sale-app'
   args: [
-      'gcloud',
-      'container',
-      'clusters',
-      'get-credentials',
-      '--zone',
-      '$_DEV_CLUSTER_ZONE',
-      '$_DEV_CLUSTER',
-      '&&',
-      'skaffold',
-      'run',
-      '-f=skaffold.yaml',
-      '--default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO',
-      '--tag=pr-$_PR_NUMBER',
-      '--namespace=pr-$_PR_NUMBER'
+      'bash /workspace/deploy.sh',
   ]
   # waitFor: commented out, so still steps waits for all previous steps
