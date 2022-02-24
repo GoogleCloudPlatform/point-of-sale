@@ -5,7 +5,7 @@ steps:
   dir: 'point-of-sale-app'
 # create PR namespace
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  args: ['kubectl', 'create', 'namespace', '$_PR_NUMBER']
+  args: ['kubectl', 'create', 'namespace', 'pr#$_PR_NUMBER']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
@@ -15,8 +15,8 @@ steps:
       'run',
       '-f=skaffold.yaml',
       '--default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO',
-      '--tag=$_PR_NUMBER',
-      '--namespace=$_PR_NUMBER'
+      '--tag=pr#$_PR_NUMBER',
+      '--namespace=pr#$_PR_NUMBER'
   ]
   dir: 'point-of-sale-app'
   env:
