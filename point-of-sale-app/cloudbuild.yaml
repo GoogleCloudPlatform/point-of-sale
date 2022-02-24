@@ -1,4 +1,25 @@
 steps:
+# maven build to ensure the source builds
 - name: 'gcr.io/cloud-builders/mvn'
-  args: ['clean', 'install']
+  args: [ 'clean', 'install' ]
   dir: 'point-of-sale-app'
+# create PR namespace
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'kubectl'
+  args: ['create', 'namespace', '$_PR_NUMBER']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+# skaffold deploy to kubernetes cluster
+- name: 'us-docker.pkg.dev/$PROJECT_ID/cloudbuilders/skaffold:alpha'
+  args: [
+      'run',
+      '-f=skaffold.yaml',
+      '--default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO',
+      '--tag=$_PR_NUMBER',
+      '--namespace=$NAMESPACE'
+  ]
+  dir: 'point-of-sale-app'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
