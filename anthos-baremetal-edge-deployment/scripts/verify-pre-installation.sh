@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_verify_pre_installation]
 
 PREFIX_DIR=$(dirname -- "$0")
 source ${PREFIX_DIR}/cloud/gce-helper.vars
@@ -93,3 +94,5 @@ if [[ "${ERROR}" -eq 1 ]]; then
 else
     echo -e "\n\nSUCCESS!!\n\nProceed!!\n"
 fi
+
+# [END anthosbaremetal_scripts_verify_pre_installation]

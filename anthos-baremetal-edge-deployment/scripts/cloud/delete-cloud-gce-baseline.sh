@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_cloud_delete_cloud_gce_baseline]
 
 echo "Looking for instances..."
 
@@ -54,3 +55,5 @@ do
     gcloud compute instances delete ${instance_name} --zone ${instance_zone} -q
     echo -e "  -- Done!\n"
 done
+
+# [END anthosbaremetal_cloud_delete_cloud_gce_baseline]

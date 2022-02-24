@@ -14,5 +14,8 @@
 # limitations under the License.
 
 
+# [START anthosbaremetal_scripts_check_network_status]
 # Cloud specific
 ansible-playbook -i inventory/ cloud-full-install.yaml --tags network-vxlan,update-dependencies
+
+# [END anthosbaremetal_scripts_check_network_status]

@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_scripts_health_check]
 
 case "$1" in
 
@@ -43,3 +44,5 @@ fi
 echo $INVENTORY_DIR
 
 ansible ${GROUP} -i ${INVENTORY_DIR} -m ansible.builtin.ping --one-line
+
+# [END anthosbaremetal_scripts_health_check]

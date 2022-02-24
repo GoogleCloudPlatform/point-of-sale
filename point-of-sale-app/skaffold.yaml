@@ -1,3 +1,4 @@
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_point_of_sale_app_skaffold_config_backend]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
   name: backend # module defining backend services
 build:
   artifacts:
-  - image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/api-server
+  - image: api-server
     jib:
       project: api-server
-  - image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/inventory
+  - image: inventory
     jib:
       project: inventory
-  - image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/payments
+  - image: payments
     jib:
       project: payments
   tagPolicy:
@@ -39,3 +41,5 @@ deploy:
     - kubernetes-manifests/api-server-lb.yaml
     - kubernetes-manifests/inventory.yaml
     - kubernetes-manifests/payments.yaml
+# [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
+---
