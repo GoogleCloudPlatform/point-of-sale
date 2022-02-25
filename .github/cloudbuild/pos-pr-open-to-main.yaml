@@ -85,6 +85,7 @@ steps:
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
     skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER --tag=pr-$_PR_NUMBER
     EOF
+  # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
   ###########################################################
