@@ -83,8 +83,6 @@ steps:
     cat <<EOF > /workspace/deploy.sh -
     #!/bin/bash
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-    skaffold build -f=skaffold.yaml --file-output=tags.json
-    skaffold deploy -f=skaffold.yaml --tag=pr-$_PR_NUMBER --build-artifacts=tags.json
     skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER --tag=pr-$_PR_NUMBER
     EOF
   waitFor: [ '-' ]
