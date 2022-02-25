@@ -18,6 +18,9 @@ steps:
 ###########################################################
 - id: 'delete-namespace-on-pr-close'
   name: 'gcr.io/cloud-builders/kubectl'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
   entrypoint: bash
   args:
   - -c
