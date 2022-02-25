@@ -23,13 +23,12 @@ steps:
   - -c
   - |
       echo "Event [$_PULL_REQUEST_EVENT_TYPE] for pr-$_PULL_REQUEST_ID"
-      if [ $_PULL_REQUEST_EVENT_TYPE == 'synchronize' ]; then
+      if [ $_PULL_REQUEST_EVENT_TYPE == 'closed' ]; then
         gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
         kubectl delete namespace pr-$_PULL_REQUEST_ID || true
       else
         echo "Nothing to do since it's not a 'closed' event"
       fi
-  waitFor: [ '-' ]
 
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
