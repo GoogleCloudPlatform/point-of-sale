@@ -25,6 +25,8 @@ steps:
       echo "Event [$_PULL_REQUEST_EVENT_TYPE] for pr-$_PULL_REQUEST_ID"
       if [ $_PULL_REQUEST_EVENT_TYPE == 'closed' ]; then
         kubectl delete namespace pr-$_PULL_REQUEST_ID || true
+      else
+        echo "Nothing to do since it's not a 'closed' event"
       fi
   waitFor: [ '-' ]
 
