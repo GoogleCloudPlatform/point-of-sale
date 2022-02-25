@@ -100,6 +100,6 @@ steps:
   # waitFor: commented out, so this step waits for all previous steps
 
 timeout: 900s
-logsBucket: 'gs://point-of-sale-cloudbuild-logs'
+logsBucket: 'gs://pos-cloudbuild-logs'
 options:
   logging: GCS_ONLY
