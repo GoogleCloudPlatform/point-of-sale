@@ -1,0 +1,105 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+steps:
+  ###########################################################
+  # maven install to ensure correct java dependencies
+  ###########################################################
+- id: 'maven-install'
+  name: 'gcr.io/cloud-builders/mvn'
+  dir: 'point-of-sale-app'
+  args: [
+      'clean',
+      'install'
+  ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
+  # npm install to ensure ui dependencies have no errors
+  ###########################################################
+- id: 'npm-install'
+  name: 'node:16.14.0'
+  dir: 'point-of-sale-app/ui'
+  entrypoint: 'npm'
+  args: [ 'install' ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
+  # create namespace yaml for the PR
+  ###########################################################
+- id: 'create-namespace.yaml'
+  name: ubuntu
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/namespace.yaml -
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: pr-$_PR_NUMBER
+    EOF
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
+  # apply the namespace.yaml to the dev cluster
+  ###########################################################
+- id: 'create-k8s-namespace'
+  name: 'gcr.io/cloud-builders/kubectl'
+  dir: '.github/cloudbuild'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+  args: [
+      'apply',
+      '-f',
+      '/workspace/namespace.yaml'
+  ]
+  waitFor: [ 'create-namespace.yaml' ]
+
+  ###########################################################
+  # create the skaffold deploy script
+  ###########################################################
+- id: 'create-skaffold-exec-script'
+  name: ubuntu
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/deploy.sh -
+    #!/bin/bash
+    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER --tag=pr-$_PR_NUMBER
+    EOF
+  waitFor: [ '-' ]
+
+  ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
+- id: 'deploy-to-k8s'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  dir: 'point-of-sale-app'
+  args: [
+      'bash',
+      '/workspace/deploy.sh'
+  ]
+  # waitFor: commented out, so this step waits for all previous steps
+
+timeout: 900s
+logsBucket: 'gs://pos-cloudbuild-logs'
+options:
+  logging: GCS_ONLY
