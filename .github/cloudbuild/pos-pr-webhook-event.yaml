@@ -17,7 +17,7 @@ steps:
 # cleanup the namespace and resources
 ###########################################################
 - id: 'delete-namespace-on-pr-close'
-  name: ubuntu
+  name: 'gcr.io/cloud-builders/kubectl'
   entrypoint: bash
   args:
   - -c
