@@ -21,7 +21,7 @@ steps:
   ###########################################################
   # create namespace yaml for the PR
   ###########################################################
-- id: 'create-namespace.yaml'
+- id: 'create-deploy-script'
   name: ubuntu
   entrypoint: bash
   args:
@@ -33,26 +33,31 @@ steps:
     metadata:
       name: $_STAGING_NS
     EOF
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
 
-  ###########################################################
-  # deploy the main branch to the staging cluster
-  ###########################################################
-- id: 'deploy-to-k8s'
-  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  entrypoint: bash
-  args:
-  - -c
-  - |
+    cat <<EOF > /workspace/deploy.sh -
+    #!/bin/bash
+
     # cleanup maven cache; see https://github.com/flutter/flutter/issues/73852
     rm -rf ~/.mvn
 
     gcloud container clusters get-credentials --zone $_MASTER_CLUSTER_ZONE $_MASTER_CLUSTER
     kubectl apply -f /workspace/namespace.yaml
     skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS --tag=$COMMIT_SHA
+    EOF
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
+
+  ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
+- id: 'deploy-to-k8s'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  dir: 'point-of-sale-app'
+  args: [
+      'bash',
+      '/workspace/deploy.sh'
+  ]
+  # waitFor: commented out, so this step waits for all previous steps
 
 timeout: 900s
 logsBucket: 'gs://pos-cloudbuild-logs'
