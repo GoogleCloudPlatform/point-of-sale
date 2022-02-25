@@ -13,6 +13,8 @@
 # limitations under the License.
 
 timeout: 900s
+options:
+  logging: CLOUD_LOGGING_ONLY
 steps:
 - id: 'maven-install'
   name: 'gcr.io/cloud-builders/mvn'
