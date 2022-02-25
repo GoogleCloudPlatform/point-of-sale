@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-timeout: 900s
-options:
-  logging: CLOUD_LOGGING_ONLY
 steps:
+  ###########################################################
+  # maven install to ensure correct java dependencies
+  ###########################################################
 - id: 'maven-install'
   name: 'gcr.io/cloud-builders/mvn'
   dir: 'point-of-sale-app'
@@ -23,17 +23,23 @@ steps:
       'clean',
       'install'
   ]
+  # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
-# npm install to ensure ui dependencies have no errors
+  ###########################################################
+  # npm install to ensure ui dependencies have no errors
+  ###########################################################
 - id: 'npm-install'
   name: 'node:16.14.0'
   dir: 'point-of-sale-app/ui'
   entrypoint: 'npm'
   args: [ 'install' ]
+  # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
-# create namespace yaml for the PR
+  ###########################################################
+  # create namespace yaml for the PR
+  ###########################################################
 - id: 'create-namespace.yaml'
   name: ubuntu
   entrypoint: bash
@@ -46,9 +52,12 @@ steps:
     metadata:
       name: pr-$_PR_NUMBER
     EOF
+  # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
-# apply the namespace.yaml
+  ###########################################################
+  # apply the namespace.yaml to the dev cluster
+  ###########################################################
 - id: 'create-k8s-namespace'
   name: 'gcr.io/cloud-builders/kubectl'
   dir: '.github/cloudbuild'
@@ -62,7 +71,9 @@ steps:
   ]
   waitFor: [ 'create-namespace.yaml' ]
 
-# create the skaffold deploy script
+  ###########################################################
+  # create the skaffold deploy script
+  ###########################################################
 - id: 'create-skaffold-exec-script'
   name: ubuntu
   entrypoint: bash
@@ -78,7 +89,9 @@ steps:
     EOF
   waitFor: [ '-' ]
 
-# skaffold deploy to kubernetes cluster
+  ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
   dir: 'point-of-sale-app'
@@ -87,3 +100,8 @@ steps:
       '/workspace/deploy.sh'
   ]
   # waitFor: commented out, so this step waits for all previous steps
+
+timeout: 900s
+logsBucket: 'gs://point-of-sale-cloudbuild-logs'
+options:
+  logging: GCS_ONLY
