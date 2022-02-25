@@ -16,28 +16,18 @@ steps:
 ###########################################################
 # cleanup the namespace and resources
 ###########################################################
-- id: 'create-skaffold-exec-script'
+- id: 'delete-namespace-on-pr-close'
   name: ubuntu
   entrypoint: bash
   args:
   - -c
   - |
-      echo $_PULL_REQUEST_ID
-      echo $_PULL_REQUEST_TYPE
+      echo "Event [$_PULL_REQUEST_TYPE] for pr-$_PULL_REQUEST_ID"
+      if [ $_PULL_REQUEST_EVENT_TYPE == 'closed' ]; then
+        kubectl delete namespace pr-$_PULL_REQUEST_ID || true
+      fi
   waitFor: [ '-' ]
-#- id: 'cleanup-k8s-namespace'
-#  name: 'gcr.io/cloud-builders/kubectl'
-#  dir: '.github/cloudbuild'
-#  env:
-#  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
-#  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
-#  args: [
-#          'delete',
-#          'namespace',
-#          'pr-$_PR_NUMBER'
-#  ]
 
-timeout: 900s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
     logging: GCS_ONLY
