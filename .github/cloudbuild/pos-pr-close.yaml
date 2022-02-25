@@ -22,7 +22,7 @@ steps:
   args:
   - -c
   - |
-      echo "Event [$_PULL_REQUEST_TYPE] for pr-$_PULL_REQUEST_ID"
+      echo "Event [$_PULL_REQUEST_EVENT_TYPE] for pr-$_PULL_REQUEST_ID"
       if [ $_PULL_REQUEST_EVENT_TYPE == 'closed' ]; then
         kubectl delete namespace pr-$_PULL_REQUEST_ID || true
       fi
