@@ -170,18 +170,18 @@
   <distributionManagement>
     <snapshotRepository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-central1-maven.pkg.dev/point-of-sale-ci/quickstart-java-repo</url>
+      <url>artifactregistry://us-maven.pkg.dev/point-of-sale-ci/pos-jars</url>
     </snapshotRepository>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-central1-maven.pkg.dev/point-of-sale-ci/quickstart-java-repo</url>
+      <url>artifactregistry://us-maven.pkg.dev/point-of-sale-ci/pos-jars</url>
     </repository>
   </distributionManagement>
 
   <repositories>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-central1-maven.pkg.dev/point-of-sale-ci/quickstart-java-repo</url>
+      <url>artifactregistry://us-maven.pkg.dev/point-of-sale-ci/pos-jars</url>
       <releases>
         <enabled>true</enabled>
       </releases>
