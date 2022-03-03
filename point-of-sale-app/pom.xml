@@ -156,15 +156,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <extensions>
-      <extension>
-        <!--The Artifact Registry Wagon is an implementation of the Maven Wagon API
-            which allows you to configure Maven to interact with repositories stored in Artifact Registry.-->
-        <groupId>com.google.cloud.artifactregistry</groupId>
-        <artifactId>artifactregistry-maven-wagon</artifactId>
-        <version>${artifactregistry-maven-wagon.extension.version}</version>
-      </extension>
-    </extensions>
+<!--    <extensions>-->
+<!--      <extension>-->
+<!--        &lt;!&ndash;The Artifact Registry Wagon is an implementation of the Maven Wagon API-->
+<!--            which allows you to configure Maven to interact with repositories stored in Artifact Registry.&ndash;&gt;-->
+<!--        <groupId>com.google.cloud.artifactregistry</groupId>-->
+<!--        <artifactId>artifactregistry-maven-wagon</artifactId>-->
+<!--        <version>${artifactregistry-maven-wagon.extension.version}</version>-->
+<!--      </extension>-->
+<!--    </extensions>-->
   </build>
 
   <distributionManagement>
