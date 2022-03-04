@@ -19,18 +19,6 @@
 
 steps:
   ###########################################################
-  # maven install to ensure correct java dependencies
-  ###########################################################
-- id: 'maven-install'
-  name: 'gcr.io/cloud-builders/mvn'
-  dir: 'point-of-sale-app'
-  args: [
-      'install'
-  ]
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
-
-  ###########################################################
   # npm install to ensure ui dependencies have no errors
   ###########################################################
 - id: 'npm-install'
