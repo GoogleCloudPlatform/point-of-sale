@@ -25,7 +25,6 @@ steps:
   name: 'gcr.io/cloud-builders/mvn'
   dir: 'point-of-sale-app'
   args: [
-      'clean',
       'install'
   ]
   # indicates that the step need not wait for any other step
