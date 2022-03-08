@@ -14,7 +14,7 @@
 
 package com.google.abmedge.inventory.dto;
 
-import com.google.abmedge.dto.Item;
+import com.google.abmedge.inventory.Item;
 import com.google.abmedge.inventory.InventoryController;
 import java.util.List;
 
@@ -26,16 +26,7 @@ import java.util.List;
  */
 public class Inventory {
 
-  private Integer id;
   private List<Item> items;
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public Integer getId() {
-    return id;
-  }
 
   public List<Item> getItems() {
     return items;

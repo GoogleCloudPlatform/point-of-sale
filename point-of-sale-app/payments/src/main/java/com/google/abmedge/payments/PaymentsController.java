@@ -14,10 +14,12 @@
 
 package com.google.abmedge.payments;
 
-import com.google.abmedge.dto.Payment;
+import com.google.abmedge.payment.Payment;
+import com.google.abmedge.payments.dao.DatabasePaymentGateway;
 import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
 import com.google.abmedge.payments.dao.PaymentGateway;
 import com.google.abmedge.payments.dto.Bill;
+import com.google.abmedge.payments.util.PaymentProcessingFailedException;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +27,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,21 +48,23 @@ public class PaymentsController {
 
   private static final Logger LOGGER = LogManager.getLogger(PaymentsController.class);
   private static final String IN_MEMORY_GATEWAY = "IN_MEMORY";
+  private static final String DATABASE_CONNECTOR = "DATABASE";
   private static final String PAYMENT_GW_TYPE_ENV_VAR = "PAYMENT_GW";
   private static final Gson GSON = new Gson();
-  private static final Map<String, PaymentGateway> paymentGatewayMap =
-      new HashMap<>() {
-        {
-          put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
-        }
-      };
   private PaymentGateway activePaymentGateway;
+  private Map<String, PaymentGateway> paymentGatewayMap;
+  @Autowired
+  private DatabasePaymentGateway databasePaymentGateway;
 
   /**
-   * This method runs soon after the object for this class is created on startup of the application.
+   * This method runs soon after the object for this class is created on startup of the
+   * application.
    */
   @PostConstruct
   void init() {
+    paymentGatewayMap = new HashMap<>();
+    paymentGatewayMap.put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
+    paymentGatewayMap.put(DATABASE_CONNECTOR, databasePaymentGateway);
     initConnectorType();
   }
 
@@ -97,7 +102,7 @@ public class PaymentsController {
    * to this request the API returns a bill with all the details.
    *
    * @param payment an object of type {@link Payment} containing details of all the items purchased
-   *     in this payment, the amount paid and the type of payment
+   * in this payment, the amount paid and the type of payment
    * @return a bill for the payment that was processed in string format
    */
   @PostMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -106,7 +111,7 @@ public class PaymentsController {
     try {
       Bill bill = this.activePaymentGateway.pay(payment);
       jsonString = GSON.toJson(bill, Bill.class);
-    } catch (Exception ex) {
+    } catch (PaymentProcessingFailedException ex) {
       String msg =
           String.format(
               "Failed to process payment id '%s' with amount $%s",
@@ -128,8 +133,8 @@ public class PaymentsController {
    * 'PAYMENT_GW' environment variable. If this environment variable is not set or if an invalid
    * value is set then by default the gateway type 'IN_MEMORY' is used.
    *
-   * <p>The 'IN_MEMORY' gateway is implemented by {@link InMemoryPaymentGateway} class and it stores
-   * all payment information in an in-memory datastore.
+   * <p>The 'IN_MEMORY' gateway is implemented by {@link InMemoryPaymentGateway} class and it
+   * stores all payment information in an in-memory datastore.
    *
    * <p>An invalid gateway type means that their is no {@link PaymentGateway} object stored against
    * the value set for the 'PAYMENT_GW' environment variable in the {@link #paymentGatewayMap}
@@ -137,13 +142,11 @@ public class PaymentsController {
   private void initConnectorType() {
     String connectorType = System.getenv(PAYMENT_GW_TYPE_ENV_VAR);
     if (StringUtils.isBlank(connectorType) || !paymentGatewayMap.containsKey(connectorType)) {
-      LOGGER.warn(
-          String.format(
-              "'%s' environment variable is not set; " + "thus defaulting to: %s",
-              PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY));
+      LOGGER.warn("'{}' environment variable is not set; thus defaulting to: {}",
+          PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY);
       connectorType = IN_MEMORY_GATEWAY;
     }
     activePaymentGateway = paymentGatewayMap.get(connectorType);
-    LOGGER.info(String.format("Active connector type is: %s", connectorType));
+    LOGGER.info("Active connector type is: {}", connectorType);
   }
 }

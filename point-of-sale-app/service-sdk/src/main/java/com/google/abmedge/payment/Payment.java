@@ -12,28 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.dto;
+package com.google.abmedge.payment;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
- * This class contains a single payment unit for a purchase done via the Point-Of-Sales UI. A single
- * payment can contain the purchase of multiple items describes as {@link PaymentUnit}s inside the
- * {@link #unitList} collection. An object of this class also carries information about the type of
- * payment (as defined by {@link PaymentType}) and the total amount paid.
+ * This class contains a single payment action for a purchase done via the Point-Of-Sales UI. A
+ * single payment can contain the purchase of multiple items described as {@link PaymentUnit}s
+ * inside the {@link #unitList} collection. An object of this class also carries information about
+ * the type of payment (as defined by {@link PaymentType}) and the total amount paid.
  */
+@Entity
+@Table(name = Payment.PAYMENTS_TABLE)
 public class Payment {
 
+  public static final String PAYMENTS_TABLE = "payments";
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
+
+  @OneToMany
   private List<PaymentUnit> unitList;
   private PaymentType type;
-  private Number paidAmount;
+  private BigDecimal paidAmount;
 
   public Payment() {
   }
 
-  public Payment(UUID id, List<PaymentUnit> unitList, PaymentType type, Number paidAmount) {
+  public Payment(UUID id, List<PaymentUnit> unitList, PaymentType type, BigDecimal paidAmount) {
     this.id = id;
     this.unitList = unitList;
     this.type = type;
@@ -68,7 +83,7 @@ public class Payment {
     return paidAmount;
   }
 
-  public void setPaidAmount(Number paidAmount) {
+  public void setPaidAmount(BigDecimal paidAmount) {
     this.paidAmount = paidAmount;
   }
 }
