@@ -14,25 +14,14 @@
 
 ###########################################################
 # This is a GCP CloudBuild Trigger config file. The trigger
-# is for a PullRequest event pointing to the main branch
+# is for a Push event to the main branch
 ###########################################################
 
 steps:
   ###########################################################
-  # npm install to ensure ui dependencies have no errors
-  ###########################################################
-- id: 'npm-install'
-  name: 'node:16.14.0'
-  dir: 'point-of-sale-app/ui'
-  entrypoint: 'npm'
-  args: [ 'install' ]
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
-
-  ###########################################################
   # create namespace yaml for the PR
   ###########################################################
-- id: 'create-namespace.yaml'
+- id: 'create-deploy-script'
   name: ubuntu
   entrypoint: bash
   args:
@@ -42,45 +31,17 @@ steps:
     apiVersion: v1
     kind: Namespace
     metadata:
-      name: pr-$_PR_NUMBER
+      name: $_STAGING_NS
     EOF
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
 
-  ###########################################################
-  # apply the namespace.yaml to the dev cluster
-  ###########################################################
-- id: 'create-k8s-namespace'
-  name: 'gcr.io/cloud-builders/kubectl'
-  dir: '.github/cloudbuild'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
-  args: [
-      'apply',
-      '-f',
-      '/workspace/namespace.yaml'
-  ]
-  # indicates that the step need not wait for any other step
-  waitFor: [ 'create-namespace.yaml' ]
-
-  ###########################################################
-  # create the skaffold deploy script
-  ###########################################################
-- id: 'create-skaffold-exec-script'
-  name: ubuntu
-  entrypoint: bash
-  args:
-  - -c
-  - |
     cat <<EOF > /workspace/deploy.sh -
     #!/bin/bash
 
-    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    gcloud container clusters get-credentials --zone $_MAIN_CLUSTER_ZONE $_MAIN_CLUSTER
+    kubectl apply -f /workspace/namespace.yaml
 
     ./mvnw install
-    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER --tag=pr-$_PR_NUMBER
-
+    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS --tag=$COMMIT_SHA
     EOF
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
