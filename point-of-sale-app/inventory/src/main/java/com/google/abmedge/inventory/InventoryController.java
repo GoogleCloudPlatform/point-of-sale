@@ -24,6 +24,7 @@ import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -307,28 +308,38 @@ public class InventoryController {
   private void initInventoryItems() {
     String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR).replaceAll("\\\\n", "\n");
     if (StringUtils.isBlank(inventoryList)) {
-      LOGGER.warn(
-          String.format(
-              "No items found under inventory list env var '%s'", INVENTORY_ITEMS_ENV_VAR));
+      LOGGER.warn("No items found under inventory list env var '{}'", INVENTORY_ITEMS_ENV_VAR);
       return;
     }
     LOGGER.debug(inventoryList);
+    Map<String, Set<String>> itemTypeToNameMap = getItemTypeToNamesMap();
     Yaml yaml = new Yaml(new Constructor(Inventory.class));
     Inventory inventory = yaml.load(inventoryList);
-    inventory
-        .getItems()
-        .forEach(
-            i -> {
-              i.setId(UUID.randomUUID());
-              try {
-                activeConnector.insert(i);
-              } catch (InventoryStoreConnectorException e) {
-                String errMsg =
-                    String.format(
-                        "Failed to insert item '%s' of type '%s'", i.getName(), i.getType());
-                LOGGER.error(errMsg, e);
-              }
-              LOGGER.info(String.format("Inserting new item: %s", i));
-            });
+    inventory.getItems().forEach(i -> insertIfNotExists(i, itemTypeToNameMap));
+  }
+
+  private Map<String, Set<String>> getItemTypeToNamesMap() {
+    Map<String, Set<String>> itemTypeToNameMap = new HashMap<>();
+    List<Item> loadedItems = activeConnector.getAll();
+    loadedItems.forEach(i -> {
+      Set<String> itemNames = itemTypeToNameMap.computeIfAbsent(i.getType(), k -> new HashSet<>());
+      itemNames.add(i.getName());
+    });
+    return itemTypeToNameMap;
+  }
+
+  private void insertIfNotExists(Item i, Map<String, Set<String>> itemTypeToNameMap) {
+    if (itemTypeToNameMap.containsKey(i.getType()) &&
+        itemTypeToNameMap.get(i.getType()).contains(i.getName())) {
+      LOGGER.warn(
+          "Item ['type': {}, 'name': {}] already exists. Skipping..", i.getType(), i.getName());
+      return;
+    }
+    try {
+      activeConnector.insert(i);
+    } catch (InventoryStoreConnectorException e) {
+      LOGGER.error("Failed to insert item '{}' of type '{}'", i.getName(), i.getType(), e);
+    }
+    LOGGER.info(String.format("Inserting new item: %s", i));
   }
 }

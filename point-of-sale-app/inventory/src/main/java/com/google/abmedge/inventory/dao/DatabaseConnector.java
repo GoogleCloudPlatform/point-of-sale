@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,22 +25,28 @@ public class DatabaseConnector implements InventoryStoreConnector {
 
   @Override
   public List<Item> getAll() {
-    return null;
+    return Streamable.of(itemRepository.findAll()).toList();
   }
 
   @Override
   public List<Item> getAllByType(String type) {
-    return null;
+    return Streamable.of(itemRepository.findAll())
+        .stream()
+        .filter(i -> i.getType().equals(type))
+        .collect(Collectors.toList());
   }
 
   @Override
   public Set<String> getTypes() {
-    return null;
+    return Streamable.of(itemRepository.findAll())
+        .stream()
+        .map(Item::getType)
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Optional<Item> getById(UUID id) {
-    return Optional.empty();
+    return itemRepository.findById(id);
   }
 
   @Override
@@ -55,14 +63,16 @@ public class DatabaseConnector implements InventoryStoreConnector {
 
   @Override
   public void update(Item item) throws InventoryStoreConnectorException {
+    itemRepository.save(item);
   }
 
   @Override
   public void delete(UUID id) throws InventoryStoreConnectorException {
+    itemRepository.deleteById(id);
   }
 
   @Override
   public void delete(List<UUID> ids) {
-
+    itemRepository.deleteAllById(ids);
   }
 }

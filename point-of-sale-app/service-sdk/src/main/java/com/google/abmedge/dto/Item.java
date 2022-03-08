@@ -20,12 +20,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
-import javax.persistence.Column;
+import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * An instance of the {@link Item} class is a representation of an item as it will be stored in the
@@ -33,9 +34,14 @@ import javax.persistence.Id;
  * provides a utility method to get a deep copy of it.
  */
 @Entity
+@Table(name = Item.ITEMS_TABLE)
 public class Item {
+
+  public static final String ITEMS_TABLE = "items";
+  public static final String LABELS_TABLE = "labels";
+
   @Id
-  @GeneratedValue(strategy= GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
   private String name;
   private String type;
@@ -43,6 +49,7 @@ public class Item {
   private String imageUrl;
   private long quantity;
   @ElementCollection
+  @CollectionTable(name = Item.LABELS_TABLE)
   private List<String> labels;
 
   public Item() {
