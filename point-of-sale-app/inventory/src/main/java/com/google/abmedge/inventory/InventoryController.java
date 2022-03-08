@@ -16,13 +16,13 @@ package com.google.abmedge.inventory;
 
 import com.google.abmedge.dto.Item;
 import com.google.abmedge.dto.PurchaseItem;
+import com.google.abmedge.inventory.dao.DatabaseConnector;
 import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +34,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,17 +62,17 @@ public class InventoryController {
   private static final String ACTIVE_TYPE_ENV_VAR = "ACTIVE_ITEM_TYPE";
   private static final String INVENTORY_ITEMS_ENV_VAR = "ITEMS";
   private static final String IN_MEMORY_CONNECTOR = "IN_MEMORY";
+  private static final String DATABASE_CONNECTOR = "DATABASE";
   private static final String ALL_ITEMS = "ALL";
   private static final Gson GSON = new Gson();
-  private static final Map<String, InventoryStoreConnector> inventoryMap =
-      new HashMap<>() {
-        {
-          put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
-        }
-      };
+
   // the context of the inventory service (e.g. textile, food, electronics, etc)
   private String activeItemsType;
   private InventoryStoreConnector activeConnector;
+  private Map<String, InventoryStoreConnector> inventoryMap;
+
+  @Autowired
+  private DatabaseConnector databaseConnector;
 
   /**
    * This method runs soon after the object for this class is created on startup of the
@@ -79,6 +80,10 @@ public class InventoryController {
    */
   @PostConstruct
   void init() {
+    inventoryMap = new HashMap<>();
+    inventoryMap.put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
+    inventoryMap.put(DATABASE_CONNECTOR, databaseConnector);
+
     initConnectorType();
     initItemsType();
     initInventoryItems();
@@ -125,7 +130,8 @@ public class InventoryController {
   @GetMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> types() {
     Set<String> itemTypes = activeConnector.getTypes();
-    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {}.getType());
+    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {
+    }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -139,7 +145,8 @@ public class InventoryController {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
+    }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -171,7 +178,7 @@ public class InventoryController {
    * specific to the implementation of {@link InventoryStoreConnector} that is used.
    *
    * @param purchaseList a list of {@link PurchaseItem} objects that needs to be updated in the
-   *                     underlying datastore
+   * underlying datastore
    * @return an object of {@link ResponseEntity} that only has an HTTP code without any payload
    */
   @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -298,7 +305,7 @@ public class InventoryController {
    * </pre>
    */
   private void initInventoryItems() {
-    String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR);
+    String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR).replaceAll("\\\\n", "\n");
     if (StringUtils.isBlank(inventoryList)) {
       LOGGER.warn(
           String.format(

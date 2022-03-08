@@ -14,25 +14,35 @@
 
 package com.google.abmedge.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * An instance of the {@link Item} class is a representation of an item as it will be stored in the
  * inventory. This class describes the information about a specific item that is available and
  * provides a utility method to get a deep copy of it.
  */
+@Entity
 public class Item {
-
+  @Id
+  @GeneratedValue(strategy= GenerationType.AUTO)
   private UUID id;
   private String name;
   private String type;
-  private Number price;
+  private BigDecimal price;
   private String imageUrl;
   private long quantity;
+  @ElementCollection
   private List<String> labels;
 
   public Item() {
@@ -83,11 +93,11 @@ public class Item {
     this.quantity = quantity;
   }
 
-  public Number getPrice() {
+  public BigDecimal getPrice() {
     return price;
   }
 
-  public void setPrice(Number price) {
+  public void setPrice(BigDecimal price) {
     this.price = price;
   }
 
