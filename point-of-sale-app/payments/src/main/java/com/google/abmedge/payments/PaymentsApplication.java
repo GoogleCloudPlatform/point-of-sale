@@ -33,7 +33,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @SpringBootApplication
 @EntityScan(basePackages={"com.google.abmedge.payment"})
-@ComponentScan(basePackages={"com.google.abmedge.payment"})
+@ComponentScan(basePackages={"com.google.abmedge.payment", "com.google.abmedge.payments"})
 @EnableJpaRepositories(basePackages={"com.google.abmedge.payment"})
 public class PaymentsApplication {
 

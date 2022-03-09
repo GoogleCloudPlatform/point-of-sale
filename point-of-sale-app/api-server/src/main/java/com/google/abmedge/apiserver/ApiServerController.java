@@ -335,7 +335,7 @@ public class ApiServerController {
       throws IOException, InterruptedException {
     String endpoint = PAYMENTS_SERVICE + PAY_EP;
     BigDecimal paidAmount = paymentType == PaymentType.CARD ? totalCost : amountOnRequest;
-    Payment payment = new Payment(UUID.randomUUID(), payUnits, PaymentType.CARD, paidAmount);
+    Payment payment = new Payment(payUnits, PaymentType.CARD, paidAmount);
     String jsonString = GSON.toJson(payment, Payment.class);
     HttpRequest request = HttpRequest.newBuilder()
         .POST(HttpRequest.BodyPublishers.ofString(jsonString))

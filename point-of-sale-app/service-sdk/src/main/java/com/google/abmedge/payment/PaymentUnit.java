@@ -14,13 +14,17 @@
 
 package com.google.abmedge.payment;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
@@ -30,17 +34,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = PaymentUnit.PAYMENT_UNIT_TABLE)
-public class PaymentUnit {
+public class PaymentUnit implements Serializable {
 
   public static final String PAYMENT_UNIT_TABLE = "payment_units";
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private UUID id;
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
+  private UUID id = UUID.randomUUID();
+
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
   private UUID itemId;
   private String name;
   private BigDecimal quantity;
   private BigDecimal totalCost;
+
+  @Version
+  private Long version;
 
   public PaymentUnit() {
   }

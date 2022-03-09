@@ -17,12 +17,13 @@
 package com.google.abmedge.payments.util;
 
 import com.google.abmedge.payment.Payment;
-import com.google.abmedge.payment.PaymentUnit;
 import com.google.abmedge.payment.PaymentType;
+import com.google.abmedge.payment.PaymentUnit;
 import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
+import com.google.abmedge.payments.dto.Bill;
+import com.google.abmedge.payments.dto.PaymentStatus;
 import java.math.BigDecimal;
 import java.util.UUID;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,11 +49,10 @@ public class BillGenerator {
    * @param paymentId an identifier for the {@link Payment} event to be processed
    * @param payment the {@link Payment} activity to be processed that contains all the details about
    * the items, amount and {@link PaymentType}
-   * @return a string {@link Pair} of items where the {@link Pair#getLeft()} contains the string
-   * representation of the bill and the {@link Pair#getRight()} contains the formatted string value
-   * of balance on the bill
+   * @return a {@link Bill} that contains the payment details and a string representation of the
+   * bill
    */
-  public static Pair<String, String> generateBill(UUID paymentId, Payment payment) {
+  public static Bill generateBill(UUID paymentId, Payment payment) {
     float total = 0;
     StringBuilder billBuilder = new StringBuilder();
     billBuilder.append(billHeader(paymentId));
@@ -84,7 +84,11 @@ public class BillGenerator {
     //    Paid:                                                             $5000.00
     //    Balance:                                                          $4936.04
     //  ----------------------------------------------------------------------------
-    return Pair.of(billBuilder.toString(), String.format("%.2f", balance));
+    return new Bill()
+        .setPayment(payment)
+        .setStatus(PaymentStatus.SUCCESS)
+        .setBalance(new BigDecimal(String.format("%.2f", balance)))
+        .setPrintedBill(billBuilder.toString());
   }
 
   /**

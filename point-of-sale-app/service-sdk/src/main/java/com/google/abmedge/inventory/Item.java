@@ -14,6 +14,7 @@
 
 package com.google.abmedge.inventory;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +22,15 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /**
  * An instance of the {@link Item} class is a representation of an item as it will be stored in the
@@ -35,13 +39,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = Item.ITEMS_TABLE)
-public class Item {
+public class Item implements Serializable {
 
   public static final String ITEMS_TABLE = "items";
   public static final String LABELS_TABLE = "labels";
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
   private UUID id;
   private String name;
   private String type;
@@ -51,6 +58,9 @@ public class Item {
   @ElementCollection
   @CollectionTable(name = Item.LABELS_TABLE)
   private List<String> labels;
+
+  @Version
+  private Long version;
 
   public Item() {
     this.labels = new ArrayList<>();

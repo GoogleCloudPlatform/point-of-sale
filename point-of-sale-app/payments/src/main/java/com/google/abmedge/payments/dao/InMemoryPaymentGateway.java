@@ -40,14 +40,9 @@ public class InMemoryPaymentGateway implements PaymentGateway {
   @Override
   public Bill pay(Payment payment) throws PaymentProcessingFailedException {
     try {
-      UUID pId = payment.getId();
+      UUID pId = UUID.randomUUID();
       paymentMap.put(pId, payment);
-      Pair<String, String> generatedBill = BillGenerator.generateBill(pId, payment);
-      return new Bill()
-          .setPayment(payment)
-          .setStatus(PaymentStatus.SUCCESS)
-          .setBalance(new BigDecimal(generatedBill.getRight()))
-          .setPrintedBill(generatedBill.getLeft());
+      return BillGenerator.generateBill(pId, payment);
     } catch (Exception e) {
       String msg = String.format(
           "Failed to process new payment for ['type': '%s', 'items': '%s', 'amount': '%s']",

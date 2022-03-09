@@ -14,15 +14,20 @@
 
 package com.google.abmedge.payment;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /**
  * This class contains a single payment action for a purchase done via the Point-Of-Sales UI. A
@@ -32,24 +37,29 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = Payment.PAYMENTS_TABLE)
-public class Payment {
+public class Payment implements Serializable {
 
   public static final String PAYMENTS_TABLE = "payments";
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
   private UUID id;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   private List<PaymentUnit> unitList;
   private PaymentType type;
   private BigDecimal paidAmount;
 
+  @Version
+  private Long version;
+
   public Payment() {
   }
 
-  public Payment(UUID id, List<PaymentUnit> unitList, PaymentType type, BigDecimal paidAmount) {
-    this.id = id;
+  public Payment(List<PaymentUnit> unitList, PaymentType type, BigDecimal paidAmount) {
     this.unitList = unitList;
     this.type = type;
     this.paidAmount = paidAmount;
