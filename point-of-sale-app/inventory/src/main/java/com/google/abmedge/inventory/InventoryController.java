@@ -305,11 +305,12 @@ public class InventoryController {
    * </pre>
    */
   private void initInventoryItems() {
-    String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR).replaceAll("\\\\n", "\n");
+    String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR);
     if (StringUtils.isBlank(inventoryList)) {
       LOGGER.warn("No items found under inventory list env var '{}'", INVENTORY_ITEMS_ENV_VAR);
       return;
     }
+    inventoryList = inventoryList.replaceAll("\\\\n", "\n");
     LOGGER.debug(inventoryList);
     Map<String, Set<String>> itemTypeToNameMap = getItemTypeToNamesMap();
     Yaml yaml = new Yaml(new Constructor(Inventory.class));
