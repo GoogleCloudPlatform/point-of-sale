@@ -36,6 +36,7 @@ build:
 deploy:
   kubectl:
     manifests:
+    - kubernetes-manifests/mysql-db.yaml
     - kubernetes-manifests/service-configs.yaml
     - kubernetes-manifests/api-server.yaml
     - kubernetes-manifests/api-server-lb.yaml
