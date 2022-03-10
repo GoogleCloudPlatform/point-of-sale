@@ -33,11 +33,11 @@ spec:
       - name: inventory
         image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/inventory
         env:
-        - name: CONNECTOR
+        - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
               name: service-configs
-              key: CONNECTOR
+              key: SPRING_PROFILES_ACTIVE
         - name: ACTIVE_ITEM_TYPE
           valueFrom:
             configMapKeyRef:

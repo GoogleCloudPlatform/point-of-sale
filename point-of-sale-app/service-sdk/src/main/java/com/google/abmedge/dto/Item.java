@@ -21,12 +21,15 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /**
  * An instance of the {@link Item} class is a representation of an item as it will be stored in the
@@ -41,7 +44,10 @@ public class Item {
   public static final String LABELS_TABLE = "labels";
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
   private UUID id;
   private String name;
   private String type;
