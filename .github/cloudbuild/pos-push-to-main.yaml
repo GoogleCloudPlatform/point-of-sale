@@ -41,7 +41,7 @@ steps:
     kubectl apply -f /workspace/namespace.yaml
 
     ./mvnw install
-    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS --tag=$COMMIT_SHA
+    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS --tag=$COMMIT_SHA
     EOF
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
