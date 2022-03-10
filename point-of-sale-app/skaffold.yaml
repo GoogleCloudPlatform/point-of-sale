@@ -1,4 +1,3 @@
-
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,32 +12,58 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START anthosbaremetal_point_of_sale_app_skaffold_config_setup]
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: setup # module defining setup steps
+deploy:
+  kubectl:
+    manifests:
+    - k8-manifests/service-configs.yaml
+# [END anthosbaremetal_point_of_sale_app_skaffold_config_setup]
+---
 # [START anthosbaremetal_point_of_sale_app_skaffold_config_backend]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
   name: backend # module defining backend services
-build:
-  artifacts:
-  - image: api-server
-    jib:
-      project: api-server
-  - image: inventory
-    jib:
-      project: inventory
-  - image: payments
-    jib:
-      project: payments
-  tagPolicy:
-    gitCommit: { }
-  local:
-    concurrency: 0
+requires:
+- configs: [ setup ]
 deploy:
   kubectl:
     manifests:
-    - kubernetes-manifests/service-configs.yaml
-    - kubernetes-manifests/api-server.yaml
-    - kubernetes-manifests/api-server-lb.yaml
-    - kubernetes-manifests/inventory.yaml
-    - kubernetes-manifests/payments.yaml
+    - k8-manifests/api-server-lb.yaml
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: api-server
+      jib:
+        project: api-server
+    - image: inventory
+      jib:
+        project: inventory
+    - image: payments
+      jib:
+        project: payments
+    tagPolicy:
+      gitCommit: { }
+    local:
+      concurrency: 0
+  deploy:
+    kubectl:
+      manifests:
+      - k8-manifests/dev/api-server.yaml
+      - k8-manifests/dev/inventory.yaml
+      - k8-manifests/dev/payments.yaml
+- name: release
+  activation:
+  - command: dev
+  deploy:
+    kubectl:
+      manifests:
+      - k8-manifests/release/api-server.yaml
+      - k8-manifests/release/inventory.yaml
+      - k8-manifests/release/payments.yaml
 # [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
