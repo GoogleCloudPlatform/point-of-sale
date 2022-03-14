@@ -58,8 +58,6 @@ profiles:
       - k8-manifests/dev/inventory.yaml
       - k8-manifests/dev/payments.yaml
 - name: release
-  activation:
-  - command: dev
   deploy:
     kubectl:
       manifests:
