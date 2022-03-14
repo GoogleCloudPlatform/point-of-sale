@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: inventory
-        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/inventory
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory
         env:
         - name: CONNECTOR
           valueFrom:

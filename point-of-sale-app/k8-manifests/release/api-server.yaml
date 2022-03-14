@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: api-server
-        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/api-server
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/api-server
         env:
         - name: INVENTORY_EP
           valueFrom:
