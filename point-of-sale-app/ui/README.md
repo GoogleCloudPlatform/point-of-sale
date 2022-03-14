@@ -7,8 +7,13 @@
 
 1. First deploy the app to your kubernetes cluster
 ```sh
-# deploy the apps to the kubernetes cluster with skaffold
-skaffold dev
+# deploy the apps to the kubernetes cluster with skaffold; 
+
+# to deploy the released manifests
+skaffold dev -p release 
+
+# to deploy the local source based manifests
+skaffold dev -p dev --default-repo us-docker.pkg.dev/<GOOGLE_CLOUD_PROJECT>/<IMAGE_REPO>
 ```
 
 2. Get the IP address of the `api-server=lb` service

@@ -12,41 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_kubernetes_manifests_inventory_deployment_inventory]
+# [START anthosbaremetal_k8_manifests_dev_payments_deployment_payments]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory
+  name: payments
 spec:
   selector:
     matchLabels:
-      app: inventory
+      app: payments
   template:
     metadata:
       labels:
-        app: inventory
+        app: payments
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
-      - name: inventory
-        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/inventory
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          valueFrom:
-            configMapKeyRef:
-              name: service-configs
-              key: SPRING_PROFILES_ACTIVE
-        - name: ACTIVE_ITEM_TYPE
-          valueFrom:
-            configMapKeyRef:
-              name: service-configs
-              key: ACTIVE_ITEM_TYPE
-        - name: ITEMS
-          valueFrom:
-            configMapKeyRef:
-              name: service-configs
-              key: ITEMS
+      - name: payments
+        image: payments
         resources:
           requests:
             cpu: 100m
@@ -68,19 +52,19 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_kubernetes_manifests_inventory_deployment_inventory]
+# [END anthosbaremetal_k8_manifests_dev_payments_deployment_payments]
 ---
-# [START anthosbaremetal_kubernetes_manifests_inventory_service_inventory_svc]
+# [START anthosbaremetal_k8_manifests_dev_payments_service_payments_svc]
 apiVersion: v1
 kind: Service
 metadata:
-  name: inventory-svc
+  name: payments-svc
 spec:
   type: ClusterIP
   selector:
-    app: inventory
+    app: payments
   ports:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_kubernetes_manifests_inventory_service_inventory_svc]
+# [END anthosbaremetal_k8_manifests_dev_payments_service_payments_svc]
