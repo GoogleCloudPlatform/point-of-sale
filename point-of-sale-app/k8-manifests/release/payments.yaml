@@ -31,7 +31,7 @@ spec:
       containers:
       - name: payments
         # TODO:: remove the snapshot tag once we make the first release
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:snapshot
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v1-snapshot
         resources:
           requests:
             cpu: 100m

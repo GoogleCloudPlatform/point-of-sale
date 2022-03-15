@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: mysql-db
-        image: mysql-db
+        image: mysql:8.0.28-oracle
         envFrom:
         - configMapRef:
             name: mysql-db-config

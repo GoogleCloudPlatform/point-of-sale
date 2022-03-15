@@ -23,49 +23,22 @@ deploy:
     - k8-manifests/service-configs.yaml
 # [END anthosbaremetal_point_of_sale_app_skaffold_config_setup]
 ---
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_db_config]
+# [START anthosbaremetal_point_of_sale_app_skaffold_config_db]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
-  name: springboot-profile # module defining spring profile configuration
+  name: db # module defining spring profile & db configuration
 deploy:
   kubectl:
     manifests:
     - k8-manifests/springprofile-mysql.yaml
+    - k8-manifests/mysql-db.yaml
 profiles:
 - name: inmemory
   deploy:
     kubectl:
       manifests:
       - k8-manifests/springprofile-h2.yaml
-# [END anthosbaremetal_point_of_sale_app_skaffold_config_db_config]
----
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_db]
-apiVersion: skaffold/v2beta21
-kind: Config
-metadata:
-  name: db # module defining db deployment
-requires:
-- configs: [ springboot-profile ]
-profiles:
-- name: dev
-  build:
-    artifacts:
-    - image: mysql-db
-      context: mysql-db
-    tagPolicy:
-      gitCommit: { }
-    local:
-      concurrency: 0
-  deploy:
-    kubectl:
-      manifests:
-      - k8-manifests/dev/mysql-db.yaml
-- name: release
-  deploy:
-    kubectl:
-      manifests:
-      - k8-manifests/release/mysql-db.yaml
 # [END anthosbaremetal_point_of_sale_app_skaffold_config_db]
 ---
 # [START anthosbaremetal_point_of_sale_app_skaffold_config_backend]
