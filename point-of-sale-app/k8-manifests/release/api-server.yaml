@@ -30,7 +30,8 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: api-server
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/api-server
+        # TODO:: remove the snapshot tag once we make the first release
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/api-server:snapshot
         env:
         - name: INVENTORY_EP
           valueFrom:
