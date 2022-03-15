@@ -18,9 +18,9 @@
 ###########################################################
 
 steps:
-  ###########################################################
-  # npm install to ensure ui dependencies have no errors
-  ###########################################################
+###########################################################
+# npm install to ensure ui dependencies have no errors
+###########################################################
 - id: 'npm-install'
   name: 'node:16.14.0'
   dir: 'point-of-sale-app/ui'
@@ -93,9 +93,43 @@ steps:
   dir: 'point-of-sale-app'
   args: [
       'bash',
-      '/workspace/deploy.sh'
+      '/workspace/deploy.sh',
   ]
   # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # fetch the External IP for the API-Server
+  ###########################################################
+- id: 'get-external-loadbalancer-ip'
+  name: 'gcr.io/cloud-builders/kubectl'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+  args: [
+    # kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath={.status.loadBalancer.ingress[0].ip} > /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip
+      '-n', 'pr-$_PR_NUMBER', 'get', 'service/$_LB_SERVICE', '-o',
+      'jsonpath={.status.loadBalancer.ingress[0].ip}', '>', '/workspace/$_PR_NUMBER.$_LB_SERVICE.ip',
+  ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ 'deploy-to-k8s' ]
+
+  ###########################################################
+  # Comment the fetched IP in the GitHub Pull request
+  # https://github.com/GoogleCloudPlatform/cloud-builders-community/tree/master/github
+  ###########################################################
+- id: 'comment-ip-to-github-pr'
+  name: 'gcr.io/$PROJECT_ID/github'
+  secrets:
+  - kmsKeyName: 'projects/_$KMS_PROJECT_ID/locations/global/keyRings/cloudbuilder/cryptoKeys/github-token'
+    secretEnv:
+      GITHUB_TOKEN: '<YOUR_ENCRYPTED_TOKEN>'
+  args: [
+      'pr', 'comment', '$_PR_NUMBER', '$_HEAD_REPO_URL', '$_HEAD_BRANCH', '--body',
+      'Access the Point-of-Sale at: $(cat /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip)',
+  ]
+
+  # indicates that the step need not wait for any other step
+  waitFor: [ 'get-external-loadbalancer-ip' ]
 
 timeout: 900s
 logsBucket: 'gs://pos-cloudbuild-logs'
