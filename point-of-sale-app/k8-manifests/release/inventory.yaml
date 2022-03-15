@@ -33,11 +33,11 @@ spec:
         # TODO:: remove the snapshot tag once we make the first release
         image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory:snapshot
         env:
-        - name: CONNECTOR
+        - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
-              name: service-configs
-              key: CONNECTOR
+              name: spring-profile
+              key: SPRING_PROFILES_ACTIVE
         - name: ACTIVE_ITEM_TYPE
           valueFrom:
             configMapKeyRef:
