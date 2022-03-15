@@ -30,10 +30,6 @@ metadata:
   name: backend # module defining backend services
 requires:
 - configs: [ setup ]
-deploy:
-  kubectl:
-    manifests:
-    - k8-manifests/api-server-lb.yaml
 profiles:
 - name: dev
   build:
@@ -65,3 +61,16 @@ profiles:
       - k8-manifests/release/inventory.yaml
       - k8-manifests/release/payments.yaml
 # [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
+---
+# [START anthosbaremetal_point_of_sale_app_skaffold_config_load-balancer]
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: load-balancer # module defining ingress into the application
+requires:
+- configs: [ backend ]
+deploy:
+  kubectl:
+    manifests:
+    - k8-manifests/api-server-lb.yaml
+# [END anthosbaremetal_point_of_sale_app_skaffold_config_load-balancer]
