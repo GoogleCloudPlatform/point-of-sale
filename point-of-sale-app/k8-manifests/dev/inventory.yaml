@@ -68,9 +68,9 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_k8_manifests_dev_inventory_deployment_inventory]
+# [END anthosbaremetal_dev_dev_inventory_deployment_inventory]
 ---
-# [START anthosbaremetal_k8_manifests_dev_inventory_service_inventory_svc]
+# [START anthosbaremetal_dev_dev_inventory_service_inventory_svc]
 apiVersion: v1
 kind: Service
 metadata:
@@ -83,4 +83,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_k8_manifests_dev_inventory_service_inventory_svc]
+# [END anthosbaremetal_dev_dev_inventory_service_inventory_svc]

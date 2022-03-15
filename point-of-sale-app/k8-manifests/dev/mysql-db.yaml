@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: mysql-db
-        image: mysql:8.0.28-oracle
+        image: mysql-db
         envFrom:
         - configMapRef:
             name: mysql-db-config
@@ -58,9 +58,9 @@ spec:
       volumes:
       - name: mysqldb
         emptyDir: {}
-# [END anthosbaremetal_k8_manifests_mysql_db_statefulset_mysql_db]
+# [END anthosbaremetal_dev_mysql_db_statefulset_mysql_db]
 ---
-# [START anthosbaremetal_k8_manifests_mysql_db_service_mysql_db]
+# [START anthosbaremetal_dev_mysql_db_service_mysql_db]
 apiVersion: v1
 kind: Service
 metadata:
@@ -78,9 +78,9 @@ spec:
   selector:
     app: mysql-db
     tier: db
-# [END anthosbaremetal_k8_manifests_mysql_db_service_mysql_db]
+# [END anthosbaremetal_dev_mysql_db_service_mysql_db]
 ---
-# [START anthosbaremetal_k8_manifests_mysql_db_configmap_mysql_db_mysql_db_config]
+# [START anthosbaremetal_dev_mysql_db_configmap_mysql_db_mysql_db_config]
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -94,4 +94,4 @@ data:
   MYSQL_PASSWORD: demopassword
   MYSQL_ROOT_PASSWORD: totoallysafepassword
   MYSQL_DB_URI: jdbc:mysql://demouser:demopassword@mysql-db:3306/pos_db
-# [END anthosbaremetal_k8_manifests_mysql_db_configmap_mysql_db_mysql_db_config]
+# [END anthosbaremetal_dev_mysql_db_configmap_mysql_db_mysql_db_config]

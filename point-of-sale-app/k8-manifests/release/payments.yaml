@@ -53,9 +53,9 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_k8_manifests_release_payments_deployment_payments]
+# [END anthosbaremetal_release_release_payments_deployment_payments]
 ---
-# [START anthosbaremetal_k8_manifests_release_payments_service_payments_svc]
+# [START anthosbaremetal_release_release_payments_service_payments_svc]
 apiVersion: v1
 kind: Service
 metadata:
@@ -68,4 +68,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_k8_manifests_release_payments_service_payments_svc]
+# [END anthosbaremetal_release_release_payments_service_payments_svc]

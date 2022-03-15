@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_k8_manifests_dev_payments_deployment_payments]
+# [START anthosbaremetal_dev_dev_payments_deployment_payments]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,9 +52,9 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_k8_manifests_dev_payments_deployment_payments]
+# [END anthosbaremetal_dev_dev_payments_deployment_payments]
 ---
-# [START anthosbaremetal_k8_manifests_dev_payments_service_payments_svc]
+# [START anthosbaremetal_dev_dev_payments_service_payments_svc]
 apiVersion: v1
 kind: Service
 metadata:
@@ -67,4 +67,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_k8_manifests_dev_payments_service_payments_svc]
+# [END anthosbaremetal_dev_dev_payments_service_payments_svc]
