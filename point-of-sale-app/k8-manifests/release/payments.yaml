@@ -30,7 +30,8 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: payments
-        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/payments
+        # TODO:: remove the snapshot tag once we make the first release
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:snapshot
         resources:
           requests:
             cpu: 100m
