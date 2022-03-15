@@ -47,16 +47,16 @@ metadata:
   name: db # module defining db deployment
 requires:
 - configs: [ springboot-profile ]
-build:
-  artifacts:
-  - image: mysql-db
-    context: mysql-db
-  tagPolicy:
-    gitCommit: { }
-  local:
-    concurrency: 0
 profiles:
 - name: dev
+  build:
+    artifacts:
+    - image: mysql-db
+      context: mysql-db
+    tagPolicy:
+      gitCommit: { }
+    local:
+      concurrency: 0
   deploy:
     kubectl:
       manifests:
