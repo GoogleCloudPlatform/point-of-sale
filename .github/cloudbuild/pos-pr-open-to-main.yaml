@@ -87,7 +87,7 @@ steps:
 
     ./mvnw install
     skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-db --tag=pr-$_PR_NUMBER
-    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER--inmem --tag=pr-$_PR_NUMBER
+    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER--inmem --tag=pr-$_PR_NUMBER
 
     EOF
   # indicates that the step need not wait for any other step
