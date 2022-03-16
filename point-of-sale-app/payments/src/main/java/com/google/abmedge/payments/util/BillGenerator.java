@@ -19,7 +19,6 @@ package com.google.abmedge.payments.util;
 import com.google.abmedge.payment.Payment;
 import com.google.abmedge.payment.PaymentType;
 import com.google.abmedge.payment.PaymentUnit;
-import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.dto.PaymentStatus;
 import java.math.BigDecimal;

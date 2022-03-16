@@ -16,15 +16,11 @@ package com.google.abmedge.payments;
 
 import com.google.abmedge.payment.Payment;
 import com.google.abmedge.payments.dao.DatabasePaymentGateway;
-import com.google.abmedge.payments.dao.InMemoryPaymentGateway;
 import com.google.abmedge.payments.dao.PaymentGateway;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.util.PaymentProcessingFailedException;
 import com.google.gson.Gson;
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.PostConstruct;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentsController {
 
   private static final Logger LOGGER = LogManager.getLogger(PaymentsController.class);
-  private static final String IN_MEMORY_GATEWAY = "IN_MEMORY";
-  private static final String DATABASE_CONNECTOR = "DATABASE";
-  private static final String PAYMENT_GW_TYPE_ENV_VAR = "PAYMENT_GW";
   private static final Gson GSON = new Gson();
   private PaymentGateway activePaymentGateway;
-  private Map<String, PaymentGateway> paymentGatewayMap;
   @Autowired
   private DatabasePaymentGateway databasePaymentGateway;
 
@@ -62,10 +54,7 @@ public class PaymentsController {
    */
   @PostConstruct
   void init() {
-    paymentGatewayMap = new HashMap<>();
-    paymentGatewayMap.put(IN_MEMORY_GATEWAY, new InMemoryPaymentGateway());
-    paymentGatewayMap.put(DATABASE_CONNECTOR, databasePaymentGateway);
-    initConnectorType();
+    activePaymentGateway = databasePaymentGateway;
   }
 
   @RequestMapping("/")
@@ -120,33 +109,5 @@ public class PaymentsController {
       return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
-  }
-
-  /**
-   * This method initializes the payment gateway type. There can be multiple payment gateways
-   * available at the same time. Each of them will be an implementation of the {@link
-   * PaymentGateway} interface. However, only one of them will be active at any given time. In order
-   * to change/reconfigure the {@link #activePaymentGateway} a restart of the application is
-   * required.
-   *
-   * <p>The payment gateway type which is active is decided at startup time by looking at the
-   * 'PAYMENT_GW' environment variable. If this environment variable is not set or if an invalid
-   * value is set then by default the gateway type 'IN_MEMORY' is used.
-   *
-   * <p>The 'IN_MEMORY' gateway is implemented by {@link InMemoryPaymentGateway} class and it
-   * stores all payment information in an in-memory datastore.
-   *
-   * <p>An invalid gateway type means that their is no {@link PaymentGateway} object stored against
-   * the value set for the 'PAYMENT_GW' environment variable in the {@link #paymentGatewayMap}
-   */
-  private void initConnectorType() {
-    String connectorType = System.getenv(PAYMENT_GW_TYPE_ENV_VAR);
-    if (StringUtils.isBlank(connectorType) || !paymentGatewayMap.containsKey(connectorType)) {
-      LOGGER.warn("'{}' environment variable is not set; thus defaulting to: {}",
-          PAYMENT_GW_TYPE_ENV_VAR, IN_MEMORY_GATEWAY);
-      connectorType = IN_MEMORY_GATEWAY;
-    }
-    activePaymentGateway = paymentGatewayMap.get(connectorType);
-    LOGGER.info("Active connector type is: {}", connectorType);
   }
 }
