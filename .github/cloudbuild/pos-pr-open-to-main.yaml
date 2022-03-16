@@ -122,7 +122,7 @@ steps:
   args:
   - -c
   - |
-    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body "Access the Point-of-Sale at: $(cat /workspace/pr-$_PR_NUMBER.ip)"
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body "Access the Point-of-Sale at: [$(cat /workspace/pr-$_PR_NUMBER.ip)](http://$(cat /workspace/pr-$_PR_NUMBER.ip))"
   waitFor: [ 'get-external-loadbalancer-ip' ]
 
 availableSecrets:
