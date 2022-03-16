@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BillGenerator {
 
-  private static final Logger LOGGER = LogManager.getLogger(InMemoryPaymentGateway.class);
+  private static final Logger LOGGER = LogManager.getLogger(BillGenerator.class);
   private static final String BILL_HEADER =
       "----------------------------------------------------------------------------\n";
   private static final String SPACE = " ";
