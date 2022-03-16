@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_kubernetes_manifests_api_server_lb_service_api_server_lb]
+# [START anthosbaremetal_k8_manifests_api_server_lb_service_api_server_lb]
 apiVersion: v1
 kind: Service
 metadata:
@@ -25,5 +25,5 @@ spec:
   - name: http
     port: 80
     targetPort: 8080
-# [END anthosbaremetal_kubernetes_manifests_api_server_lb_service_api_server_lb]
+# [END anthosbaremetal_k8_manifests_api_server_lb_service_api_server_lb]
 ---

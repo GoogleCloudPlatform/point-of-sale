@@ -28,10 +28,17 @@ steps:
   - -c
   - |
     cat <<EOF > /workspace/namespace.yaml -
+    # namespace to deploy the mysql db based deployment
     apiVersion: v1
     kind: Namespace
     metadata:
-      name: $_STAGING_NS
+      name: $_STAGING_NS-db
+    ---
+    # namespace to deploy the inmemory h2 db based deployment
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: $_STAGING_NS-inmemory
     EOF
 
     cat <<EOF > /workspace/deploy.sh -
@@ -41,7 +48,8 @@ steps:
     kubectl apply -f /workspace/namespace.yaml
 
     ./mvnw install
-    skaffold run -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS --tag=$COMMIT_SHA
+    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-db
+    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-inmemory
     EOF
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
@@ -58,7 +66,7 @@ steps:
   ]
   # waitFor: commented out, so this step waits for all previous steps
 
-timeout: 900s
+timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
   logging: GCS_ONLY

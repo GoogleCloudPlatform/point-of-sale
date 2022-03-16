@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_kubernetes_manifests_inventory_deployment_inventory]
+# [START anthosbaremetal_release_inventory_deployment_inventory]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,13 +30,14 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: inventory
-        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/inventory
+        # TODO:: remove the snapshot tag once we make the first release
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory:v1-snapshot
         env:
-        - name: CONNECTOR
+        - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
-              name: service-configs
-              key: CONNECTOR
+              name: spring-profile
+              key: SPRING_PROFILES_ACTIVE
         - name: ACTIVE_ITEM_TYPE
           valueFrom:
             configMapKeyRef:
@@ -68,9 +69,9 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_kubernetes_manifests_inventory_deployment_inventory]
+# [END anthosbaremetal_release_inventory_deployment_inventory]
 ---
-# [START anthosbaremetal_kubernetes_manifests_inventory_service_inventory_svc]
+# [START anthosbaremetal_release_inventory_service_inventory_svc]
 apiVersion: v1
 kind: Service
 metadata:
@@ -83,4 +84,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_kubernetes_manifests_inventory_service_inventory_svc]
+# [END anthosbaremetal_release_inventory_service_inventory_svc]

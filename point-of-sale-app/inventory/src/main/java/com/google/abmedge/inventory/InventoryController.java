@@ -16,7 +16,6 @@ package com.google.abmedge.inventory;
 
 import com.google.abmedge.payment.PurchaseItem;
 import com.google.abmedge.inventory.dao.DatabaseConnector;
-import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
@@ -34,7 +33,6 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,21 +56,20 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class InventoryController {
 
   private static final Logger LOGGER = LogManager.getLogger(InventoryController.class);
-  private static final String CONNECTOR_TYPE_ENV_VAR = "CONNECTOR";
   private static final String ACTIVE_TYPE_ENV_VAR = "ACTIVE_ITEM_TYPE";
   private static final String INVENTORY_ITEMS_ENV_VAR = "ITEMS";
-  private static final String IN_MEMORY_CONNECTOR = "IN_MEMORY";
-  private static final String DATABASE_CONNECTOR = "DATABASE";
   private static final String ALL_ITEMS = "ALL";
   private static final Gson GSON = new Gson();
 
   // the context of the inventory service (e.g. textile, food, electronics, etc)
   private String activeItemsType;
   private InventoryStoreConnector activeConnector;
-  private Map<String, InventoryStoreConnector> inventoryMap;
+  private final DatabaseConnector databaseConnector;
 
-  @Autowired
-  private DatabaseConnector databaseConnector;
+  // DatabaseConnector is autowired via Spring
+  public InventoryController(DatabaseConnector databaseConnector) {
+    this.databaseConnector = databaseConnector;
+  }
 
   /**
    * This method runs soon after the object for this class is created on startup of the
@@ -80,10 +77,6 @@ public class InventoryController {
    */
   @PostConstruct
   void init() {
-    inventoryMap = new HashMap<>();
-    inventoryMap.put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
-    inventoryMap.put(DATABASE_CONNECTOR, databaseConnector);
-
     initConnectorType();
     initItemsType();
     initInventoryItems();
@@ -227,32 +220,24 @@ public class InventoryController {
   /**
    * This method initializes the connector that will be used to connect to the storage system that
    * holds all the items' information. The connector should implement the interface {@link
-   * InventoryStoreConnector}. A running instance of the application shall can have multiple
+   * InventoryStoreConnector}. A running instance of the application shall have multiple
    * implementations of {@link InventoryStoreConnector}. However, only one of them will be active at
    * any single given time. Once, set to change the connector type a restart of the application is
    * required.
    *
-   * <p>On startup, the {@link #activeConnector} is identified by looking at the environment
-   * variable 'CONNECTOR'. If either this environment variable is unset/empty or an invalid value is
-   * set, then the {@link InMemoryStoreConnector} is set as the default {@link #activeConnector}.
+   * <p>Previously, we would look up an environment variable to decide the {@link #activeConnector}
+   * to be between an InMemoryConnector and a DatabaseConnector. However, with the latest changes we
+   * only have one connector {@link DatabaseConnector}.
    *
-   * <p>The {@link InMemoryStoreConnector} is an implementation of the {@link
-   * InventoryStoreConnector} that maintains all information about the inventory in an in-memory
-   * data-structure. A connector type value that is set against the environment variable 'CONNECTOR'
-   * is deemed invalid if there exists no key entry matchign that type in the {@link
-   * #inventoryMap}.
+   * <p>The datasource this connector connects to is either an external MySQL DB or an Embedded H2
+   * DB. The choice for which one to connect to decided based on the 'SPRING_PROFILES_ACTIVE'
+   * environment variable. Depending on the value of this environment variable (empty or inmemory or
+   * database) a Spring profile is automatically configured and thus the corresponding
+   * `application-{profile}.properties` file is loaded. See the properties files under resources/
+   * for the configs for the two DB options: MySQL and Embedded.
    */
   private void initConnectorType() {
-    String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
-    if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {
-      LOGGER.warn(
-          String.format(
-              "'%s' environment variable is not set; " + "thus defaulting to: %s",
-              CONNECTOR_TYPE_ENV_VAR, IN_MEMORY_CONNECTOR));
-      connectorType = IN_MEMORY_CONNECTOR;
-    }
-    activeConnector = inventoryMap.get(connectorType);
-    LOGGER.info(String.format("Active connector type is: %s", connectorType));
+    activeConnector = databaseConnector;
   }
 
   /**

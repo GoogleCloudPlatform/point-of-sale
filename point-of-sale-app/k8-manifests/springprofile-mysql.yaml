@@ -12,18 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_kubernetes_manifests_api_server_lb_service_api_server_lb]
+# The Spring profile environment variable is used by the applications to decide
+# which application.properties to load. The applications are configures to
+# either use an external MySQL DB or and embedded in-memory H2 database. If no
+# profile is set then the embedded in-memory H2 database is used.
+
+# [START anthosbaremetal_k8_manifests_springprofile_mysql_configmap_spring_profile]
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: api-server-lb
-spec:
-  type: LoadBalancer
-  selector:
-    app: api-server
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-# [END anthosbaremetal_kubernetes_manifests_api_server_lb_service_api_server_lb]
----
+  name: spring-profile
+data:
+  SPRING_PROFILES_ACTIVE: "DATABASE"
+# [END anthosbaremetal_k8_manifests_springprofile_mysql_configmap_spring_profile]
