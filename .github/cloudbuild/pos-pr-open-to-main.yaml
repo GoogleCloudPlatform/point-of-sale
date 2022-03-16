@@ -119,7 +119,7 @@ steps:
   ###########################################################
 - id: 'comment-ip-to-github-pr'
   name: 'gcr.io/$PROJECT_ID/github'
-  secretEnv: ['GITHUB_TOKEN']
+  secretEnv: [ 'GITHUB_TOKEN' ]
   args: [
       'pr', 'comment', '$_PR_NUMBER', '$_HEAD_REPO_URL', '$_HEAD_BRANCH', '--body',
       'Access the Point-of-Sale at: $(cat /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip)',
