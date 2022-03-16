@@ -31,6 +31,12 @@ spec:
       containers:
       - name: payments
         image: payments
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: spring-profile
+              key: SPRING_PROFILES_ACTIVE
         resources:
           requests:
             cpu: 100m

@@ -32,6 +32,12 @@ spec:
       - name: payments
         # TODO:: remove the snapshot tag once we make the first release
         image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v1-snapshot
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: spring-profile
+              key: SPRING_PROFILES_ACTIVE
         resources:
           requests:
             cpu: 100m
