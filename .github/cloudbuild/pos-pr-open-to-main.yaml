@@ -119,10 +119,7 @@ steps:
   ###########################################################
 - id: 'comment-ip-to-github-pr'
   name: 'gcr.io/$PROJECT_ID/github'
-  secrets:
-  - kmsKeyName: 'projects/$_KMS_PROJECT_ID/locations/global/keyRings/cloudbuilder/cryptoKeys/github-token'
-    secretEnv:
-      GITHUB_TOKEN: 'CiQA56MXEU8rqxuv/ty3l4Bt+RlJ+1KxwGzrq74PSQig2VYB+wMSIQCOUJ4d1XJYjdvLvr8TM4GKnI20l53DeAvcpND7nYBtOA=='
+  secretEnv: ['GITHUB_TOKEN']
   args: [
       'pr', 'comment', '$_PR_NUMBER', '$_HEAD_REPO_URL', '$_HEAD_BRANCH', '--body',
       'Access the Point-of-Sale at: $(cat /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip)',
@@ -130,6 +127,14 @@ steps:
   # indicates that the step need not wait for any other step
   waitFor: [ 'get-external-loadbalancer-ip' ]
 
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN:
+      'CiQAuVI6Z93rj1B1R4yer3G1VzEmW7aHtjATP2jOtyJjkW5qOR8SUQBHWet7zXRDJQTBSvFZuXXs
+       OBIxtvf0VDM610Tjgb5XJY8hbIuBxhsMfDy3+/p2ojVnYmE+Mg9NDg5FGZhlJlB/+PBMCumkbMov
+       TXD582u17A=='
 timeout: 900s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
