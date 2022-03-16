@@ -107,7 +107,7 @@ steps:
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
   args: [
     # kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath={.status.loadBalancer.ingress[0].ip} > /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip
-      '-n', 'pr-$_PR_NUMBER', 'get', 'service/$_LB_SERVICE', '-o',
+      '-n', 'pr-$_PR_NUMBER', 'get', 'service', '$_LB_SERVICE', '-o',
       'jsonpath={.status.loadBalancer.ingress[0].ip}', '>', '/workspace/$_PR_NUMBER.$_LB_SERVICE.ip',
   ]
   # indicates that the step need not wait for any other step
@@ -121,8 +121,9 @@ steps:
   name: 'gcr.io/$PROJECT_ID/github'
   secretEnv: [ 'GITHUB_TOKEN' ]
   args: [
-      'pr', 'comment', '$_PR_NUMBER', '$_HEAD_REPO_URL', '$_HEAD_BRANCH', '--body',
-      'Access the Point-of-Sale at: $(cat /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip)',
+      'pr', 'comment', '$_PR_NUMBER',
+      '--repo', '$_HEAD_REPO_URL',
+      '--body', 'Access the Point-of-Sale at: "$(cat /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip)"',
   ]
   # indicates that the step need not wait for any other step
   waitFor: [ 'get-external-loadbalancer-ip' ]
