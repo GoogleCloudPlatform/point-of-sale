@@ -130,7 +130,7 @@ steps:
   # https://github.com/GoogleCloudPlatform/cloud-builders-community/tree/master/github
   ###########################################################
 - id: 'comment-ip-to-github-pr'
-  name: 'gcr.io/$PROJECT_ID/github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
   secretEnv: [ 'GITHUB_TOKEN' ]
   args: [
       'pr', 'comment', '$_PR_NUMBER',
