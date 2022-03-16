@@ -98,20 +98,32 @@ steps:
   # waitFor: commented out, so this step waits for all previous steps
 
   ###########################################################
+  # create the script to fetch the Loadbalancer IP
+  ###########################################################
+- id: 'create-get-external-ip-script'
+  name: ubuntu
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/fetch-ip.sh -
+    #!/bin/bash
+
+    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip
+    EOF
+  waitFor: [ 'deploy-to-k8s' ]
+
+  ###########################################################
   # fetch the External IP for the API-Server
   ###########################################################
 - id: 'get-external-loadbalancer-ip'
-  name: 'gcr.io/cloud-builders/kubectl'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
   args: [
-    # kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath={.status.loadBalancer.ingress[0].ip} > /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip
-      '-n', 'pr-$_PR_NUMBER', 'get', 'service/$_LB_SERVICE', '-o',
-      "jsonpath='{.status.loadBalancer.ingress[0].ip}'", '>', '/workspace/$_PR_NUMBER.$_LB_SERVICE.ip',
+      'bash',
+      '/workspace/fetch-ip.sh',
   ]
-  # indicates that the step need not wait for any other step
-  waitFor: [ 'deploy-to-k8s' ]
+  waitFor: [ 'create-get-external-ip-script' ]
 
   ###########################################################
   # Comment the fetched IP in the GitHub Pull request
