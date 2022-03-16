@@ -98,46 +98,33 @@ steps:
   # waitFor: commented out, so this step waits for all previous steps
 
   ###########################################################
-  # create the script to fetch the Loadbalancer IP
+  # fetch the External IP for the API-Server
   ###########################################################
-- id: 'create-get-external-ip-script'
-  name: ubuntu
+- id: 'get-external-loadbalancer-ip'
+  name: 'gcr.io/cloud-builders/kubectl'
   entrypoint: bash
   args:
   - -c
   - |
-    cat <<EOF > /workspace/fetch-ip.sh -
-    #!/bin/bash
-
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-    kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip
-    EOF
+    EXTERNAL_IP=$(kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo "$EXTERNAL_IP" > /workspace/pr-$_PR_NUMBER.ip
+    echo "External IP [$EXTERNAL_IP] saved to file /workspace/pr-$_PR_NUMBER.ip"
+
   waitFor: [ 'deploy-to-k8s' ]
 
   ###########################################################
-  # fetch the External IP for the API-Server
-  ###########################################################
-- id: 'get-external-loadbalancer-ip'
-  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  args: [
-      'bash',
-      '/workspace/fetch-ip.sh',
-  ]
-  waitFor: [ 'create-get-external-ip-script' ]
-
-  ###########################################################
   # Comment the fetched IP in the GitHub Pull request
-  # https://github.com/GoogleCloudPlatform/cloud-builders-community/tree/master/github
   ###########################################################
 - id: 'comment-ip-to-github-pr'
   name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
   secretEnv: [ 'GITHUB_TOKEN' ]
-  args: [
-      'pr', 'comment', '$_PR_NUMBER',
-      '--repo', '$_HEAD_REPO_URL',
-      '--body', 'Access the Point-of-Sale at: "$(cat /workspace/pr-$_PR_NUMBER.$_LB_SERVICE.ip)"',
-  ]
-  # indicates that the step need not wait for any other step
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    EXTERNAL_IP=$(cat /workspace/pr-$_PR_NUMBER.ip)
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body "Access the Point-of-Sale at: $EXTERNAL_IP"
   waitFor: [ 'get-external-loadbalancer-ip' ]
 
 availableSecrets:
