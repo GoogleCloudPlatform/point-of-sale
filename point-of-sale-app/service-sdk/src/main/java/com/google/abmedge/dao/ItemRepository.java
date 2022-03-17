@@ -16,7 +16,7 @@
 
 package com.google.abmedge.dao;
 
-import com.google.abmedge.dto.Item;
+import com.google.abmedge.inventory.Item;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
