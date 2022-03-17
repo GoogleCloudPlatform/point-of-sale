@@ -16,14 +16,14 @@ package com.google.abmedge.inventory;
 
 import com.google.abmedge.dto.Item;
 import com.google.abmedge.dto.PurchaseItem;
-import com.google.abmedge.inventory.dao.InMemoryStoreConnector;
+import com.google.abmedge.inventory.dao.DatabaseConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,21 +57,20 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class InventoryController {
 
   private static final Logger LOGGER = LogManager.getLogger(InventoryController.class);
-  private static final String CONNECTOR_TYPE_ENV_VAR = "CONNECTOR";
   private static final String ACTIVE_TYPE_ENV_VAR = "ACTIVE_ITEM_TYPE";
   private static final String INVENTORY_ITEMS_ENV_VAR = "ITEMS";
-  private static final String IN_MEMORY_CONNECTOR = "IN_MEMORY";
   private static final String ALL_ITEMS = "ALL";
   private static final Gson GSON = new Gson();
-  private static final Map<String, InventoryStoreConnector> inventoryMap =
-      new HashMap<>() {
-        {
-          put(IN_MEMORY_CONNECTOR, new InMemoryStoreConnector());
-        }
-      };
+
   // the context of the inventory service (e.g. textile, food, electronics, etc)
   private String activeItemsType;
   private InventoryStoreConnector activeConnector;
+  private final DatabaseConnector databaseConnector;
+
+  // DatabaseConnector is autowired via Spring
+  public InventoryController(DatabaseConnector databaseConnector) {
+    this.databaseConnector = databaseConnector;
+  }
 
   /**
    * This method runs soon after the object for this class is created on startup of the
@@ -125,7 +124,8 @@ public class InventoryController {
   @GetMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> types() {
     Set<String> itemTypes = activeConnector.getTypes();
-    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {}.getType());
+    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {
+    }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -139,7 +139,8 @@ public class InventoryController {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
+    }.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -171,7 +172,7 @@ public class InventoryController {
    * specific to the implementation of {@link InventoryStoreConnector} that is used.
    *
    * @param purchaseList a list of {@link PurchaseItem} objects that needs to be updated in the
-   *                     underlying datastore
+   * underlying datastore
    * @return an object of {@link ResponseEntity} that only has an HTTP code without any payload
    */
   @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -220,32 +221,24 @@ public class InventoryController {
   /**
    * This method initializes the connector that will be used to connect to the storage system that
    * holds all the items' information. The connector should implement the interface {@link
-   * InventoryStoreConnector}. A running instance of the application shall can have multiple
+   * InventoryStoreConnector}. A running instance of the application shall have multiple
    * implementations of {@link InventoryStoreConnector}. However, only one of them will be active at
    * any single given time. Once, set to change the connector type a restart of the application is
    * required.
    *
-   * <p>On startup, the {@link #activeConnector} is identified by looking at the environment
-   * variable 'CONNECTOR'. If either this environment variable is unset/empty or an invalid value is
-   * set, then the {@link InMemoryStoreConnector} is set as the default {@link #activeConnector}.
+   * <p>Previously, we would look up an environment variable to decide the {@link #activeConnector}
+   * to be between an InMemoryConnector and a DatabaseConnector. However, with the latest changes we
+   * only have one connector {@link DatabaseConnector}.
    *
-   * <p>The {@link InMemoryStoreConnector} is an implementation of the {@link
-   * InventoryStoreConnector} that maintains all information about the inventory in an in-memory
-   * data-structure. A connector type value that is set against the environment variable 'CONNECTOR'
-   * is deemed invalid if there exists no key entry matchign that type in the {@link
-   * #inventoryMap}.
+   * <p>The datasource this connector connects to is either an external MySQL DB or an Embedded H2
+   * DB. The choice for which one to connect to decided based on the 'SPRING_PROFILES_ACTIVE'
+   * environment variable. Depending on the value of this environment variable (empty or inmemory or
+   * database) a Spring profile is automatically configured and thus the corresponding
+   * `application-{profile}.properties` file is loaded. See the properties files under resources/
+   * for the configs for the two DB options: MySQL and Embedded.
    */
   private void initConnectorType() {
-    String connectorType = System.getenv(CONNECTOR_TYPE_ENV_VAR);
-    if (StringUtils.isBlank(connectorType) || !inventoryMap.containsKey(connectorType)) {
-      LOGGER.warn(
-          String.format(
-              "'%s' environment variable is not set; " + "thus defaulting to: %s",
-              CONNECTOR_TYPE_ENV_VAR, IN_MEMORY_CONNECTOR));
-      connectorType = IN_MEMORY_CONNECTOR;
-    }
-    activeConnector = inventoryMap.get(connectorType);
-    LOGGER.info(String.format("Active connector type is: %s", connectorType));
+    activeConnector = databaseConnector;
   }
 
   /**
@@ -300,28 +293,39 @@ public class InventoryController {
   private void initInventoryItems() {
     String inventoryList = System.getenv(INVENTORY_ITEMS_ENV_VAR);
     if (StringUtils.isBlank(inventoryList)) {
-      LOGGER.warn(
-          String.format(
-              "No items found under inventory list env var '%s'", INVENTORY_ITEMS_ENV_VAR));
+      LOGGER.warn("No items found under inventory list env var '{}'", INVENTORY_ITEMS_ENV_VAR);
       return;
     }
+    inventoryList = inventoryList.replaceAll("\\\\n", "\n");
     LOGGER.debug(inventoryList);
+    Map<String, Set<String>> itemTypeToNameMap = getItemTypeToNamesMap();
     Yaml yaml = new Yaml(new Constructor(Inventory.class));
     Inventory inventory = yaml.load(inventoryList);
-    inventory
-        .getItems()
-        .forEach(
-            i -> {
-              i.setId(UUID.randomUUID());
-              try {
-                activeConnector.insert(i);
-              } catch (InventoryStoreConnectorException e) {
-                String errMsg =
-                    String.format(
-                        "Failed to insert item '%s' of type '%s'", i.getName(), i.getType());
-                LOGGER.error(errMsg, e);
-              }
-              LOGGER.info(String.format("Inserting new item: %s", i));
-            });
+    inventory.getItems().forEach(i -> insertIfNotExists(i, itemTypeToNameMap));
+  }
+
+  private Map<String, Set<String>> getItemTypeToNamesMap() {
+    Map<String, Set<String>> itemTypeToNameMap = new HashMap<>();
+    List<Item> loadedItems = activeConnector.getAll();
+    loadedItems.forEach(i -> {
+      Set<String> itemNames = itemTypeToNameMap.computeIfAbsent(i.getType(), k -> new HashSet<>());
+      itemNames.add(i.getName());
+    });
+    return itemTypeToNameMap;
+  }
+
+  private void insertIfNotExists(Item i, Map<String, Set<String>> itemTypeToNameMap) {
+    if (itemTypeToNameMap.containsKey(i.getType()) &&
+        itemTypeToNameMap.get(i.getType()).contains(i.getName())) {
+      LOGGER.warn(
+          "Item ['type': {}, 'name': {}] already exists. Skipping..", i.getType(), i.getName());
+      return;
+    }
+    try {
+      activeConnector.insert(i);
+    } catch (InventoryStoreConnectorException e) {
+      LOGGER.error("Failed to insert item '{}' of type '{}'", i.getName(), i.getType(), e);
+    }
+    LOGGER.info(String.format("Inserting new item: %s", i));
   }
 }

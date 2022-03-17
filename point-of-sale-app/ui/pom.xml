@@ -47,6 +47,7 @@
             </goals>
             <configuration>
               <nodeVersion>v16.13.2</nodeVersion>
+              <npmVersion>8.5.1</npmVersion>
             </configuration>
           </execution>
           <execution>

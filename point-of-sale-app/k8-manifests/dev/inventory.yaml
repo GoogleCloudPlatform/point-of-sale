@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_k8_manifests_dev_inventory_deployment_inventory]
+# [START anthosbaremetal_dev_inventory_deployment_inventory]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,11 +32,11 @@ spec:
       - name: inventory
         image: inventory
         env:
-        - name: CONNECTOR
+        - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
-              name: service-configs
-              key: CONNECTOR
+              name: spring-profile
+              key: SPRING_PROFILES_ACTIVE
         - name: ACTIVE_ITEM_TYPE
           valueFrom:
             configMapKeyRef:
@@ -68,9 +68,9 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_k8_manifests_dev_inventory_deployment_inventory]
+# [END anthosbaremetal_dev_inventory_deployment_inventory]
 ---
-# [START anthosbaremetal_k8_manifests_dev_inventory_service_inventory_svc]
+# [START anthosbaremetal_dev_inventory_service_inventory_svc]
 apiVersion: v1
 kind: Service
 metadata:
@@ -83,4 +83,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_k8_manifests_dev_inventory_service_inventory_svc]
+# [END anthosbaremetal_dev_inventory_service_inventory_svc]
