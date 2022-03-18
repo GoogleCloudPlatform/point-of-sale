@@ -26,7 +26,16 @@ import java.util.List;
  */
 public class Inventory {
 
+  private Integer id;
   private List<Item> items;
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public Integer getId() {
+    return id;
+  }
 
   public List<Item> getItems() {
     return items;
