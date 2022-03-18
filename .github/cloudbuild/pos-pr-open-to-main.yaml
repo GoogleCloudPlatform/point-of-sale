@@ -101,9 +101,43 @@ steps:
   dir: 'point-of-sale-app'
   args: [
       'bash',
-      '/workspace/deploy.sh'
+      '/workspace/deploy.sh',
   ]
   # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # fetch the External IP for the API-Server
+  ###########################################################
+- id: 'get-external-loadbalancer-ip'
+  name: 'gcr.io/cloud-builders/kubectl'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER.ip
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER.ip)] saved to file /workspace/pr-$_PR_NUMBER.ip"
+
+  waitFor: [ 'deploy-to-k8s' ]
+
+  ###########################################################
+  # Comment the fetched IP in the GitHub Pull request
+  ###########################################################
+- id: 'comment-ip-to-github-pr'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body "Access the Point-of-Sale at: [$(cat /workspace/pr-$_PR_NUMBER.ip)](http://$(cat /workspace/pr-$_PR_NUMBER.ip))"
+  waitFor: [ 'get-external-loadbalancer-ip' ]
+
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN: 'CiQAuVI6Z93rj1B1R4yer3G1VzEmW7aHtjATP2jOtyJjkW5qOR8SUQBHWet7zXRDJQTBSvFZuXXsOBIxtvf0VDM610Tjgb5XJY8hbIuBxhsMfDy3+/p2ojVnYmE+Mg9NDg5FGZhlJlB/+PBMCumkbMovTXD582u17A=='
 
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
