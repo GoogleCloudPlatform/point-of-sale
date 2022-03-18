@@ -39,8 +39,6 @@ public class PaymentUnit implements Serializable {
   public static final String PAYMENT_UNIT_TABLE = "payment_units";
 
   @Id
-  @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
   @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID id = UUID.randomUUID();
