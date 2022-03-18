@@ -138,7 +138,6 @@ availableSecrets:
   - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
     envMap:
       GITHUB_TOKEN: 'CiQAuVI6Z93rj1B1R4yer3G1VzEmW7aHtjATP2jOtyJjkW5qOR8SUQBHWet7zXRDJQTBSvFZuXXsOBIxtvf0VDM610Tjgb5XJY8hbIuBxhsMfDy3+/p2ojVnYmE+Mg9NDg5FGZhlJlB/+PBMCumkbMovTXD582u17A=='
-
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
