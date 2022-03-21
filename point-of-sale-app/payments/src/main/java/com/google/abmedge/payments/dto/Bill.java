@@ -14,7 +14,8 @@
 
 package com.google.abmedge.payments.dto;
 
-import com.google.abmedge.dto.Payment;
+import com.google.abmedge.payment.Payment;
+import java.math.BigDecimal;
 
 /**
  * An instance of this class describes the bill for a single payment event that was expressed by one
@@ -27,7 +28,7 @@ public class Bill {
 
   private Payment payment;
   private PaymentStatus status;
-  private Number balance;
+  private BigDecimal balance;
   private String printedBill;
 
   public Payment getPayment() {
@@ -48,11 +49,11 @@ public class Bill {
     return this;
   }
 
-  public Number getBalance() {
+  public BigDecimal getBalance() {
     return balance;
   }
 
-  public Bill setBalance(Number balance) {
+  public Bill setBalance(BigDecimal balance) {
     this.balance = balance;
     return this;
   }

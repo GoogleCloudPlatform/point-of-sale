@@ -12,9 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.dto;
+package com.google.abmedge.payment;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
@@ -22,20 +32,43 @@ import java.util.UUID;
  * them. Usually a {@link Payment} includes a collection of {@link PaymentUnit}s making up a bill
  * which shows multiple purchased items.
  */
-public class PaymentUnit {
+@Entity
+@Table(name = PaymentUnit.PAYMENT_UNIT_TABLE)
+public class PaymentUnit implements Serializable {
 
+  public static final String PAYMENT_UNIT_TABLE = "payment_units";
+
+  @Id
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
+  private UUID id = UUID.randomUUID();
+
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(columnDefinition = "CHAR(36)")
   private UUID itemId;
   private String name;
-  private long quantity;
-  private Number totalCost;
+  private BigDecimal quantity;
+  private BigDecimal totalCost;
 
-  public PaymentUnit() {}
+  @Version
+  private Long version;
 
-  public PaymentUnit(UUID itemId, String name, long quantity, Number totalCost) {
+  public PaymentUnit() {
+  }
+
+  public PaymentUnit(UUID itemId, String name, BigDecimal quantity, BigDecimal totalCost) {
     this.itemId = itemId;
     this.name = name;
     this.quantity = quantity;
     this.totalCost = totalCost;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 
   public UUID getItemId() {
@@ -54,19 +87,19 @@ public class PaymentUnit {
     this.name = name;
   }
 
-  public long getQuantity() {
+  public BigDecimal getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(long quantity) {
+  public void setQuantity(BigDecimal quantity) {
     this.quantity = quantity;
   }
 
-  public Number getTotalCost() {
+  public BigDecimal getTotalCost() {
     return totalCost;
   }
 
-  public void setTotalCost(Number totalCost) {
+  public void setTotalCost(BigDecimal totalCost) {
     this.totalCost = totalCost;
   }
 }

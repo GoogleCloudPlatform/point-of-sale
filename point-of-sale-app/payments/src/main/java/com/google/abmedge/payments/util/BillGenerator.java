@@ -1,41 +1,34 @@
-// Copyright 2021 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-package com.google.abmedge.payments.dao;
+package com.google.abmedge.payments.util;
 
-import com.google.abmedge.dto.Payment;
-import com.google.abmedge.dto.PaymentUnit;
+import com.google.abmedge.payment.Payment;
+import com.google.abmedge.payment.PaymentType;
+import com.google.abmedge.payment.PaymentUnit;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.dto.PaymentStatus;
-import java.util.Map;
+import java.math.BigDecimal;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * This class is a specific implementation of the {@link PaymentGateway} interface. This class does
- * not interact with any external systems to process the payments. Instead, it uses an in-memory map
- * to keep track of all the payment events. This class acts as the default {@link
- * com.google.abmedge.payments.PaymentsController#activePaymentGateway} when either no/invalid
- * environment variable is set against the key 'PAYMENT_GW' or when it is set to 'IN_MEMORY'.
- */
-public class InMemoryPaymentGateway implements PaymentGateway {
+public class BillGenerator {
 
-  private static final Logger LOGGER = LogManager.getLogger(InMemoryPaymentGateway.class);
-  private static final Map<UUID, Payment> paymentMap = new ConcurrentHashMap<>();
+  private static final Logger LOGGER = LogManager.getLogger(BillGenerator.class);
   private static final String BILL_HEADER =
       "----------------------------------------------------------------------------\n";
   private static final String SPACE = " ";
@@ -44,18 +37,6 @@ public class InMemoryPaymentGateway implements PaymentGateway {
   private static final String PAID = "  Paid:";
   private static final String BALANCE = "  Balance:";
   private static final double TAX_VALUE = 0.1495;
-
-  @Override
-  public Bill pay(Payment payment) {
-    UUID pId = payment.getId();
-    paymentMap.put(pId, payment);
-    Pair<String, String> generatedBill = generateBill(pId, payment);
-    return new Bill()
-        .setPayment(payment)
-        .setStatus(PaymentStatus.SUCCESS)
-        .setBalance(Double.valueOf(generatedBill.getRight()))
-        .setPrintedBill(generatedBill.getLeft());
-  }
 
   /**
    * This method takes in an ID identifying a payment and a {@link Payment} object and generates a
@@ -66,12 +47,11 @@ public class InMemoryPaymentGateway implements PaymentGateway {
    *
    * @param paymentId an identifier for the {@link Payment} event to be processed
    * @param payment the {@link Payment} activity to be processed that contains all the details about
-   *     the items, amount and {@link com.google.abmedge.dto.PaymentType}
-   * @return a string {@link Pair} of items where the {@link Pair#getLeft()} contains the string
-   *     representation of the bill and the {@link Pair#getRight()} contains the formatted string
-   *     value of balance on the bill
+   * the items, amount and {@link PaymentType}
+   * @return a {@link Bill} that contains the payment details and a string representation of the
+   * bill
    */
-  private Pair<String, String> generateBill(UUID paymentId, Payment payment) {
+  public static Bill generateBill(UUID paymentId, Payment payment) {
     float total = 0;
     StringBuilder billBuilder = new StringBuilder();
     billBuilder.append(billHeader(paymentId));
@@ -83,7 +63,7 @@ public class InMemoryPaymentGateway implements PaymentGateway {
       itemIndex++;
     }
     billBuilder.append(BILL_HEADER);
-    float tax = new Double(total * TAX_VALUE).floatValue();
+    float tax = Double.valueOf(total * TAX_VALUE).floatValue();
     float paid = payment.getPaidAmount().floatValue();
     float balance = paid - total - tax;
     billBuilder.append(infoLine(TOTAL, total));
@@ -103,22 +83,24 @@ public class InMemoryPaymentGateway implements PaymentGateway {
     //    Paid:                                                             $5000.00
     //    Balance:                                                          $4936.04
     //  ----------------------------------------------------------------------------
-    return Pair.of(billBuilder.toString(), String.format("%.2f", balance));
+    return new Bill()
+        .setPayment(payment)
+        .setStatus(PaymentStatus.SUCCESS)
+        .setBalance(new BigDecimal(String.format("%.2f", balance)))
+        .setPrintedBill(billBuilder.toString());
   }
 
   /**
    * Utility method that generates the header section of the bill.
    *
    * @param paymentId the id to be included in the header of the bill identifying this specific
-   *     payment
+   * payment
    * @return a string containing the header for the generated bill
    */
-  private String billHeader(UUID paymentId) {
-    return new StringBuilder()
-        .append(BILL_HEADER)
-        .append(String.format("              Payment id: %s              \n", paymentId))
-        .append(BILL_HEADER)
-        .toString();
+  private static String billHeader(UUID paymentId) {
+    return BILL_HEADER
+        + String.format("              Payment id: %s              \n", paymentId)
+        + BILL_HEADER;
   }
 
   /**
@@ -126,16 +108,16 @@ public class InMemoryPaymentGateway implements PaymentGateway {
    *
    * @param itemIndex the place of this item in the bill so that the line starts with this number
    * @param paymentUnit the {@link PaymentUnit} object that contains details about the item in the
-   *     payment event for which an entry is be generated
+   * payment event for which an entry is be generated
    * @return a string that contains a line with details about the purchase of one specific item that
-   *     can be appended to the bill
+   * can be appended to the bill
    */
-  private String billItem(int itemIndex, PaymentUnit paymentUnit) {
+  private static String billItem(int itemIndex, PaymentUnit paymentUnit) {
     StringBuilder sb = new StringBuilder();
     UUID unitId = paymentUnit.getItemId();
     String unitName = paymentUnit.getName();
     Number totalUnitValue = paymentUnit.getTotalCost();
-    long unitQuantity = paymentUnit.getQuantity();
+    BigDecimal unitQuantity = paymentUnit.getQuantity();
     String leadingStr =
         String.format("    %s. %sx %s (%s):", itemIndex, unitQuantity, unitName, unitId);
     // get length of the current line so far
@@ -157,13 +139,13 @@ public class InMemoryPaymentGateway implements PaymentGateway {
    * Using these two a line is generated that can be appended to the end of the bill.
    *
    * @param infoType a string explaining what the line is about which will be appended to the
-   *     beginning of the generated line
+   * beginning of the generated line
    * @param value the numeric value of the information line that is to be generated (e.g. the total
-   *     value, the balance)
+   * value, the balance)
    * @return the generated line with the information type at the beginning followed by spaces and
-   *     the numeric value at the end formatted to 2 decimal points.
+   * the numeric value at the end formatted to 2 decimal points.
    */
-  private String infoLine(String infoType, float value) {
+  private static String infoLine(String infoType, float value) {
     StringBuilder sb = new StringBuilder();
     String formattedValue = String.format("%.2f", value);
     int spacesToAdd = BILL_HEADER.length() - infoType.length() - formattedValue.length() - 2;
@@ -179,7 +161,7 @@ public class InMemoryPaymentGateway implements PaymentGateway {
    * @param count number indicating how many times space is to be appended
    * @return a string that is has 'count' many times spaces
    */
-  private String spaces(int count) {
+  private static String spaces(int count) {
     StringBuilder sb = new StringBuilder();
     while (count > 0) {
       sb.append(SPACE);

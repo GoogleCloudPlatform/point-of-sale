@@ -14,8 +14,7 @@
 
 package com.google.abmedge.inventory;
 
-import com.google.abmedge.dto.Item;
-import com.google.abmedge.dto.PurchaseItem;
+import com.google.abmedge.payment.PurchaseItem;
 import com.google.abmedge.inventory.dao.DatabaseConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;

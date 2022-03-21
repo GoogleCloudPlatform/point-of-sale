@@ -14,7 +14,7 @@
 
 package com.google.abmedge.inventory.dto;
 
-import com.google.abmedge.dto.Item;
+import com.google.abmedge.inventory.Item;
 import com.google.abmedge.inventory.InventoryController;
 import java.util.List;
 

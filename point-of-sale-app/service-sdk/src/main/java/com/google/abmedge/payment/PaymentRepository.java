@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.abmedge.dao;
+package com.google.abmedge.payment;
 
-import com.google.abmedge.dto.Item;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
-// This will be AUTO IMPLEMENTED by Spring into a Bean called itemRepository
+// This will be AUTO IMPLEMENTED by Spring into a Bean called paymentRepository
 // CRUD refers Create, Read, Update, Delete
-public interface ItemRepository extends CrudRepository<Item, UUID> {
+public interface PaymentRepository extends CrudRepository<Payment, UUID> {
 
 }

@@ -29,8 +29,8 @@
   <description>Application to manage inventory for the Edge Use case workload</description>
   <properties>
     <java.version>11</java.version>
+    <spring.boot.mainclass>com.google.abmedge.inventory.InventoryApplication</spring.boot.mainclass>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -88,6 +88,10 @@
             generate build information and start your Spring Boot application prior to running integration tests.-->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot-maven.plugin.version}</version>
+        <configuration>
+          <addResources>true</addResources>
+        </configuration>
       </plugin>
       <plugin>
         <!--The Checkstyle Plugin generates a report regarding the code style used by the developers.-->

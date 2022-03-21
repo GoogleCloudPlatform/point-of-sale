@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.dto;
+package com.google.abmedge.inventory;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,9 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -38,7 +39,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = Item.ITEMS_TABLE)
-public class Item {
+public class Item implements Serializable {
 
   public static final String ITEMS_TABLE = "items";
   public static final String LABELS_TABLE = "labels";
@@ -57,6 +58,9 @@ public class Item {
   @ElementCollection
   @CollectionTable(name = Item.LABELS_TABLE)
   private List<String> labels;
+
+  @Version
+  private Long version;
 
   public Item() {
     this.labels = new ArrayList<>();

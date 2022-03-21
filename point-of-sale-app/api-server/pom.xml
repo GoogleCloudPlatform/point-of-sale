@@ -30,6 +30,7 @@
   <properties>
     <java.version>11</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.boot.mainclass>com.google.abmedge.apiserver.ApiServerApplication</spring.boot.mainclass>
   </properties>
 
   <dependencies>
@@ -107,6 +108,10 @@
             generate build information and start your Spring Boot application prior to running integration tests.-->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot-maven.plugin.version}</version>
+        <configuration>
+          <addResources>true</addResources>
+        </configuration>
       </plugin>
       <plugin>
         <!--The Checkstyle Plugin generates a report regarding the code style used by the developers.-->

@@ -115,8 +115,10 @@ steps:
   - -c
   - |
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-    kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER.ip
-    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER.ip)] saved to file /workspace/pr-$_PR_NUMBER.ip"
+    kubectl -n pr-$_PR_NUMBER-db get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-db.ip
+    kubectl -n pr-$_PR_NUMBER-inmemory get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-inmemory.ip
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-db.ip)] saved to file /workspace/pr-$_PR_NUMBER-db.ip"
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)] saved to file /workspace/pr-$_PR_NUMBER-inmemory.ip"
 
   waitFor: [ 'deploy-to-k8s' ]
 
@@ -130,7 +132,12 @@ steps:
   args:
   - -c
   - |
-    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body "Access the Point-of-Sale at: [$(cat /workspace/pr-$_PR_NUMBER.ip)](http://$(cat /workspace/pr-$_PR_NUMBER.ip))"
+    cat <<EOF > /workspace/gh-comment.txt -
+    :zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
+    - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
+    - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
+    EOF
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
   waitFor: [ 'get-external-loadbalancer-ip' ]
 
 availableSecrets:

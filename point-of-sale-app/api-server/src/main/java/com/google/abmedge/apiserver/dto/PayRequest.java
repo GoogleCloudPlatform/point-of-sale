@@ -14,8 +14,9 @@
 
 package com.google.abmedge.apiserver.dto;
 
-import com.google.abmedge.dto.PaymentType;
-import com.google.abmedge.dto.PurchaseItem;
+import com.google.abmedge.payment.PaymentType;
+import com.google.abmedge.payment.PurchaseItem;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class PayRequest {
 
   private List<PurchaseItem> items;
   private PaymentType type;
-  private Number paidAmount;
+  private BigDecimal paidAmount;
 
   public List<PurchaseItem> getItems() {
     return items;
@@ -47,11 +48,11 @@ public class PayRequest {
     this.type = type;
   }
 
-  public Number getPaidAmount() {
+  public BigDecimal getPaidAmount() {
     return paidAmount;
   }
 
-  public void setPaidAmount(Number paidAmount) {
+  public void setPaidAmount(BigDecimal paidAmount) {
     this.paidAmount = paidAmount;
   }
 }
