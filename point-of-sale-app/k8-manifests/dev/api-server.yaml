@@ -12,41 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_kubernetes_manifests_inventory_deployment_inventory]
+# [START anthosbaremetal_k8_manifests_dev_api_server_deployment_api_server]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory
+  name: api-server
 spec:
   selector:
     matchLabels:
-      app: inventory
+      app: api-server
   template:
     metadata:
       labels:
-        app: inventory
+        app: api-server
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
-      - name: inventory
-        image: us-docker.pkg.dev/anthos-dpe-abm-edge-pos/abm-edge-pos-images/inventory
+      - name: api-server
+        image: api-server
         env:
-        - name: CONNECTOR
+        - name: INVENTORY_EP
           valueFrom:
             configMapKeyRef:
               name: service-configs
-              key: CONNECTOR
-        - name: ACTIVE_ITEM_TYPE
+              key: INVENTORY_EP
+        - name: PAYMENTS_EP
           valueFrom:
             configMapKeyRef:
               name: service-configs
-              key: ACTIVE_ITEM_TYPE
-        - name: ITEMS
-          valueFrom:
-            configMapKeyRef:
-              name: service-configs
-              key: ITEMS
+              key: PAYMENTS_EP
         resources:
           requests:
             cpu: 100m
@@ -56,31 +51,31 @@ spec:
             memory: 1Gi
         readinessProbe:
           httpGet:
-            path: /ready
+            path: /api/ready
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 5
           timeoutSeconds: 10
         livenessProbe:
           httpGet:
-            path: /healthy
+            path: /api/healthy
             port: 8080
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_kubernetes_manifests_inventory_deployment_inventory]
+# [END anthosbaremetal_k8_manifests_dev_api_server_deployment_api_server]
 ---
-# [START anthosbaremetal_kubernetes_manifests_inventory_service_inventory_svc]
+# [START anthosbaremetal_k8_manifests_dev_api_server_service_api_server_svc]
 apiVersion: v1
 kind: Service
 metadata:
-  name: inventory-svc
+  name: api-server-svc
 spec:
   type: ClusterIP
   selector:
-    app: inventory
+    app: api-server
   ports:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_kubernetes_manifests_inventory_service_inventory_svc]
+# [END anthosbaremetal_k8_manifests_dev_api_server_service_api_server_svc]
