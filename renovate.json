@@ -19,5 +19,20 @@
       "matchPackageNames": ["vuex"],
       "allowedVersions": "<4.0.0"
     }
-  ]
+  ],
+  "prConcurrentLimit":5,
+  "stabilityDays":7,
+  "vulnerabilityAlerts":{
+     "labels":[
+       "type:security"
+     ],
+     "stabilityDays":0
+  },
+  "labels": ["dependencies"],
+  "javascript":{
+    "addLabels": ["lang: javascript"]
+  },
+  "java":{
+    "addLabels": ["lang: java"]
+  }
 }

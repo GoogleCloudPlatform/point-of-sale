@@ -12,10 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+###########################################################
+# This is a GCP CloudBuild Trigger config file. The trigger
+# is for a WebHook event from GitHub. The webhook is
+# configured to receive events of type PullRequest.
+###########################################################
+
 steps:
-###########################################################
-# cleanup the namespace and resources
-###########################################################
+  ###########################################################
+  # cleanup the namespace and resources
+  ###########################################################
 - id: 'delete-namespace-on-pr-close'
   name: 'gcr.io/cloud-builders/kubectl'
   entrypoint: bash
