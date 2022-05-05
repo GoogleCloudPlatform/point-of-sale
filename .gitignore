@@ -10,6 +10,7 @@ target
 test-server
 test-server.yaml
 dev.yaml
+pos-quickstart.yaml
 
 node
 node_modules

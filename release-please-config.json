@@ -1,18 +1,18 @@
 {
     "packages": {
-        "point-of-sale-app/service-sdk": {
+        "src/service-sdk": {
             "release-type": "java-yoshi"
         },
-        "point-of-sale-app/ui": {
+        "src/ui": {
             "release-type": "node"
         },
-        "point-of-sale-app/api-server": {
+        "src/api-server": {
             "release-type": "java-yoshi"
         },
-        "point-of-sale-app/inventory": {
+        "src/inventory": {
             "release-type": "java-yoshi"
         },
-        "point-of-sale-app/payments": {
+        "src/payments": {
             "release-type": "java-yoshi"
         }
     }

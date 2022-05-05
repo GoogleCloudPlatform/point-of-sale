@@ -23,7 +23,7 @@ steps:
 ###########################################################
 - id: 'npm-install'
   name: 'node:16.14.0'
-  dir: 'point-of-sale-app/ui'
+  dir: 'src/ui'
   entrypoint: 'npm'
   args: [ 'install' ]
   # indicates that the step need not wait for any other step
@@ -85,7 +85,7 @@ steps:
 
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
 
-    ./mvnw install
+    ./src/mvnw install
     skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-db --tag=pr-$_PR_NUMBER-db
     skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-inmemory --tag=pr-$_PR_NUMBER-inmemory
 
@@ -98,7 +98,6 @@ steps:
   ###########################################################
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  dir: 'point-of-sale-app'
   args: [
       'bash',
       '/workspace/deploy.sh',
