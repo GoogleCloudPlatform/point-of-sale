@@ -31,7 +31,7 @@
     ```bash
     export CLUSTER_NAME=pos-cluster
     export ZONE=us-central1-b
-    gcloud container clusters create $CLUSTER_NAME \
+    gcloud container clusters create ${CLUSTER_NAME} \
         --project=${PROJECT_ID} \
         --zone=${ZONE} \
         --machine-type=e2-standard-2 \
@@ -78,7 +78,7 @@
 
 7. (Optional) **Clean up**:
    ```bash
-   gcloud container clusters delete $CLUSTER_NAME \
+   gcloud container clusters delete ${CLUSTER_NAME} \
       --project=${PROJECT_ID} \
       --zone=${ZONE}
    ```
