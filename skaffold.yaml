@@ -80,7 +80,7 @@ profiles:
       - k8-manifests/release/payments.yaml
 # [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
 ---
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_load-balancer]
+# [START anthosbaremetal_point_of_sale_app_skaffold_config_load_balancer]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
@@ -91,4 +91,4 @@ deploy:
   kubectl:
     manifests:
     - k8-manifests/api-server-lb.yaml
-# [END anthosbaremetal_point_of_sale_app_skaffold_config_load-balancer]
+# [END anthosbaremetal_point_of_sale_app_skaffold_config_load_balancer]
