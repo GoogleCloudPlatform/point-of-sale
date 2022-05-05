@@ -1,18 +1,18 @@
 {
     "packages": {
-        "service-sdk": {
+        "src/service-sdk": {
             "release-type": "java-yoshi"
         },
-        "ui": {
+        "src/ui": {
             "release-type": "node"
         },
-        "api-server": {
+        "src/api-server": {
             "release-type": "java-yoshi"
         },
-        "inventory": {
+        "src/inventory": {
             "release-type": "java-yoshi"
         },
-        "payments": {
+        "src/payments": {
             "release-type": "java-yoshi"
         }
     }
