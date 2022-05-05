@@ -54,13 +54,13 @@ profiles:
     artifacts:
     - image: api-server
       jib:
-        project: api-server
+        project: src/api-server
     - image: inventory
       jib:
-        project: inventory
+        project: src/inventory
     - image: payments
       jib:
-        project: payments
+        project: src/payments
     tagPolicy:
       gitCommit: { }
     local:
