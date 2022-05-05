@@ -54,11 +54,11 @@
   </properties>
 
   <modules>
-    <module>service-sdk</module>
-    <module>ui</module>
-    <module>api-server</module>
-    <module>inventory</module>
-    <module>payments</module>
+    <module>src/service-sdk</module>
+    <module>src/ui</module>
+    <module>src/api-server</module>
+    <module>src/inventory</module>
+    <module>src/payments</module>
   </modules>
 
   <dependencyManagement>
