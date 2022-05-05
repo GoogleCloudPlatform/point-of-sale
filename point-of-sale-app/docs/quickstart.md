@@ -73,7 +73,7 @@
      <img src="images/pos.png">
    </p>
 
-   > **Note**- you may see `<pending>` while GCP provisions the Loadbalancer. If
+   > **Note:** you may see `<pending>` while GCP provisions the Loadbalancer. If
    this happens, wait a few minutes and re-run the command.
 
 7. (Optional) **Clean up**:
