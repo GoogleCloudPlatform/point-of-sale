@@ -98,6 +98,7 @@ steps:
   ###########################################################
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  dir: 'src'
   args: [
       'bash',
       '/workspace/deploy.sh',
