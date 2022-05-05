@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_setup]
+# [START anthosbaremetal_skaffold_config_setup]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
@@ -21,9 +21,9 @@ deploy:
   kubectl:
     manifests:
     - k8-manifests/service-configs.yaml
-# [END anthosbaremetal_point_of_sale_app_skaffold_config_setup]
+# [END anthosbaremetal_skaffold_config_setup]
 ---
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_db]
+# [START anthosbaremetal_skaffold_config_db]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
@@ -39,9 +39,9 @@ profiles:
     kubectl:
       manifests:
       - k8-manifests/springprofile-h2.yaml
-# [END anthosbaremetal_point_of_sale_app_skaffold_config_db]
+# [END anthosbaremetal_skaffold_config_db]
 ---
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_backend]
+# [START anthosbaremetal_skaffold_config_backend]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
@@ -78,9 +78,9 @@ profiles:
       - k8-manifests/release/api-server.yaml
       - k8-manifests/release/inventory.yaml
       - k8-manifests/release/payments.yaml
-# [END anthosbaremetal_point_of_sale_app_skaffold_config_backend]
+# [END anthosbaremetal_skaffold_config_backend]
 ---
-# [START anthosbaremetal_point_of_sale_app_skaffold_config_load_balancer]
+# [START anthosbaremetal_skaffold_config_load_balancer]
 apiVersion: skaffold/v2beta21
 kind: Config
 metadata:
@@ -91,4 +91,4 @@ deploy:
   kubectl:
     manifests:
     - k8-manifests/api-server-lb.yaml
-# [END anthosbaremetal_point_of_sale_app_skaffold_config_load_balancer]
+# [END anthosbaremetal_skaffold_config_load_balancer]
