@@ -47,7 +47,7 @@ steps:
     gcloud container clusters get-credentials --zone $_MAIN_CLUSTER_ZONE $_MAIN_CLUSTER
     kubectl apply -f /workspace/namespace.yaml
 
-    ./src/mvnw install
+    ./mvnw install
     skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-db
     skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-inmemory
     EOF
@@ -59,6 +59,7 @@ steps:
   ###########################################################
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  dir: 'point-of-sale-app'
   args: [
       'bash',
       '/workspace/deploy.sh'
