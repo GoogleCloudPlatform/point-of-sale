@@ -14,7 +14,7 @@ the root of this _(`k8-manifests`)_ directory.
       skaffold**](https://skaffold.dev/) tool. The container image
       definitions ([1](dev/api-server.yaml#L34), [2](dev/inventory.yaml#L34)
       , [3](dev/payments.yaml#L34)) in these files match the images defined in
-      the [**skaffold build context**](/point-of-sale-app/skaffold.yaml#L40-L47)
+      the [**skaffold build context**](/skaffold.yaml#L40-L47)
       of the `skaffold.yaml` file. This ensures, during the _dev flow_, skaffold
       can push the images built from the locally available source to some
       container-image repository _(
