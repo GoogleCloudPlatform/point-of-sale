@@ -63,7 +63,7 @@
 6. **Access the Point of Sale application** using the `EXTERNAL_IP` of the API
    Server `Service`.
    ```bash
-   kubectl get service/api-server-lb -o jsonpath={.status.loadBalancer.ingress[0].ip}
+   kubectl get service/api-server-lb -o jsonpath={'.status.loadBalancer.ingress[0].ip'}
    ```
    ```bash
    # expected output (you will see a different IP address)
