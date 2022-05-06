@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_release_payments_deployment_payments]
+# [START anthosbaremetal_k8_manifests_release_payments_deployment_payments]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,13 +31,7 @@ spec:
       containers:
       - name: payments
         # TODO:: remove the snapshot tag once we make the first release
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v1-snapshot
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          valueFrom:
-            configMapKeyRef:
-              name: spring-profile
-              key: SPRING_PROFILES_ACTIVE
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:snapshot
         resources:
           requests:
             cpu: 100m
@@ -59,9 +53,9 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-# [END anthosbaremetal_release_payments_deployment_payments]
+# [END anthosbaremetal_k8_manifests_release_payments_deployment_payments]
 ---
-# [START anthosbaremetal_release_payments_service_payments_svc]
+# [START anthosbaremetal_k8_manifests_release_payments_service_payments_svc]
 apiVersion: v1
 kind: Service
 metadata:
@@ -74,4 +68,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_release_payments_service_payments_svc]
+# [END anthosbaremetal_k8_manifests_release_payments_service_payments_svc]
