@@ -23,7 +23,7 @@ steps:
 ###########################################################
 - id: 'npm-install'
   name: 'node:16.14.0'
-  dir: 'point-of-sale-app/ui'
+  dir: 'src/ui'
   entrypoint: 'npm'
   args: [ 'install' ]
   # indicates that the step need not wait for any other step
@@ -98,7 +98,6 @@ steps:
   ###########################################################
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  dir: 'point-of-sale-app'
   args: [
       'bash',
       '/workspace/deploy.sh',
