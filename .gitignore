@@ -25,9 +25,11 @@ npm.logs
 
 # exclude everything
 point-of-sale-app/api-server/src/main/resources/public/*
+src/api-server/src/main/resources/public/*
 
 # exception to the rule
 !point-of-sale-app/api-server/src/main/resources/public/.gitkeep
+!src/api-server/src/main/resources/public/.gitkeep
 diff
 remote-gsa-key.json
 gcp.yaml
