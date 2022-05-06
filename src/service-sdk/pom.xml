@@ -47,8 +47,4 @@
       <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
   </dependencies>
-<<<<<<< HEAD
 </project>
-=======
-</project>
->>>>>>> v2-sql
