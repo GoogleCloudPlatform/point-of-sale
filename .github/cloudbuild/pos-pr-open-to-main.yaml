@@ -85,7 +85,8 @@ steps:
 
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
 
-    echo "RUnning from: $PWD"
+    DIR=$(pwd)
+    echo "RUnning from: $DIR"
 
     ./src/mvnw install
     skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-db --tag=pr-$_PR_NUMBER-db
