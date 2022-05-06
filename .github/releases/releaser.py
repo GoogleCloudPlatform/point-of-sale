@@ -35,7 +35,7 @@ def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool
         versionElement = xml.find("./{*}version")
     versionElement.text = version
     with open(pom, 'wb') as f:
-        f.write(ET.tostring(xml, encoding="utf-8", xml_declaration=True))
+        f.write(ET.tostring(xml, encoding="utf-8", pretty_print=True, xml_declaration=True))
 
 def main(releaseType: str):
     parser = ET.XMLParser(remove_comments=False)
