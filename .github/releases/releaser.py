@@ -1,6 +1,6 @@
-# import xml.etree.ElementTree as ET
-import argparse
+import json
 import semver
+import argparse
 import lxml.etree as ET
 
 MAVEN_POM_SCHEMA_URL = "http://maven.apache.org/POM/4.0.0"
@@ -10,6 +10,7 @@ UI_POM = "src/ui/pom.xml"
 API_SERVER_POM = "src/api-server/pom.xml"
 INVENTORY_POM = "src/inventory/pom.xml"
 PAYMENTS_POM = "src/payments/pom.xml"
+PACKAGE_JSON = "src/ui/package.json"
 
 POM_SOURCES_PATH = [
     SDK_POM,
@@ -28,6 +29,7 @@ def getCurrentVersion(xmlParser, pom: str) -> str:
     return versionElement.text
 
 def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool) -> None:
+    print("Updating pom file at path: {}".format(pom))
     xml = ET.parse(pom, parser=xmlParser)
     if isSubModule:
         versionElement = xml.find("./{*}parent/{*}version")
@@ -36,6 +38,15 @@ def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool
     versionElement.text = version
     with open(pom, 'wb') as f:
         f.write(ET.tostring(xml, encoding="utf-8", pretty_print=True, xml_declaration=True))
+
+def updatePackageJson(path: str, version: str) -> None:
+    print("Updating package.json file at path: {}".format(path))
+    with open(path, "r+") as packageJson:
+        data = json.load(packageJson)
+        data["version"] = version
+        packageJson.seek(0)
+        json.dump(data, packageJson, indent=2)
+        packageJson.truncate()
 
 def main(releaseType: str):
     parser = ET.XMLParser(remove_comments=False)
@@ -46,14 +57,13 @@ def main(releaseType: str):
         exit(1)
 
     releaseVersion = sementicVersion.finalize_version()
-    nextVersion = releaseVersion.next_version(releaseType)
-    nextVersionSnapshot = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
+    # nextVersion = releaseVersion.next_version(releaseType)
+    # nextVersionSnapshot = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
 
+    updatePackageJson(PACKAGE_JSON, str(releaseVersion))
     updatePomWithNewVersion(parser, PARENT_POM, str(releaseVersion), False)
     for pom in POM_SOURCES_PATH:
-        print("Updating pom file at path: {}".format(pom))
         updatePomWithNewVersion(parser, pom, str(releaseVersion), True)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Release manager")
