@@ -1,6 +1,7 @@
-from xml.etree import ElementTree as et
+# import xml.etree.ElementTree as ET
 import argparse
 import semver
+import lxml.etree as ET
 
 MAVEN_POM_SCHEMA_URL = "http://maven.apache.org/POM/4.0.0"
 PARENT_POM = "pom.xml"
@@ -11,7 +12,6 @@ INVENTORY_POM = "src/inventory/pom.xml"
 PAYMENTS_POM = "src/payments/pom.xml"
 
 POM_SOURCES_PATH = [
-    PARENT_POM,
     SDK_POM,
     UI_POM,
     API_SERVER_POM,
@@ -19,21 +19,27 @@ POM_SOURCES_PATH = [
     PAYMENTS_POM
 ]
 
-def getCurrentVersion(xmlParser: et.ElementTree, pom: str) -> str:
-    xmlParser.parse(pom)
-    versionPointer = xmlParser.getroot().find("{%s}version" % MAVEN_POM_SCHEMA_URL)
-    return versionPointer.text
+def getCurrentVersion(xmlParser, pom: str) -> str:
+    xml = ET.parse(pom, parser=xmlParser)
+    versionElement = xml.find("./{*}version")
+    if versionElement == None:
+        print("pom.xml does not appear to have a <version> tag")
+        exit(1)
+    return versionElement.text
 
-def updatePomWithNewVersion(xmlParser: et.ElementTree, pom: str, version: str) -> None:
-    xmlParser.parse(pom)
-    versionPointer = xmlParser.getroot().find("{%s}version" % MAVEN_POM_SCHEMA_URL)
-    versionPointer.text = version
-    xmlParser.write(pom)
+def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool) -> None:
+    xml = ET.parse(pom, parser=xmlParser)
+    if isSubModule:
+        versionElement = xml.find("./{*}parent/{*}version")
+    else:
+        versionElement = xml.find("./{*}version")
+    versionElement.text = version
+    with open(pom, 'wb') as f:
+        f.write(ET.tostring(xml, encoding="utf-8", xml_declaration=True))
 
 def main(releaseType: str):
-    et.register_namespace('', MAVEN_POM_SCHEMA_URL)
-    xmlParser = et.ElementTree()
-    currentVersion = getCurrentVersion(xmlParser, PARENT_POM)
+    parser = ET.XMLParser(remove_comments=False)
+    currentVersion = getCurrentVersion(parser, PARENT_POM)
     sementicVersion = semver.VersionInfo.parse(currentVersion)
     if sementicVersion.prerelease != "SNAPSHOT":
         print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
@@ -43,9 +49,10 @@ def main(releaseType: str):
     nextVersion = releaseVersion.next_version(releaseType)
     nextVersionSnapshot = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
 
+    updatePomWithNewVersion(parser, PARENT_POM, str(releaseVersion), False)
     for pom in POM_SOURCES_PATH:
-        print("Updating pom file at path: {}\n".format(pom))
-        updatePomWithNewVersion(xmlParser, pom, str(releaseVersion))
+        print("Updating pom file at path: {}".format(pom))
+        updatePomWithNewVersion(parser, pom, str(releaseVersion), True)
 
 
 if __name__ == "__main__":
