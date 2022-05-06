@@ -45,7 +45,7 @@ def main(releaseType: str):
 
     for pom in POM_SOURCES_PATH:
         print("Updating pom file at path: {}\n".format(pom))
-        updatePomWithNewVersion(xmlParser, pom, releaseVersion)
+        updatePomWithNewVersion(xmlParser, pom, str(releaseVersion))
 
 
 if __name__ == "__main__":
