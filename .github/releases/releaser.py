@@ -26,7 +26,7 @@ def getCurrentVersion(xmlParser, pom: str) -> str:
     versionElement = xml.find("./{*}version")
     if versionElement == None:
         print("pom.xml does not appear to have a <version> tag")
-        exit(1)
+        exit(0)
     return versionElement.text
 
 def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool) -> None:
@@ -55,7 +55,7 @@ def main(releaseType: str):
     sementicVersion = semver.VersionInfo.parse(currentVersion)
     if sementicVersion.prerelease != "SNAPSHOT":
         print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
-        exit(1)
+        exit(0)
 
     releaseVersion = sementicVersion.finalize_version()
     # nextVersion = releaseVersion.next_version(releaseType)
