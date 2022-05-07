@@ -62,9 +62,8 @@ steps:
   - |
     git config user.email "smab@google.com"
     git config user.name "Anthos DPE"
-    git add .
+    git add -A
     git commit -m "release: update version before release"
-    git remote rm origin && git remote add origin https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git
     git push https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
