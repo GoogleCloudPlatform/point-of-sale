@@ -32,7 +32,7 @@ steps:
 
     pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
-    if [ $_HEAD_BRANCH == 'release' ] || [ $_HEAD_BRANCH == 'release-minor' || [ $_HEAD_BRANCH == 'restructure3' ]; then
+    if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then
       echo "Updating versions for a minor release"
       python3 .github/releases/releaser.py -t minor
 
