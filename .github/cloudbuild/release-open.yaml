@@ -62,7 +62,7 @@ steps:
   - |
     git config user.email "smab@google.com"
     git config user.name "Anthos DPE"
-    git branch $_HEAD_BRANCH origin/$_HEAD_BRANCH
+    git branch -b $_HEAD_BRANCH origin/$_HEAD_BRANCH
     git add -A
     git commit -m "release: update version before release"
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
