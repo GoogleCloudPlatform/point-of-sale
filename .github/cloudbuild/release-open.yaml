@@ -59,7 +59,7 @@ steps:
   - |
     git add .
     git commit -m "release: update version before release"
-    git push https://$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git
+    git push https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git
   waitFor: [ 'bump-version' ]
 
 availableSecrets:
