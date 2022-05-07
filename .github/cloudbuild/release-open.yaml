@@ -62,9 +62,9 @@ steps:
   - |
     git config user.email "smab@google.com"
     git config user.name "Anthos DPE"
+    git checkout $_HEAD_BRANCH
     git add -A
     git commit -m "release: update version before release"
-    git log --pretty=format:'%h was %an, %ar, message: %s'
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
