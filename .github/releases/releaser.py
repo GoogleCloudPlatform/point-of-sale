@@ -53,16 +53,16 @@ def main(releaseType: str, justPrint: bool):
     parser = ET.XMLParser(remove_comments=False)
     currentVersion = getCurrentVersion(parser, PARENT_POM)
     sementicVersion = semver.VersionInfo.parse(currentVersion)
-    if sementicVersion.prerelease != "SNAPSHOT":
-        print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
-        exit(0)
-
     releaseVersion = sementicVersion.finalize_version()
     # nextVersion = releaseVersion.next_version(releaseType)
     # nextVersionSnapshot = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
 
     if justPrint:
         print(releaseVersion)
+        exit(0)
+
+    if sementicVersion.prerelease != "SNAPSHOT":
+        print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
         exit(0)
 
     updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
