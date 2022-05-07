@@ -28,6 +28,14 @@ steps:
   args:
   - -c
   - |
+    if ! command -v git &> /dev/null
+    then
+      echo "git could not be found"
+    else
+      echo "git exists!"
+    fi
+
+    pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
     if [ $_HEAD_BRANCH == 'release' ] || [ $_HEAD_BRANCH == 'release-minor' || [ $_HEAD_BRANCH == 'restructure3' ]; then
       echo "Updating versions for a minor release"
