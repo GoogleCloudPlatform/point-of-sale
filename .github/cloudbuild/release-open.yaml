@@ -65,7 +65,7 @@ steps:
     git add .
     git commit -m "release: update version before release"
     git remote -v
-    git push https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
+    git push https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
 availableSecrets:
