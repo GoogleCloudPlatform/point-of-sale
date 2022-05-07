@@ -64,7 +64,7 @@ steps:
     git config user.name "Anthos DPE"
     git add .
     git commit -m "release: update version before release"
-    git remote -v
+    git remote rm origin && git remote add origin https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git
     git push https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
