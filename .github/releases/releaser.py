@@ -49,7 +49,7 @@ def updatePackageJson(path: str, version: str) -> None:
         json.dump(data, packageJson, indent=2)
         packageJson.truncate()
 
-def main(releaseType: str):
+def main(releaseType: str, justPrint: bool):
     parser = ET.XMLParser(remove_comments=False)
     currentVersion = getCurrentVersion(parser, PARENT_POM)
     sementicVersion = semver.VersionInfo.parse(currentVersion)
@@ -60,6 +60,10 @@ def main(releaseType: str):
     releaseVersion = sementicVersion.finalize_version()
     # nextVersion = releaseVersion.next_version(releaseType)
     # nextVersionSnapshot = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
+
+    if justPrint:
+        print(releaseVersion)
+        exit(0)
 
     updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
     updatePackageJson(RELEASE_PACKAGE_JSON, str(releaseVersion))
@@ -76,5 +80,11 @@ if __name__ == "__main__":
         default="minor",
         choices=['major', 'minor', 'patch'],
         help="The sementic version type to bump")
+    parser.add_argument(
+        "-p",
+        dest='print',
+        type=bool,
+        default=False,
+        help="Just print the new version")
     args = parser.parse_args()
-    main(args.type)
+    main(args.type, args.print)
