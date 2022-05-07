@@ -10,7 +10,8 @@ UI_POM = "src/ui/pom.xml"
 API_SERVER_POM = "src/api-server/pom.xml"
 INVENTORY_POM = "src/inventory/pom.xml"
 PAYMENTS_POM = "src/payments/pom.xml"
-PACKAGE_JSON = "src/ui/package.json"
+UI_PACKAGE_JSON = "src/ui/package.json"
+RELEASE_PACKAGE_JSON = "package.json"
 
 POM_SOURCES_PATH = [
     SDK_POM,
@@ -60,7 +61,8 @@ def main(releaseType: str):
     # nextVersion = releaseVersion.next_version(releaseType)
     # nextVersionSnapshot = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
 
-    updatePackageJson(PACKAGE_JSON, str(releaseVersion))
+    updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
+    updatePackageJson(RELEASE_PACKAGE_JSON, str(releaseVersion))
     updatePomWithNewVersion(parser, PARENT_POM, str(releaseVersion), False)
     for pom in POM_SOURCES_PATH:
         updatePomWithNewVersion(parser, pom, str(releaseVersion), True)
