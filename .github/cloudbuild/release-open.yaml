@@ -28,12 +28,7 @@ steps:
   args:
   - -c
   - |
-    if ! command -v git &> /dev/null
-    then
-      echo "git could not be found"
-    else
-      echo "git exists!"
-    fi
+    command -v git >/dev/null 2>&1 || { echo >&2 "git is not installed.  Aborting."; exit 1; }
 
     pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
@@ -69,7 +64,7 @@ steps:
     git config user.name "Anthos DPE"
     git add .
     git commit -m "release: update version before release"
-    git push https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git
+    git push https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
 availableSecrets:
