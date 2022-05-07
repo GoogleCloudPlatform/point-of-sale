@@ -40,13 +40,13 @@ steps:
   - -c
   - |
     pip install -r .github/releases/requirements.txt
-    if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then
+    if [ $BRANCH_NAME == 'release-minor' ] || [ $BRANCH_NAME == 'restructure3' ]; then
       VERSION=$(python3 .github/releases/releaser.py -t minor -p true)
 
-    elif [ $_HEAD_BRANCH == 'release-patch' ]; then
+    elif [ $BRANCH_NAME == 'release-patch' ]; then
       VERSION=$(python3 .github/releases/releaser.py -t patch -p true)
 
-    elif [ $_HEAD_BRANCH == 'release-major' ]; then
+    elif [ $BRANCH_NAME == 'release-major' ]; then
       VERSION=$(python3 .github/releases/releaser.py -t major -p true)
 
     else
@@ -73,7 +73,7 @@ steps:
   - |
     VERSION=$(cat /workspace/version.txt)
     echo "Publishing images with tag v$$VERSION..."
-    ./mvnw clean install
+    ./mvnw install
     skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$$VERSION
   waitFor: [ 'get-release-version' ]
 
