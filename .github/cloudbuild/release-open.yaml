@@ -64,7 +64,7 @@ steps:
     git config user.name "Anthos DPE"
     git add -A
     git commit -m "release: update version before release"
-    git push https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
+    git push -u https://shabirmean:$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
 availableSecrets:
