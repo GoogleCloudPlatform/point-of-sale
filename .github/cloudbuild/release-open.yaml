@@ -28,8 +28,6 @@ steps:
   args:
   - -c
   - |
-    command -v git >/dev/null 2>&1 || { echo >&2 "git is not installed.  Aborting."; exit 1; }
-
     pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
     if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then

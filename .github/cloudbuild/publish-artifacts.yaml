@@ -28,15 +28,25 @@ steps:
   args:
   - -c
   - |
-    gcloud artifacts print-settings mvn \
-      --project=$PROJECT_ID \
-      --repository=$_AR_REPO_NAME \
-      --location=$_AR_REPO_LOCATION
-
     ./mvnw clean deploy
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
+ ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
+- id: 'publish-images'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    ./mvnw install
+    skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$VERSION
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
     logging: GCS_ONLY
