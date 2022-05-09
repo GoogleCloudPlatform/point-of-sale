@@ -100,7 +100,7 @@ def main(releaseType: str, justPrint: bool):
         exit(0)
 
     for file in listdir(RELEASE_YAML_DIR):
-        filePath = "{}.{}".format(RELEASE_YAML_DIR, file)
+        filePath = "{}{}".format(RELEASE_YAML_DIR, file)
         filaName = file.split(".")[0]
         updateReleaseYaml(filePath, filaName, str(releaseVersion))
     # updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
