@@ -60,7 +60,7 @@ def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
         file.close()
 
     if len(yDefinition) == 0:
-        print()
+        print("Loaded yaml definiton from path {} is empty".format(yamlPath))
         exit(1)
 
     updatedImage = None
@@ -73,27 +73,15 @@ def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
         con['image'] = updatedImage
         break;
 
-    if updatedImage == updatedImage:
-        print()
+    if updatedImage == None:
+        print("Could not find image definition for container [{}] at yaml path [{}]".format(containerName, yamlPath))
         exit(1)
 
     with open(yamlPath, 'w') as file:
         yaml = YAML()
+        print("Updating image to {} for yaml file at {}".format(updatedImage, yamlPath))
         yDefinition = yaml.dump(yDefinition, file)
         file.close()
-
-    # yaml.dump(yDefinition, file)
-
-    # with open(yamlPath, 'r') as file:
-    #     releaseManifest = yaml.safe_load(file)
-    #     # print(releaseManifest['spec']['template']['spec']['containers']['image'])
-    #     print(releaseManifest)
-        # releaseManifest['spec']['template']['spec']['containers']['image'] = version
-        # file.close()
-
-    # with open(yamlPath, 'w') as file:
-    #     yaml.dump(releaseManifest, file)
-    #     file.close()
 
 def main(releaseType: str, justPrint: bool):
     parser = ET.XMLParser(remove_comments=False)
