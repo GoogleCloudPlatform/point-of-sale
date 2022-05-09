@@ -20,6 +20,24 @@
 
 steps:
   ###########################################################
+  # Gating step to ensure we run it only once
+  ###########################################################
+- id: 'gate-ci'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    touch /workspace/release.done
+    COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
+    if [ $$COMMIT_MSG == 'bump version to next snapshot' ]; then
+      echo "Commit message [$$COMMIT_MSG] indicates release version already being updated. Skip steps."
+      echo "RELEASE_COMPLETE" > /workspace/release.done
+    fi
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
   # Version bump on release PR
   ###########################################################
 - id: 'bump-version'
@@ -28,6 +46,11 @@ steps:
   args:
   - -c
   - |
+    STATUS=$(cat /workspace/release.done)
+    if [ $$STATUS == 'RELEASE_COMPLETE' ]; then
+      exit 0
+    fi
+
     pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
     if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then
@@ -46,7 +69,7 @@ steps:
       echo "Nothing to do since it's not a 'release' PR"
     fi
   # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
+  waitFor: [ 'gate-ci' ]
 
   ###########################################################
   # Push the version changes to the repo
@@ -58,6 +81,11 @@ steps:
   args:
   - -c
   - |
+    STATUS=$(cat /workspace/release.done)
+    if [ $$STATUS == 'RELEASE_COMPLETE' ]; then
+      exit 0
+    fi
+
     git config user.email "$$GITHUB_EMAIL"
     git config user.name "Anthos DPE"
 
@@ -81,8 +109,13 @@ steps:
   args:
   - -c
   - |
+    STATUS=$(cat /workspace/release.done)
+    if [ $$STATUS == 'RELEASE_COMPLETE' ]; then
+      exit 0
+    fi
+
     COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
-    if [ $$COMMIT_MSG != 'release: update version before release' ]; then
+    if [ $$COMMIT_MSG != 'update version before release' ]; then
       echo "Commit message [$$COMMIT_MSG] is not a release commit. Skipping step."
       exit 0
     fi
