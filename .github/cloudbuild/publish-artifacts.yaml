@@ -40,7 +40,7 @@ steps:
   - -c
   - |
     echo "Deploying the maven jars..."
-    ./mvnw clean deploy
+    ./mvnw deploy
   # indicates that the step need not wait for any other step
   waitFor: [ 'npm-install' ]
 
