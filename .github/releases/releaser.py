@@ -116,8 +116,12 @@ def getVersions(sementicVersion, releaseType: str) -> Union[str, str, str]:
     nextVersion = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
     return currentReleaseVersion, nextVersion
 
-# def updateToNextSnapshot(releaseType: str):
-
+def updateVersions(version: str):
+    updatePackageJson(UI_PACKAGE_JSON, str(version))
+    updatePackageJson(RELEASE_PACKAGE_JSON, str(version))
+    updatePomWithNewVersion(parser, PARENT_POM, str(version), False)
+    for pom in POM_SOURCES_PATH:
+        updatePomWithNewVersion(parser, pom, str(version), True)
 
 def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
     parser = ET.XMLParser(remove_comments=False)
@@ -128,32 +132,33 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
     if justPrint:
         # we print the current version and exit
         print(currentReleaseVersion)
-        exit(0)
 
-    # if setToSnapshot:
-    #     # we update the repo to the next SNAPSHOT version and exit
-    #     updateToNextSnapshot(releaseType)
-    #     exit(0)
+    elif setToSnapshot:
+        # this is to set the versions to the next SNAPSHOT version after the
+        # release artifacts are piublished
+        nextPatchV = currentReleaseVersion.bump_patch()
+        snapshotVer = semver.VersionInfo(*(nextPatchV.major, nextPatchV.minor, nextPatchV.patch, "SNAPSHOT"))
+        updateVersions(str(snapshotVer), releaseType)
 
-    print("""
-        Version on main: {}
-        Version released now: {}
-        Updated version on main: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
+    else:
+        # set the versions to the next release version and prepare to publish
+        # artifacts
+        print("""
+            Version on main: {}
+            Version released now: {}
+            Updated version on main: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
 
-    if sementicVersion.prerelease != "SNAPSHOT":
-        print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
-        exit(0)
+        if sementicVersion.prerelease != "SNAPSHOT":
+            print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
+            exit(0)
 
-    updatePackageJson(UI_PACKAGE_JSON, str(currentReleaseVersion))
-    updatePackageJson(RELEASE_PACKAGE_JSON, str(currentReleaseVersion))
-    updatePomWithNewVersion(parser, PARENT_POM, str(currentReleaseVersion), False)
-    for pom in POM_SOURCES_PATH:
-        updatePomWithNewVersion(parser, pom, str(currentReleaseVersion), True)
+        updateVersions(str(snapshotVer), currentReleaseVersion)
+        # update release manifests
+        for file in listdir(RELEASE_YAML_DIR):
+            filePath = "{}{}".format(RELEASE_YAML_DIR, file)
+            filaName = file.split(".")[0]
+            updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
 
-    for file in listdir(RELEASE_YAML_DIR):
-        filePath = "{}{}".format(RELEASE_YAML_DIR, file)
-        filaName = file.split(".")[0]
-        updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Release manager")
