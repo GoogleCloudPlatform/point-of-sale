@@ -104,7 +104,7 @@ construct the next release version based on the requested release type:
                 released version: 1.0.0
                 main branch after release: 1.0.1-SNAPSHOT (patch bumped from release)
 """
-def getVersions(sementicVersion, releaseType: str) -> Union[str, str, str]:
+def getReleaseVersions(sementicVersion, releaseType: str) -> Union[str, str]:
     currentReleaseVersion = None
     currentReleaseVersion = sementicVersion.finalize_version()
     if releaseType == 'minor':
@@ -116,29 +116,33 @@ def getVersions(sementicVersion, releaseType: str) -> Union[str, str, str]:
     nextVersion = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
     return currentReleaseVersion, nextVersion
 
-def updateVersions(version: str):
-    updatePackageJson(UI_PACKAGE_JSON, str(version))
-    updatePackageJson(RELEASE_PACKAGE_JSON, str(version))
-    updatePomWithNewVersion(parser, PARENT_POM, str(version), False)
+def updateVersions(parser, version: str):
+    updatePackageJson(UI_PACKAGE_JSON, version)
+    updatePackageJson(RELEASE_PACKAGE_JSON, version)
+    updatePomWithNewVersion(parser, PARENT_POM, version, False)
     for pom in POM_SOURCES_PATH:
-        updatePomWithNewVersion(parser, pom, str(version), True)
+        updatePomWithNewVersion(parser, pom, version, True)
 
 def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
     parser = ET.XMLParser(remove_comments=False)
     currentVersion = getCurrentVersion(parser, PARENT_POM)
     sementicVersion = semver.VersionInfo.parse(currentVersion)
 
-    currentReleaseVersion, nextVersion = getVersions(sementicVersion, releaseType)
+    currentReleaseVersion, nextVersion = getReleaseVersions(sementicVersion, releaseType)
     if justPrint:
         # we print the current version and exit
-        print(currentReleaseVersion)
+        print(sementicVersion)
 
     elif setToSnapshot:
         # this is to set the versions to the next SNAPSHOT version after the
-        # release artifacts are piublished
-        nextPatchV = currentReleaseVersion.bump_patch()
+        # release artifacts are published
+
+        if sementicVersion.prerelease == "SNAPSHOT":
+            print("Root pom version is {}; It is already on SNAPSHOT version".format(sementicVersion))
+            exit(1)
+        nextPatchV = sementicVersion.bump_patch()
         snapshotVer = semver.VersionInfo(*(nextPatchV.major, nextPatchV.minor, nextPatchV.patch, "SNAPSHOT"))
-        updateVersions(str(snapshotVer))
+        updateVersions(parser, str(snapshotVer))
 
     else:
         # set the versions to the next release version and prepare to publish
@@ -150,9 +154,9 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
 
         if sementicVersion.prerelease != "SNAPSHOT":
             print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
-            exit(0)
+            exit(1)
 
-        updateVersions(currentReleaseVersion)
+        updateVersions(parser, str(currentReleaseVersion))
         # update release manifests
         for file in listdir(RELEASE_YAML_DIR):
             filePath = "{}{}".format(RELEASE_YAML_DIR, file)
