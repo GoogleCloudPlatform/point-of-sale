@@ -134,8 +134,11 @@ steps:
   args:
   - -c
   - |
-    cat <<EOF > /workspace/gh-comment.txt -
+    LAST_COMMIT=$(cat .git/refs/heads/$BRANCH_NAME)
+    PR_NUMBER=$(cut -d "#" -f2- <<< "$$LAST_COMMIT")
+
     VERSION=$(cat /workspace/version.txt)
+    cat <<EOF > /workspace/gh-comment.txt -
     :zap:  Release Status :zap: </br>
     - **Artifacts Published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
     - **Manifests Updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
@@ -144,7 +147,7 @@ steps:
 
     :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger to deploy the latest release!!!
     EOF
-    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+    gh pr comment $$PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps
 
 availableSecrets:

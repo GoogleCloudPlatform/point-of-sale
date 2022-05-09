@@ -95,7 +95,7 @@ steps:
     git checkout --track origin/$_HEAD_BRANCH
 
     git add -A
-    git commit -m "release: update version before release"
+    git commit -m "release: update version before release #$_PR_NUMBER"
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
