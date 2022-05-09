@@ -36,7 +36,7 @@ def getCurrentVersion(xmlParser, pom: str) -> str:
     return versionElement.text
 
 def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool) -> None:
-    print("Updating pom file at path: {}".format(pom))
+    print("Updating pom file at path [{}]".format(pom))
     xml = ET.parse(pom, parser=xmlParser)
     if isSubModule:
         versionElement = xml.find("./{*}parent/{*}version")
@@ -47,7 +47,7 @@ def updatePomWithNewVersion(xmlParser, pom: str, version: str, isSubModule: bool
         f.write(ET.tostring(xml, encoding="utf-8", pretty_print=True, xml_declaration=True))
 
 def updatePackageJson(path: str, version: str) -> None:
-    print("Updating package.json file at path: {}".format(path))
+    print("Updating package.json file at path [{}]".format(path))
     with open(path, "r+") as packageJson:
         data = json.load(packageJson)
         data["version"] = version
@@ -63,7 +63,7 @@ def readAndUpdateYaml(yamlPath: str, containerName: str, version: str) -> Union[
         file.close()
 
     if len(yDefinition) == 0:
-        print("Loaded yaml definiton from path {} is empty".format(yamlPath))
+        print("Loaded yaml definiton from path [{}] is empty".format(yamlPath))
         exit(1)
 
     containers = yDefinition['spec']['template']['spec']['containers']
@@ -81,7 +81,7 @@ def readAndUpdateYaml(yamlPath: str, containerName: str, version: str) -> Union[
 def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
     _, yDefinition = readAndUpdateYaml(yamlPath, containerName, version)
     if yDefinition == None:
-        print("Loaded yaml definiton from path {} is empty".format(yamlPath))
+        print("Loaded yaml definiton from path [{}] is empty".format(yamlPath))
         exit(1)
 
     with open(yamlPath, 'w') as file:
@@ -134,7 +134,7 @@ def getVersions(sementicVersion, releaseType: str) -> Union[str, str, str]:
     return currentReleaseVersion, nextVersion
 
 
-def main(releaseType: str, justPrint: bool):
+def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
     parser = ET.XMLParser(remove_comments=False)
     currentVersion = getCurrentVersion(parser, PARENT_POM)
     sementicVersion = semver.VersionInfo.parse(currentVersion)
@@ -149,20 +149,20 @@ def main(releaseType: str, justPrint: bool):
         Version released now: {}
         Updated version on main: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
 
-    if sementicVersion.prerelease != "SNAPSHOT":
-        print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
-        exit(0)
+    # if sementicVersion.prerelease != "SNAPSHOT":
+    #     print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
+    #     exit(0)
 
-    updatePackageJson(UI_PACKAGE_JSON, str(currentReleaseVersion))
-    updatePackageJson(RELEASE_PACKAGE_JSON, str(currentReleaseVersion))
-    updatePomWithNewVersion(parser, PARENT_POM, str(currentReleaseVersion), False)
-    for pom in POM_SOURCES_PATH:
-        updatePomWithNewVersion(parser, pom, str(currentReleaseVersion), True)
+    # updatePackageJson(UI_PACKAGE_JSON, str(currentReleaseVersion))
+    # updatePackageJson(RELEASE_PACKAGE_JSON, str(currentReleaseVersion))
+    # updatePomWithNewVersion(parser, PARENT_POM, str(currentReleaseVersion), False)
+    # for pom in POM_SOURCES_PATH:
+    #     updatePomWithNewVersion(parser, pom, str(currentReleaseVersion), True)
 
-    for file in listdir(RELEASE_YAML_DIR):
-        filePath = "{}{}".format(RELEASE_YAML_DIR, file)
-        filaName = file.split(".")[0]
-        updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
+    # for file in listdir(RELEASE_YAML_DIR):
+    #     filePath = "{}{}".format(RELEASE_YAML_DIR, file)
+    #     filaName = file.split(".")[0]
+    #     updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Release manager")
@@ -174,10 +174,16 @@ if __name__ == "__main__":
         choices=['major', 'minor', 'patch'],
         help="The sementic version type to bump")
     parser.add_argument(
+        "-s",
+        dest='snapshot',
+        type=bool,
+        default=False,
+        help="Set all versions to next SNAPSHOT; Don't update release manifests")
+    parser.add_argument(
         "-p",
         dest='print',
         type=bool,
         default=False,
         help="Just print the new version")
     args = parser.parse_args()
-    main(args.type, args.print)
+    main(args.type, args.print, args.snapshot)
