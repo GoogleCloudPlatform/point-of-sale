@@ -115,13 +115,13 @@ steps:
     git config user.name "Anthos DPE"
 
     # as per: https://stackoverflow.com/a/67886960/3396045
-    git remote set-branches --add origin $_HEAD_BRANCH
+    git remote set-branches --add origin $BRANCH_NAME
     git fetch 'origin'
-    git checkout --track origin/$_HEAD_BRANCH
+    git checkout --track origin/$BRANCH_NAME
 
     git add -A
     git commit -m "release: bump version to next snapshot"
-    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $BRANCH_NAME
   # waitFor: commented out, so this step waits for all previous steps
 
   ###########################################################
@@ -139,7 +139,7 @@ steps:
     :zap:  Release Status :zap: </br>
     - **Artifacts Published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
     - **Manifests Updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
-    - **Version bumped:** Version in the pom.xml/package.json has been bumped to the next `patch` release version
+    - **Version bumped:** Version in the _pom.xml/package.json_ has been bumped to the next **patch** release version
     - **Merge PR:** Inspect the latest changes and merge the PR to main to complete the release.
 
     :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger to deploy the latest release!!!
