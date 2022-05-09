@@ -30,7 +30,7 @@ steps:
   - |
     touch /workspace/release.done
     COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
-    if [[ $$COMMIT_MSG == 'bump version to next snapshot' ]]; then
+    if [[ $$COMMIT_MSG == 'update version before release' ]] || [[ $$COMMIT_MSG == 'bump version to next snapshot' ]]; then
       echo "Commit message [$$COMMIT_MSG] indicates release version already being updated. Skip steps."
       echo "RELEASE_COMPLETE" > /workspace/release.done
     fi
