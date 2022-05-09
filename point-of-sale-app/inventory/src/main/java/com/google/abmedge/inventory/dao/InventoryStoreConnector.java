@@ -15,7 +15,7 @@
 package com.google.abmedge.inventory.dao;
 
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
-import com.google.abmedge.inventory.Item;
+import com.google.abmedge.dto.Item;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

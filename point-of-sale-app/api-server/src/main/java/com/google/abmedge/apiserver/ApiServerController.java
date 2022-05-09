@@ -15,15 +15,14 @@
 package com.google.abmedge.apiserver;
 
 import com.google.abmedge.apiserver.dto.PayRequest;
-import com.google.abmedge.inventory.Item;
-import com.google.abmedge.payment.Payment;
-import com.google.abmedge.payment.PaymentType;
-import com.google.abmedge.payment.PaymentUnit;
-import com.google.abmedge.payment.PurchaseItem;
+import com.google.abmedge.dto.Item;
+import com.google.abmedge.dto.Payment;
+import com.google.abmedge.dto.PaymentType;
+import com.google.abmedge.dto.PaymentUnit;
+import com.google.abmedge.dto.PurchaseItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -180,7 +179,8 @@ public class ApiServerController {
    * PurchaseItem}.
    *
    * @param payRequest a deserialized JSON object that matches the class structure of {@link
-   * PayRequest} that contains details of the specific purchase for which a payment is being made
+   *                   PayRequest} that contains details of the specific purchase for which a
+   *                   payment is being made
    * @return the JSON serialized form of the {@link ResponseEntity} that contains an HTTP code
    * indicating the status of the request and a string body representing the result of the pay
    * event. The string body on the response can differ based on the request type and the status.
@@ -194,7 +194,7 @@ public class ApiServerController {
    */
   @PostMapping(value = "/pay")
   public ResponseEntity<String> pay(@RequestBody PayRequest payRequest) {
-    BigDecimal totalCost = new BigDecimal(0);
+    double totalCost = 0;
     String responseStr;
     List<PurchaseItem> requestedItemList = payRequest.getItems();
     List<PurchaseItem> purchaseItems = new ArrayList<>();
@@ -220,9 +220,9 @@ public class ApiServerController {
       }
       for (Item item : itemList) {
         UUID id = item.getId();
-        BigDecimal itemCount = new BigDecimal(itemIdsToCountMap.get(id.toString()));
-        BigDecimal totalItemCost = item.getPrice().multiply(itemCount);
-        totalCost = totalCost.add(totalItemCost);
+        long itemCount = itemIdsToCountMap.get(id.toString());
+        double totalItemCost = itemCount * item.getPrice().doubleValue();
+        totalCost += totalItemCost;
         PurchaseItem purchaseItem = new PurchaseItem(id, itemIdsToCountMap.get(id.toString()));
         PaymentUnit paymentUnit = new PaymentUnit(id, item.getName(), itemCount, totalItemCost);
         purchaseItems.add(purchaseItem);
@@ -330,12 +330,11 @@ public class ApiServerController {
   }
 
   private Optional<String> makePayment(
-      PaymentType paymentType, BigDecimal amountOnRequest, BigDecimal totalCost,
-      List<PaymentUnit> payUnits)
+      PaymentType paymentType, Number amountOnRequest, Double totalCost, List<PaymentUnit> payUnits)
       throws IOException, InterruptedException {
     String endpoint = PAYMENTS_SERVICE + PAY_EP;
-    BigDecimal paidAmount = paymentType == PaymentType.CARD ? totalCost : amountOnRequest;
-    Payment payment = new Payment(payUnits, PaymentType.CARD, paidAmount);
+    Number paidAmount = paymentType == PaymentType.CARD ? totalCost : amountOnRequest;
+    Payment payment = new Payment(UUID.randomUUID(), payUnits, PaymentType.CARD, paidAmount);
     String jsonString = GSON.toJson(payment, Payment.class);
     HttpRequest request = HttpRequest.newBuilder()
         .POST(HttpRequest.BodyPublishers.ofString(jsonString))

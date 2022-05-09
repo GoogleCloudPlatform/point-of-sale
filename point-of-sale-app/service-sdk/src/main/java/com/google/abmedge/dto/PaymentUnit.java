@@ -12,19 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.payment;
+package com.google.abmedge.dto;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
@@ -32,43 +22,20 @@ import org.hibernate.annotations.Type;
  * them. Usually a {@link Payment} includes a collection of {@link PaymentUnit}s making up a bill
  * which shows multiple purchased items.
  */
-@Entity
-@Table(name = PaymentUnit.PAYMENT_UNIT_TABLE)
-public class PaymentUnit implements Serializable {
+public class PaymentUnit {
 
-  public static final String PAYMENT_UNIT_TABLE = "payment_units";
-
-  @Id
-  @Type(type = "org.hibernate.type.UUIDCharType")
-  @Column(columnDefinition = "CHAR(36)")
-  private UUID id = UUID.randomUUID();
-
-  @Type(type = "org.hibernate.type.UUIDCharType")
-  @Column(columnDefinition = "CHAR(36)")
   private UUID itemId;
   private String name;
-  private BigDecimal quantity;
-  private BigDecimal totalCost;
+  private long quantity;
+  private Number totalCost;
 
-  @Version
-  private Long version;
+  public PaymentUnit() {}
 
-  public PaymentUnit() {
-  }
-
-  public PaymentUnit(UUID itemId, String name, BigDecimal quantity, BigDecimal totalCost) {
+  public PaymentUnit(UUID itemId, String name, long quantity, Number totalCost) {
     this.itemId = itemId;
     this.name = name;
     this.quantity = quantity;
     this.totalCost = totalCost;
-  }
-
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
   }
 
   public UUID getItemId() {
@@ -87,19 +54,19 @@ public class PaymentUnit implements Serializable {
     this.name = name;
   }
 
-  public BigDecimal getQuantity() {
+  public long getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(long quantity) {
     this.quantity = quantity;
   }
 
-  public BigDecimal getTotalCost() {
+  public Number getTotalCost() {
     return totalCost;
   }
 
-  public void setTotalCost(BigDecimal totalCost) {
+  public void setTotalCost(Number totalCost) {
     this.totalCost = totalCost;
   }
 }

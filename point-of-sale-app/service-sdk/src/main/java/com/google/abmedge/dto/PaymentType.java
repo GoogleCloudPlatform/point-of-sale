@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.abmedge.payment;
+package com.google.abmedge.dto;
 
 /**
  * This enum represents the different types of payment methods that are accepted. A {@link Payment}
