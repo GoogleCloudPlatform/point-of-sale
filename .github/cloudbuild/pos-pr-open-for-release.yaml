@@ -30,7 +30,7 @@ steps:
   - |
     touch /workspace/release.done
     COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
-    if [ $$COMMIT_MSG == 'bump version to next snapshot' ]; then
+    if [[ $$COMMIT_MSG == 'bump version to next snapshot' ]]; then
       echo "Commit message [$$COMMIT_MSG] indicates release version already being updated. Skip steps."
       echo "RELEASE_COMPLETE" > /workspace/release.done
     fi
@@ -47,21 +47,21 @@ steps:
   - -c
   - |
     STATUS=$(cat /workspace/release.done)
-    if [ $$STATUS == 'RELEASE_COMPLETE' ]; then
+    if [[ $$STATUS == 'RELEASE_COMPLETE' ]]; then
       exit 0
     fi
 
     pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
-    if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then
+    if [[ $_HEAD_BRANCH == 'release-minor' ]] || [[ $_HEAD_BRANCH == 'restructure3' ]]; then
       echo "Updating versions for a minor release"
       python3 .github/releases/releaser.py -t minor
 
-    elif [ $_HEAD_BRANCH == 'release-patch' ]; then
+    elif [[ $_HEAD_BRANCH == 'release-patch' ]]; then
       echo "Updating versions for a patch release"
       python3 .github/releases/releaser.py -t patch
 
-    elif [ $_HEAD_BRANCH == 'release-major' ]; then
+    elif [[ $_HEAD_BRANCH == 'release-major' ]]; then
       echo "Updating versions for a major release"
       python3 .github/releases/releaser.py -t major
 
@@ -82,7 +82,7 @@ steps:
   - -c
   - |
     STATUS=$(cat /workspace/release.done)
-    if [ $$STATUS == 'RELEASE_COMPLETE' ]; then
+    if [[ $$STATUS == 'RELEASE_COMPLETE' ]]; then
       exit 0
     fi
 

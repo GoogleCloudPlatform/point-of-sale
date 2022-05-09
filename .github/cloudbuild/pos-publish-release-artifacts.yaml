@@ -42,13 +42,13 @@ steps:
   - -c
   - |
     pip install -r .github/releases/requirements.txt
-    if [ $BRANCH_NAME == 'release-minor' ] || [ $BRANCH_NAME == 'restructure3' ]; then
+    if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
       VERSION=$(python3 .github/releases/releaser.py -t minor -p true)
 
-    elif [ $BRANCH_NAME == 'release-patch' ]; then
+    elif [[ $BRANCH_NAME == 'release-patch' ]]; then
       VERSION=$(python3 .github/releases/releaser.py -t patch -p true)
 
-    elif [ $BRANCH_NAME == 'release-major' ]; then
+    elif [[ $BRANCH_NAME == 'release-major' ]]; then
       VERSION=$(python3 .github/releases/releaser.py -t major -p true)
 
     else
@@ -86,13 +86,13 @@ steps:
   - -c
   - |
     pip install -r .github/releases/requirements.txt
-    if [ $BRANCH_NAME == 'release-minor' ] || [ $BRANCH_NAME == 'restructure3' ]; then
+    if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
       VERSION=$(python3 .github/releases/releaser.py -t minor -s true)
 
-    elif [ $BRANCH_NAME == 'release-patch' ]; then
+    elif [[ $BRANCH_NAME == 'release-patch' ]]; then
       VERSION=$(python3 .github/releases/releaser.py -t patch -s true)
 
-    elif [ $BRANCH_NAME == 'release-major' ]; then
+    elif [[ $BRANCH_NAME == 'release-major' ]]; then
       VERSION=$(python3 .github/releases/releaser.py -t major -s true)
 
     else
