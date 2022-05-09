@@ -35,35 +35,6 @@ steps:
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
-- id: 'get-release-version'
-  name: 'python'
-  entrypoint: bash
-  args:
-  - -c
-  - |
-    pip install -r .github/releases/requirements.txt
-    if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
-      VERSION=$(python3 .github/releases/releaser.py -t minor -p true)
-
-    elif [[ $BRANCH_NAME == 'release-patch' ]]; then
-      VERSION=$(python3 .github/releases/releaser.py -t patch -p true)
-
-    elif [[ $BRANCH_NAME == 'release-major' ]]; then
-      VERSION=$(python3 .github/releases/releaser.py -t major -p true)
-
-    else
-      echo "Nothing to do since it's not a 'release' PR"
-      exit 0
-    fi
-
-    echo "Version is [$$VERSION]"
-    cat <<EOF > /workspace/version.txt -
-    $$VERSION
-    EOF
-
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
-
  ###########################################################
   # skaffold deploy to kubernetes cluster
   ###########################################################
@@ -73,10 +44,36 @@ steps:
   args:
   - -c
   - |
-    VERSION=$(cat /workspace/version.txt)
+    VERSION=$(cat /workspace/release-version.txt)
     echo "Publishing images with tag v$$VERSION..."
     ./mvnw install
     skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$$VERSION
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # Create a Github release artifact
+  ###########################################################
+- id: 'comment-release-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    VERSION=$(cat /workspace/release-version.txt)
+
+    git config user.email "$$GITHUB_EMAIL"
+    git config user.name "Anthos DPE"
+
+    # as per: https://stackoverflow.com/a/67886960/3396045
+    git remote set-branches --add origin $BRANCH_NAME
+    git fetch 'origin'
+    git checkout --track origin/$BRANCH_NAME
+
+    git tag v$$VERSION -a "Release: v$$VERSION"
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $BRANCH_NAME --tags
+
+    gh release create v$$VERSION -F CHANGELOG.md -d
   # waitFor: commented out, so this step waits for all previous steps
 
 - id: 'update-to-next-snapshot'
@@ -102,9 +99,7 @@ steps:
 
     VERSION=$(python3 .github/releases/releaser.py -p true)
     echo "Next SNAPSHOT version is [$$VERSION]"
-    cat <<EOF > /workspace/version-snapshot.txt -
-    $$VERSION
-    EOF
+    echo "$$VERSION" > /workspace/version-snapshot.txt
   # waitFor: commented out, so this step waits for all previous steps
 
   ###########################################################
@@ -119,7 +114,12 @@ steps:
   - -c
   - |
     PR_NUMBER=$(cat release-pr.number)
+    VERSION=$(cat release-version.txt)
+    SNAPSHOT_VERSION=$(cat /workspace/version-snapshot.txt)
+
     rm release-pr.number
+    rm release-version.txt
+    rm /workspace/version-snapshot.txt
 
     git config user.email "$$GITHUB_EMAIL"
     git config user.name "Anthos DPE"
@@ -133,14 +133,12 @@ steps:
     git commit -m "release: bump version to next snapshot"
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $BRANCH_NAME
 
-    VERSION=$(cat /workspace/version.txt)
-    SNAPSHOT_VERSION=$(cat /workspace/version-snapshot.txt)
-
     cat <<EOF > /workspace/gh-comment.txt -
     :zap:  Release Status :zap: </br>
-    - **Artifacts Published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
-    - **Manifests Updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
+    - **Artifacts published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
+    - **Manifests updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
     - **Version bumped:** Version in the _pom.xml/package.json_ has been bumped to the snapshot version of the next **patch** release **v$$SNAPSHOT_VERSION**
+    - **Github release created:** A draft [Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) has been created. Inspect and **publish it**
     - **Merge PR:** Inspect the latest changes and merge the PR to **main** to complete the release.
 
     :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against the **main** to deploy the latest release!!!

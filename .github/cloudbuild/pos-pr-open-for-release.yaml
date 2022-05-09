@@ -68,6 +68,9 @@ steps:
     else
       echo "Nothing to do since it's not a 'release' PR"
     fi
+
+    VERSION=$(python3 .github/releases/releaser.py -p true)
+    echo "$$VERSION" > release-version.txt
   # indicates that the step need not wait for any other step
   waitFor: [ 'gate-ci' ]
 
