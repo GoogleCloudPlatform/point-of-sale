@@ -22,51 +22,22 @@
 
 steps:
   ###########################################################
-  # create namespace yaml for the release deployment
+  # Deploy the latest release manifests to the main cluster
   ###########################################################
-- id: 'create-deploy-script'
-  name: ubuntu
+- id: 'deploy-to-k8s-main'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
   entrypoint: bash
   args:
   - -c
   - |
-    cat <<EOF > /workspace/namespace.yaml -
-    # namespace to deploy the mysql db based deployment
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: $_MAIN_NS-db
-    ---
-    # namespace to deploy the inmemory h2 db based deployment
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: $_MAIN_NS-inmemory
-    EOF
-
-    cat <<EOF > /workspace/deploy.sh -
-    #!/bin/bash
-
     gcloud container clusters get-credentials --zone $_MAIN_CLUSTER_ZONE $_MAIN_CLUSTER
+    kubectl create namespace $_MAIN_NS-db
+    kubectl create namespace $_MAIN_NS-inmemory
     kubectl apply -f /workspace/namespace.yaml
 
-    skaffold run -p release -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_MAIN_NS-db
-    skaffold run -p release,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_MAIN_NS-inmemory
-    EOF
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
-
-  ###########################################################
-  # skaffold deploy to kubernetes cluster
-  ###########################################################
-- id: 'deploy-to-k8s-main'
-  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  args: [
-      'bash',
-      '/workspace/deploy.sh'
-  ]
+    skaffold run -p release -f=skaffold.yaml --namespace=$_MAIN_NS-db
+    skaffold run -p release,inmemory -f=skaffold.yaml --namespace=$_MAIN_NS-inmemory
   # waitFor: commented out, so this step waits for all previous steps
-
 
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
