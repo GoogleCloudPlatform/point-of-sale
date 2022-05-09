@@ -20,6 +20,17 @@
 
 steps:
   ###########################################################
+  # npm install to ensure ui dependencies have no errors
+  ###########################################################
+- id: 'npm-install'
+  name: 'node:16.14.0'
+  dir: 'src/ui'
+  entrypoint: 'npm'
+  args: [ 'install' ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
   # publish jars to artifact registry
   ###########################################################
 - id: 'publish-jars'
@@ -31,7 +42,7 @@ steps:
     echo "Deploying the maven jars..."
     ./mvnw clean deploy
   # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
+  waitFor: [ 'npm-install' ]
 
 - id: 'get-release-version'
   name: 'python'
