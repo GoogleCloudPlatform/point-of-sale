@@ -25,4 +25,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_common_payments_service_payments_svc]
+# [END anthosbaremetal_common_payments_svc_service_payments_svc]
