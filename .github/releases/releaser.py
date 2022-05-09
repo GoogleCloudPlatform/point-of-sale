@@ -1,9 +1,9 @@
 import json
-import yaml
-from ruamel.yaml import YAML
 import semver
 import argparse
+from os import listdir
 import lxml.etree as ET
+from ruamel.yaml import YAML
 
 MAVEN_POM_SCHEMA_URL = "http://maven.apache.org/POM/4.0.0"
 PARENT_POM = "pom.xml"
@@ -14,7 +14,7 @@ INVENTORY_POM = "src/inventory/pom.xml"
 PAYMENTS_POM = "src/payments/pom.xml"
 UI_PACKAGE_JSON = "src/ui/package.json"
 RELEASE_PACKAGE_JSON = "package.json"
-RELEASE_YAML_DIR = "k8-manifests/release/api-server.yaml"
+RELEASE_YAML_DIR = "k8-manifests/release/"
 
 POM_SOURCES_PATH = [
     SDK_POM,
@@ -79,7 +79,7 @@ def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
 
     with open(yamlPath, 'w') as file:
         yaml = YAML()
-        print("Updating image to {} for yaml file at {}".format(updatedImage, yamlPath))
+        print("Updating image to [{}] for yaml file at [{}]".format(updatedImage, yamlPath))
         yDefinition = yaml.dump(yDefinition, file)
         file.close()
 
@@ -99,7 +99,10 @@ def main(releaseType: str, justPrint: bool):
         print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
         exit(0)
 
-    updateReleaseYaml(RELEASE_YAML_DIR, "api-server", str(releaseVersion))
+    for file in listdir(RELEASE_YAML_DIR):
+        filePath = "{}.{}".format(RELEASE_YAML_DIR, file)
+        filaName = file.split(".")[0]
+        updateReleaseYaml(filePath, filaName, str(releaseVersion))
     # updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
     # updatePackageJson(RELEASE_PACKAGE_JSON, str(releaseVersion))
     # updatePomWithNewVersion(parser, PARENT_POM, str(releaseVersion), False)
