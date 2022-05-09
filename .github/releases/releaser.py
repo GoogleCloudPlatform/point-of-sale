@@ -55,7 +55,7 @@ def updatePackageJson(path: str, version: str) -> None:
         json.dump(data, packageJson, indent=2)
         packageJson.truncate()
 
-def readAndUpdateYaml(yamlPath: str, containerName: str, version: str) -> Union[str, dict]:
+def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
     yDefinition = {}
     with open(yamlPath, 'r') as file:
         yaml = YAML()
@@ -71,18 +71,8 @@ def readAndUpdateYaml(yamlPath: str, containerName: str, version: str) -> Union[
         if container['name'] != containerName:
             continue;
         currentImage = container['image']
-        currentReleaseVersion = currentImage.split(":v")[1]
         container['image'] =  "{}:v{}".format(currentImage.split(":v")[0], version)
-        return currentReleaseVersion, yDefinition
-
-    # was unable to find the container in the yaml file
-    return None, None
-
-def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
-    _, yDefinition = readAndUpdateYaml(yamlPath, containerName, version)
-    if yDefinition == None:
-        print("Loaded yaml definiton from path [{}] is empty".format(yamlPath))
-        exit(1)
+        break
 
     with open(yamlPath, 'w') as file:
         yaml = YAML()
@@ -91,47 +81,42 @@ def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
         file.close()
 
 """
-We always set the version to the SNAPSHOT of next minor release. so we have
+We always set the version to the SNAPSHOT of next patch release. so we have
 construct the next release version based on the requested release type:
     patch-release:
         for patch releases we have to keep the previous minor version but
         increment the patch identifier.
-        E.g: current version on main branch: 0.5.0-SNAPSHOT
-                previous release version: 0.4.7
-                released version: 0.4.8
-                main branch after release: 0.5.0-SNAPSHOT (unchanged)
-
-                for patch release we have to get the previous release version
-                and incrment the patch number.
+        E.g: current version on main branch: 0.5.3-SNAPSHOT
+                released version: 0.5.3
+                main branch after release: 0.5.4-SNAPSHOT (patch bumped)
 
     minor-release:
-        since the version on the main branch will be the next minor release
-        version with SNAPSHOT, we just remove the SNAPSHOT part and release
-        E.g: current version on main branch: 0.5.0-SNAPSHOT
-                released version: 0.5.0
-                main branch after release: 0.6.0-SNAPSHOT (minor bumped)
+        for minor releases we bump minor and set patch to 0 for the release
+        then we bump patch by one for the next release version
+        E.g: current version on main branch: 0.5.3-SNAPSHOT
+                released version: 0.6.0
+                main branch after release: 0.6.1-SNAPSHOT (patch bumped from release)
 
     major-release:
-        for major releases we bump the major version
-            E.g: current version on main branch: 0.5.0-SNAPSHOT
+        for major releases we bump the major version and set both minor/patch
+        to 0 for the release; then we bump patch by one for the next release version
+            E.g: current version on main branch: 0.5.3-SNAPSHOT
                 released version: 1.0.0
-                main branch after release: 1.1.0-SNAPSHOT (minor bumped from release)
+                main branch after release: 1.0.1-SNAPSHOT (patch bumped from release)
 """
 def getVersions(sementicVersion, releaseType: str) -> Union[str, str, str]:
     currentReleaseVersion = None
-    if releaseType == 'patch':
-        mostRecentReleaseVersion, _ = readAndUpdateYaml(RELEASE_YAML_DIR + "api-server.yaml", "api-server", "")
-        currentReleaseVersion = semver.VersionInfo.parse(mostRecentReleaseVersion).bump_patch()
-        nextVersion = sementicVersion
-    else:
-        if releaseType == 'minor':
-            currentReleaseVersion = sementicVersion.finalize_version()
-        else:
-            currentReleaseVersion = sementicVersion.next_version(releaseType)
-        nextVersion = currentReleaseVersion.bump_minor()
-        nextVersion = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
+    currentReleaseVersion = sementicVersion.finalize_version()
+    if releaseType == 'minor':
+        currentReleaseVersion = currentReleaseVersion.bump_minor()
+    elif releaseType == 'major':
+        currentReleaseVersion = currentReleaseVersion.bump_major()
 
+    nextVersion = currentReleaseVersion.bump_patch()
+    nextVersion = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
     return currentReleaseVersion, nextVersion
+
+# def updateToNextSnapshot(releaseType: str):
 
 
 def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
@@ -141,28 +126,34 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
 
     currentReleaseVersion, nextVersion = getVersions(sementicVersion, releaseType)
     if justPrint:
+        # we print the current version and exit
         print(currentReleaseVersion)
         exit(0)
+
+    # if setToSnapshot:
+    #     # we update the repo to the next SNAPSHOT version and exit
+    #     updateToNextSnapshot(releaseType)
+    #     exit(0)
 
     print("""
         Version on main: {}
         Version released now: {}
         Updated version on main: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
 
-    # if sementicVersion.prerelease != "SNAPSHOT":
-    #     print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
-    #     exit(0)
+    if sementicVersion.prerelease != "SNAPSHOT":
+        print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
+        exit(0)
 
-    # updatePackageJson(UI_PACKAGE_JSON, str(currentReleaseVersion))
-    # updatePackageJson(RELEASE_PACKAGE_JSON, str(currentReleaseVersion))
-    # updatePomWithNewVersion(parser, PARENT_POM, str(currentReleaseVersion), False)
-    # for pom in POM_SOURCES_PATH:
-    #     updatePomWithNewVersion(parser, pom, str(currentReleaseVersion), True)
+    updatePackageJson(UI_PACKAGE_JSON, str(currentReleaseVersion))
+    updatePackageJson(RELEASE_PACKAGE_JSON, str(currentReleaseVersion))
+    updatePomWithNewVersion(parser, PARENT_POM, str(currentReleaseVersion), False)
+    for pom in POM_SOURCES_PATH:
+        updatePomWithNewVersion(parser, pom, str(currentReleaseVersion), True)
 
-    # for file in listdir(RELEASE_YAML_DIR):
-    #     filePath = "{}{}".format(RELEASE_YAML_DIR, file)
-    #     filaName = file.split(".")[0]
-    #     updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
+    for file in listdir(RELEASE_YAML_DIR):
+        filePath = "{}{}".format(RELEASE_YAML_DIR, file)
+        filaName = file.split(".")[0]
+        updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Release manager")
