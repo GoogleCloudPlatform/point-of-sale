@@ -70,18 +70,3 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 10
 # [END anthosbaremetal_release_inventory_deployment_inventory]
----
-# [START anthosbaremetal_release_inventory_service_inventory_svc]
-apiVersion: v1
-kind: Service
-metadata:
-  name: inventory-svc
-spec:
-  type: ClusterIP
-  selector:
-    app: inventory
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-# [END anthosbaremetal_release_inventory_service_inventory_svc]

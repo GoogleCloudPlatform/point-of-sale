@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_k8_manifests_service_configs_configmap_service_configs]
+# [START anthosbaremetal_common_service_configs_configmap_service_configs]
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -47,4 +47,4 @@ data:
         imageUrl: "usr/lib/images/short.png"
         quantity: 20
         labels: [ "retail", "textile", "clothing" ]
-# [END anthosbaremetal_k8_manifests_service_configs_configmap_service_configs]
+# [END anthosbaremetal_common_service_configs_configmap_service_configs]

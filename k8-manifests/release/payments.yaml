@@ -60,18 +60,3 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 10
 # [END anthosbaremetal_release_payments_deployment_payments]
----
-# [START anthosbaremetal_release_payments_service_payments_svc]
-apiVersion: v1
-kind: Service
-metadata:
-  name: payments-svc
-spec:
-  type: ClusterIP
-  selector:
-    app: payments
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-# [END anthosbaremetal_release_payments_service_payments_svc]

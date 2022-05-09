@@ -65,18 +65,3 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 10
 # [END anthosbaremetal_release_api_server_deployment_api_server]
----
-# [START anthosbaremetal_release_api_server_service_api_server_svc]
-apiVersion: v1
-kind: Service
-metadata:
-  name: api-server-svc
-spec:
-  type: ClusterIP
-  selector:
-    app: api-server
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-# [END anthosbaremetal_release_api_server_service_api_server_svc]
