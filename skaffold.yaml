@@ -21,6 +21,9 @@ deploy:
   kubectl:
     manifests:
     - k8-manifests/common/service-configs.yaml
+    - k8-manifests/common/api-server-svc.yaml
+    - k8-manifests/common/inventory-svc.yaml
+    - k8-manifests/common/payments-svc.yaml
 # [END anthosbaremetal_skaffold_config_setup]
 ---
 # [START anthosbaremetal_skaffold_config_db]
