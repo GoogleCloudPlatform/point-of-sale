@@ -1,6 +1,6 @@
 {
   "name": "point-of-sale-changelog",
-  "version": "0.1.0-SNAPSHOT",
+  "version": "0.1.0",
   "scripts": {
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",
