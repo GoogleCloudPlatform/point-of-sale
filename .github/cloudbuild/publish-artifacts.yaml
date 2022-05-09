@@ -74,9 +74,8 @@ steps:
   - |
     VERSION=$(cat /workspace/version.txt)
     echo "Publishing images with tag v$$VERSION..."
-    ./mvnw install
     skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$$VERSION
-  waitFor: [ 'get-release-version' ]
+  # waitFor: commented out, so this step waits for all previous steps
 
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
