@@ -87,21 +87,71 @@ steps:
   - |
     pip install -r .github/releases/requirements.txt
     if [ $BRANCH_NAME == 'release-minor' ] || [ $BRANCH_NAME == 'restructure3' ]; then
-      VERSION=$(python3 .github/releases/releaser.py -t minor -p true)
+      VERSION=$(python3 .github/releases/releaser.py -t minor -s true)
 
     elif [ $BRANCH_NAME == 'release-patch' ]; then
-      VERSION=$(python3 .github/releases/releaser.py -t patch -p true)
+      VERSION=$(python3 .github/releases/releaser.py -t patch -s true)
 
     elif [ $BRANCH_NAME == 'release-major' ]; then
-      VERSION=$(python3 .github/releases/releaser.py -t major -p true)
+      VERSION=$(python3 .github/releases/releaser.py -t major -s true)
 
     else
       echo "Nothing to do since it's not a 'release' PR"
       exit 0
     fi
-
+    echo "RELEASE_COMPLETE" >> /workspace/release.done
   # waitFor: commented out, so this step waits for all previous steps
 
+  ###########################################################
+  # Push the version changes to the repo
+  ###########################################################
+- id: 'push-changes-to-repo'
+  name: 'gcr.io/cloud-builders/git'
+  secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    git config user.email "$$GITHUB_EMAIL"
+    git config user.name "Anthos DPE"
+
+    # as per: https://stackoverflow.com/a/67886960/3396045
+    git remote set-branches --add origin $_HEAD_BRANCH
+    git fetch 'origin'
+    git checkout --track origin/$_HEAD_BRANCH
+
+    git add -A
+    git commit -m "release: bump version to next snapshot"
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # Comment about the release status on the release PR
+  ###########################################################
+- id: 'comment-release-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/gh-comment.txt -
+    VERSION=$(cat /workspace/version.txt)
+    :zap:  Release Status :zap: </br>
+    - **Artifacts Published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
+    - **Manifests Updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
+    - **Version bumped:** Version in the pom.xml/package.json has been bumped to the next `patch` release version
+
+    :rocket: Run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger to deploy the latest release!!!
+    EOF
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+  # waitFor: commented out, so this step waits for all previous steps
+
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN: 'CiQAuVI6Z93rj1B1R4yer3G1VzEmW7aHtjATP2jOtyJjkW5qOR8SUQBHWet7zXRDJQTBSvFZuXXsOBIxtvf0VDM610Tjgb5XJY8hbIuBxhsMfDy3+/p2ojVnYmE+Mg9NDg5FGZhlJlB/+PBMCumkbMovTXD582u17A=='
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:

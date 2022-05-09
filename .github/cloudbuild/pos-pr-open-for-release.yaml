@@ -49,7 +49,7 @@ steps:
   waitFor: [ '-' ]
 
   ###########################################################
-  # Comment the fetched IP in the GitHub Pull request
+  # Push the version changes to the repo
   ###########################################################
 - id: 'push-changes-to-repo'
   name: 'gcr.io/cloud-builders/git'
@@ -70,6 +70,38 @@ steps:
     git commit -m "release: update version before release"
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
+
+  ###########################################################
+  # Comment about the release status on the release PR
+  ###########################################################
+- id: 'comment-release-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
+    if [ $$COMMIT_MSG != 'release: update version before release' ]; then
+      echo "Commit message [$$COMMIT_MSG] is not a release commit. Skipping step."
+      exit 0
+    fi
+
+    RELEASE_TYPE='patch'
+    if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then
+      RELEASE_TYPE='minor'
+    elif [ $_HEAD_BRANCH == 'release-major' ]; then
+      RELEASE_TYPE='major'
+    fi
+
+    cat <<EOF > /workspace/gh-comment.txt -
+    VERSION=$(cat /workspace/version.txt)
+    :zap:  Release Status :zap: </br>
+    - **Version updated**: Version in the pom.xml/package.json has been updated to the next $$RELEASE_TYPE release version.
+    - **Publish Artifacts:** Check the changes made to the PR for correctness and run the ["pos-publish-release-artifacts"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against this branch [$BRANCH_NAME] to upload the artifacts (Jars and Images) to Artifact registry.
+    EOF
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+  # waitFor: commented out, so this step waits for all previous steps
 
 availableSecrets:
   inline:
