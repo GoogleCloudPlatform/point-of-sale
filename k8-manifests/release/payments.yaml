@@ -31,11 +31,7 @@ spec:
       containers:
       - name: payments
         # TODO:: remove the snapshot tag once we make the first release
-<<<<<<< HEAD
         image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v0.0.0
-=======
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v0.1.0
->>>>>>> 231835629aead812219f495b8fbeca6b76157bd4
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
