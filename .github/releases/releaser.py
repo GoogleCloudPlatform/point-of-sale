@@ -140,14 +140,14 @@ def main(releaseType: str, justPrint: bool):
     sementicVersion = semver.VersionInfo.parse(currentVersion)
 
     currentReleaseVersion, nextVersion = getVersions(sementicVersion, releaseType)
+    if justPrint:
+        print(currentReleaseVersion)
+        exit(0)
+
     print("""
         Version on main: {}
         Version released now: {}
         Updated version on main: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
-
-    if justPrint:
-        print(currentReleaseVersion)
-        exit(0)
 
     if sementicVersion.prerelease != "SNAPSHOT":
         print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
