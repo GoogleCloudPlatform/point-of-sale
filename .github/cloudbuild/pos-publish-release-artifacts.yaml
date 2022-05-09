@@ -140,9 +140,9 @@ steps:
     - **Artifacts Published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
     - **Manifests Updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
     - **Version bumped:** Version in the _pom.xml/package.json_ has been bumped to the snapshot version of the next **patch** release **v$$SNAPSHOT_VERSION**
-    - **Merge PR:** Inspect the latest changes and merge the PR to main to complete the release.
+    - **Merge PR:** Inspect the latest changes and merge the PR to **main** to complete the release.
 
-    :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger to deploy the latest release!!!
+    :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against the **main** to deploy the latest release!!!
     EOF
     gh pr comment $$PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps
