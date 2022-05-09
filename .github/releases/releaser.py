@@ -138,7 +138,7 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
         # release artifacts are piublished
         nextPatchV = currentReleaseVersion.bump_patch()
         snapshotVer = semver.VersionInfo(*(nextPatchV.major, nextPatchV.minor, nextPatchV.patch, "SNAPSHOT"))
-        updateVersions(str(snapshotVer), releaseType)
+        updateVersions(str(snapshotVer))
 
     else:
         # set the versions to the next release version and prepare to publish
@@ -152,7 +152,7 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
             print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
             exit(0)
 
-        updateVersions(str(snapshotVer), currentReleaseVersion)
+        updateVersions(currentReleaseVersion)
         # update release manifests
         for file in listdir(RELEASE_YAML_DIR):
             filePath = "{}{}".format(RELEASE_YAML_DIR, file)
