@@ -1,0 +1,161 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+###########################################################
+# This is a GCP CloudBuild Trigger config file. The trigger
+# is to be used to build and publish the latest release
+# artifacts to repostiories (container-image and maven).
+# The trigger associated to this cloudbuild confiuration
+# needs to be manually RUN pointing to the release-branch
+###########################################################
+
+steps:
+  ###########################################################
+  # publish jars to artifact registry
+  ###########################################################
+- id: 'publish-jars'
+  name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    echo "Deploying the maven jars..."
+    ./mvnw deploy
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+- id: 'get-release-version'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    pip install -r .github/releases/requirements.txt
+    if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
+      VERSION=$(python3 .github/releases/releaser.py -t minor -p true)
+
+    elif [[ $BRANCH_NAME == 'release-patch' ]]; then
+      VERSION=$(python3 .github/releases/releaser.py -t patch -p true)
+
+    elif [[ $BRANCH_NAME == 'release-major' ]]; then
+      VERSION=$(python3 .github/releases/releaser.py -t major -p true)
+
+    else
+      echo "Nothing to do since it's not a 'release' PR"
+      exit 0
+    fi
+
+    echo "Version is [$$VERSION]"
+    cat <<EOF > /workspace/version.txt -
+    $$VERSION
+    EOF
+
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+ ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
+- id: 'publish-images'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    VERSION=$(cat /workspace/version.txt)
+    echo "Publishing images with tag v$$VERSION..."
+    ./mvnw install
+    skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$$VERSION
+  # waitFor: commented out, so this step waits for all previous steps
+
+- id: 'update-to-next-snapshot'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    pip install -r .github/releases/requirements.txt
+    if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
+      VERSION=$(python3 .github/releases/releaser.py -t minor -s true)
+
+    elif [[ $BRANCH_NAME == 'release-patch' ]]; then
+      VERSION=$(python3 .github/releases/releaser.py -t patch -s true)
+
+    elif [[ $BRANCH_NAME == 'release-major' ]]; then
+      VERSION=$(python3 .github/releases/releaser.py -t major -s true)
+
+    else
+      echo "Nothing to do since it's not a 'release' PR"
+      exit 0
+    fi
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # Push the version changes to the repo
+  ###########################################################
+- id: 'push-changes-to-repo'
+  name: 'gcr.io/cloud-builders/git'
+  secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    git config user.email "$$GITHUB_EMAIL"
+    git config user.name "Anthos DPE"
+
+    # as per: https://stackoverflow.com/a/67886960/3396045
+    git remote set-branches --add origin $_HEAD_BRANCH
+    git fetch 'origin'
+    git checkout --track origin/$_HEAD_BRANCH
+
+    git add -A
+    git commit -m "release: bump version to next snapshot"
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # Comment about the release status on the release PR
+  ###########################################################
+- id: 'comment-release-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/gh-comment.txt -
+    VERSION=$(cat /workspace/version.txt)
+    :zap:  Release Status :zap: </br>
+    - **Artifacts Published**: Maven JARs and Container images for release version **v$$VERSION** have been published to Artifact Registry
+    - **Manifests Updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
+    - **Version bumped:** Version in the pom.xml/package.json has been bumped to the next `patch` release version
+    - **Merge PR:** Inspect the latest changes and merge the PR to main to complete the release.
+
+    :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger to deploy the latest release!!!
+    EOF
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+  # waitFor: commented out, so this step waits for all previous steps
+
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN: 'CiQAuVI6Z93rj1B1R4yer3G1VzEmW7aHtjATP2jOtyJjkW5qOR8SUQBHWet7zXRDJQTBSvFZuXXsOBIxtvf0VDM610Tjgb5XJY8hbIuBxhsMfDy3+/p2ojVnYmE+Mg9NDg5FGZhlJlB/+PBMCumkbMovTXD582u17A=='
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHEMAIL_KEYRING_NAME/cryptoKeys/$_GHEMAIL_KEY_NAME'
+    envMap:
+      GITHUB_EMAIL: 'CiQA/ThyQ4p/sDUR2fsc4Q2GgF/PntA048keplEhVQTrmgESLfcSOACXDXFpPP/ASB9nwBao91OK4677dEaGsJQjVKkStDpHtY1ZtF7qefjxq1qK93BSezLllJX/rHbY'
+timeout: 1800s
+logsBucket: 'gs://pos-cloudbuild-logs'
+options:
+    logging: GCS_ONLY
