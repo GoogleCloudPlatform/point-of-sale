@@ -32,7 +32,7 @@ steps:
     ./mvnw install
     ./mvnw deploy
   # indicates that the step need not wait for any other step
-  waitFor: [ 'npm-install' ]
+  waitFor: [ '-' ]
 
 - id: 'get-release-version'
   name: 'python'
