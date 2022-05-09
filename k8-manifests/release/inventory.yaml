@@ -31,7 +31,7 @@ spec:
       containers:
       - name: inventory
         # TODO:: remove the snapshot tag once we make the first release
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory:v1-snapshot
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory:v0.1.0
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
