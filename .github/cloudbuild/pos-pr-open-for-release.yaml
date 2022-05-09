@@ -128,10 +128,9 @@ steps:
     fi
 
     cat <<EOF > /workspace/gh-comment.txt -
-    VERSION=$(cat /workspace/version.txt)
     :zap:  Release Status :zap: </br>
-    - **Version updated**: Version in the pom.xml/package.json has been updated to the next $$RELEASE_TYPE release version.
-    - **Publish Artifacts:** Check the changes made to the PR for correctness and run the ["pos-publish-release-artifacts"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against this branch [$BRANCH_NAME] to upload the artifacts (Jars and Images) to Artifact registry.
+    - **Version updated**: Version in the `pom.xml/package.json` has been updated to the next **$$RELEASE_TYPE** release version.
+    - **Publish Artifacts:** Check the changes made to the PR for correctness and run the ["pos-publish-release-artifacts"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against this branch **[$BRANCH_NAME]** to upload the artifacts (`Jars` and `Images`) to Artifact registry.
     EOF
     gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps
