@@ -99,15 +99,16 @@ def main(releaseType: str, justPrint: bool):
         print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))
         exit(0)
 
+    updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
+    updatePackageJson(RELEASE_PACKAGE_JSON, str(releaseVersion))
+    updatePomWithNewVersion(parser, PARENT_POM, str(releaseVersion), False)
+    for pom in POM_SOURCES_PATH:
+        updatePomWithNewVersion(parser, pom, str(releaseVersion), True)
+
     for file in listdir(RELEASE_YAML_DIR):
         filePath = "{}{}".format(RELEASE_YAML_DIR, file)
         filaName = file.split(".")[0]
         updateReleaseYaml(filePath, filaName, str(releaseVersion))
-    # updatePackageJson(UI_PACKAGE_JSON, str(releaseVersion))
-    # updatePackageJson(RELEASE_PACKAGE_JSON, str(releaseVersion))
-    # updatePomWithNewVersion(parser, PARENT_POM, str(releaseVersion), False)
-    # for pom in POM_SOURCES_PATH:
-    #     updatePomWithNewVersion(parser, pom, str(releaseVersion), True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Release manager")
