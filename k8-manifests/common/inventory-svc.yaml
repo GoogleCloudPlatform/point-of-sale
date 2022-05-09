@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START anthosbaremetal_common_api_server_service_api_server_svc]
+# [START anthosbaremetal_common_inventory_svc_service_inventory_svc]
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-server-svc
+  name: inventory-svc
 spec:
   type: ClusterIP
   selector:
-    app: api-server
+    app: inventory
   ports:
   - name: http
     port: 8080
     targetPort: 8080
-# [END anthosbaremetal_common_api_server_service_api_server_svc]
+# [END anthosbaremetal_common_inventory_service_inventory_svc]
