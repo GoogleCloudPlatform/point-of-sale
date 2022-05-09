@@ -50,7 +50,6 @@ steps:
     gcloud container clusters get-credentials --zone $_MAIN_CLUSTER_ZONE $_MAIN_CLUSTER
     kubectl apply -f /workspace/namespace.yaml
 
-    ./mvnw install
     skaffold run -p release -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_MAIN_NS-db
     skaffold run -p release,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_MAIN_NS-inmemory
     EOF
