@@ -1,0 +1,1 @@
+### Releasing a new version of the Point of Sale Application

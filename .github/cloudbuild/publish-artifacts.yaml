@@ -14,8 +14,10 @@
 
 ###########################################################
 # This is a GCP CloudBuild Trigger config file. The trigger
-# can be used to publish the built artifacts to
-# repostiories (container-image and maven)
+# is to be used to build and publish the latest release
+# artifacts to repostiories (container-image and maven).
+# The trigger associated to this cloudbuild confiuration
+# needs to be manually RUN pointing to the release-branch
 ###########################################################
 
 steps:
@@ -75,6 +77,29 @@ steps:
     echo "Publishing images with tag v$$VERSION..."
     ./mvnw install
     skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$$VERSION
+  # waitFor: commented out, so this step waits for all previous steps
+
+- id: 'update-to-next-snapshot'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    pip install -r .github/releases/requirements.txt
+    if [ $BRANCH_NAME == 'release-minor' ] || [ $BRANCH_NAME == 'restructure3' ]; then
+      VERSION=$(python3 .github/releases/releaser.py -t minor -p true)
+
+    elif [ $BRANCH_NAME == 'release-patch' ]; then
+      VERSION=$(python3 .github/releases/releaser.py -t patch -p true)
+
+    elif [ $BRANCH_NAME == 'release-major' ]; then
+      VERSION=$(python3 .github/releases/releaser.py -t major -p true)
+
+    else
+      echo "Nothing to do since it's not a 'release' PR"
+      exit 0
+    fi
+
   # waitFor: commented out, so this step waits for all previous steps
 
 timeout: 1800s
