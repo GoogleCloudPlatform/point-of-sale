@@ -102,15 +102,19 @@ steps:
   # waitFor: commented out, so this step waits for all previous steps
 
   ###########################################################
-  # Push the version changes to the repo
+  # Push the version changes and comment about the release
+  # status on the release PR
   ###########################################################
-- id: 'push-changes-to-repo'
-  name: 'gcr.io/cloud-builders/git'
+- id: 'push-comment-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
   secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
   entrypoint: bash
   args:
   - -c
   - |
+    PR_NUMBER=$(cat release-pr.number)
+    rm release-pr.number
+
     git config user.email "$$GITHUB_EMAIL"
     git config user.name "Anthos DPE"
 
@@ -122,20 +126,6 @@ steps:
     git add -A
     git commit -m "release: bump version to next snapshot"
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $BRANCH_NAME
-  # waitFor: commented out, so this step waits for all previous steps
-
-  ###########################################################
-  # Comment about the release status on the release PR
-  ###########################################################
-- id: 'comment-release-status-to-github'
-  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
-  secretEnv: [ 'GITHUB_TOKEN' ]
-  entrypoint: bash
-  args:
-  - -c
-  - |
-    LAST_COMMIT=$(cat .git/refs/heads/$BRANCH_NAME)
-    PR_NUMBER=$(cut -d "#" -f2- <<< "$$LAST_COMMIT")
 
     VERSION=$(cat /workspace/version.txt)
     cat <<EOF > /workspace/gh-comment.txt -

@@ -86,6 +86,9 @@ steps:
       exit 0
     fi
 
+    # we do this so that the deploy triggers can know the PR number
+    echo "$_PR_NUMBER" > release-pr.number
+
     git config user.email "$$GITHUB_EMAIL"
     git config user.name "Anthos DPE"
 
@@ -95,7 +98,7 @@ steps:
     git checkout --track origin/$_HEAD_BRANCH
 
     git add -A
-    git commit -m "release: update version before release #$_PR_NUMBER"
+    git commit -m "release: update version before release"
     git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
   waitFor: [ 'bump-version' ]
 
