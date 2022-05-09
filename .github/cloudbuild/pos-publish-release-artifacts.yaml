@@ -87,19 +87,20 @@ steps:
   - |
     pip install -r .github/releases/requirements.txt
     if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
-      VERSION=$(python3 .github/releases/releaser.py -t minor -s true)
+      python3 .github/releases/releaser.py -t minor -s true
 
     elif [[ $BRANCH_NAME == 'release-patch' ]]; then
-      VERSION=$(python3 .github/releases/releaser.py -t patch -s true)
+      python3 .github/releases/releaser.py -t patch -s true
 
     elif [[ $BRANCH_NAME == 'release-major' ]]; then
-      VERSION=$(python3 .github/releases/releaser.py -t major -s true)
+      python3 .github/releases/releaser.py -t major -s true
 
     else
       echo "Nothing to do since it's not a 'release' PR"
       exit 0
     fi
 
+    VERSION=$(python3 .github/releases/releaser.py -p true)
     echo "Next SNAPSHOT version is [$$VERSION]"
     cat <<EOF > /workspace/version-snapshot.txt -
     $$VERSION

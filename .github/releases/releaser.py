@@ -170,7 +170,7 @@ if __name__ == "__main__":
         "-t",
         dest='type',
         type=str,
-        default="minor",
+        default="patch",
         choices=['major', 'minor', 'patch'],
         help="The sementic version type to bump")
     parser.add_argument(
