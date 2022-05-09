@@ -116,20 +116,20 @@ steps:
   - -c
   - |
     STATUS=$(cat /workspace/release.done)
-    if [ $$STATUS == 'RELEASE_COMPLETE' ]; then
+    if [[ $$STATUS == 'RELEASE_COMPLETE' ]]; then
       exit 0
     fi
 
     COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
-    if [ $$COMMIT_MSG != 'update version before release' ]; then
+    if [[ $$COMMIT_MSG != 'update version before release' ]]; then
       echo "Commit message [$$COMMIT_MSG] is not a release commit. Skipping step."
       exit 0
     fi
 
     RELEASE_TYPE='patch'
-    if [ $_HEAD_BRANCH == 'release-minor' ] || [ $_HEAD_BRANCH == 'restructure3' ]; then
+    if [[ $_HEAD_BRANCH == 'release-minor' ]] || [[ $_HEAD_BRANCH == 'restructure3' ]]; then
       RELEASE_TYPE='minor'
-    elif [ $_HEAD_BRANCH == 'release-major' ]; then
+    elif [[ $_HEAD_BRANCH == 'release-major' ]]; then
       RELEASE_TYPE='major'
     fi
 
