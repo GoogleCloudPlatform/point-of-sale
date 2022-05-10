@@ -11,7 +11,7 @@ In the quick start guide that follows we _emulate_ nodes in an edge location
 using **Google Compute Engine (GCE)** VMs and walkthrough a use-case for
 installing **Anthos on Bare Metal (ABM)** in that edge location. The
 installation process also installs **Anthos Config Management (ACM)** in the
-Anthos on Bare Metal clusters. We then show how a [**Point-Of-Sales** application](/point-of-sale-app/)
+Anthos on Bare Metal clusters. We then show how a [**Point-Of-Sales** application](https://github.com/GoogleCloudPlatform/point-of-sale)
 is automatically deployed to this edge location by _syncing_ with the [configurations](acm-config-sink/)
 found in this repository using **ACM**. Finally, we experiment by updating the
 configurations in this repository to see the changes being adopted on the edge
@@ -47,7 +47,7 @@ _(including instructions for installing in an [Intel NUC](https://www.intel.com/
   - **[Java](https://www.oracle.com/java/technologies/downloads/#java11)** [11.*] _(Optional)_
 
 > _**Note:** The prerequisites marked as _(Optional)_ are only required if you
-> want to modify the source for the [Point-Of-Sales](/point-of-sale-app)
+> want to modify the source for the [Point-Of-Sales](https://github.com/GoogleCloudPlatform/point-of-sale)
 > application. It is not required for just trying this Quick start._
 ---
 

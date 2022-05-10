@@ -1,0 +1,97 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [START anthosbaremetal_skaffold_config_setup]
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: setup # module defining setup steps
+deploy:
+  kubectl:
+    manifests:
+    - k8-manifests/common/service-configs.yaml
+    - k8-manifests/common/api-server-svc.yaml
+    - k8-manifests/common/inventory-svc.yaml
+    - k8-manifests/common/payments-svc.yaml
+# [END anthosbaremetal_skaffold_config_setup]
+---
+# [START anthosbaremetal_skaffold_config_db]
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: db # module defining spring profile & db configuration
+deploy:
+  kubectl:
+    manifests:
+    - k8-manifests/common/springprofile-mysql.yaml
+    - k8-manifests/common/mysql-db.yaml
+profiles:
+- name: inmemory
+  deploy:
+    kubectl:
+      manifests:
+      - k8-manifests/common/springprofile-h2.yaml
+# [END anthosbaremetal_skaffold_config_db]
+---
+# [START anthosbaremetal_skaffold_config_backend]
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: backend # module defining backend services
+requires:
+- configs: [ setup, db ]
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: api-server
+      jib:
+        project: src/api-server
+    - image: inventory
+      jib:
+        project: src/inventory
+    - image: payments
+      jib:
+        project: src/payments
+    tagPolicy:
+      gitCommit: { }
+    local:
+      concurrency: 0
+  deploy:
+    kubectl:
+      manifests:
+      - k8-manifests/dev/api-server.yaml
+      - k8-manifests/dev/inventory.yaml
+      - k8-manifests/dev/payments.yaml
+- name: release
+  deploy:
+    kubectl:
+      manifests:
+      - k8-manifests/release/api-server.yaml
+      - k8-manifests/release/inventory.yaml
+      - k8-manifests/release/payments.yaml
+# [END anthosbaremetal_skaffold_config_backend]
+---
+# [START anthosbaremetal_skaffold_config_load_balancer]
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: load-balancer # module defining ingress into the application
+requires:
+- configs: [ backend ]
+deploy:
+  kubectl:
+    manifests:
+    - k8-manifests/common/api-server-lb.yaml
+# [END anthosbaremetal_skaffold_config_load_balancer]
