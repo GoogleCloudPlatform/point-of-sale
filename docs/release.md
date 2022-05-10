@@ -50,7 +50,7 @@ versions during the release process. The release process includes **three stages
     - Trigger pushes the changes to the branch and adds a comment to the _pull request_ with a
       status update.
     <p>
-      <img src="/docs/images/release1.png">
+      <img src="/docs/images/release2.png">
     </p>
 - Inspect the changes in the PR.
 - Merge the PR into **main**.
