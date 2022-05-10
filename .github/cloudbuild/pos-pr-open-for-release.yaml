@@ -53,7 +53,7 @@ steps:
 
     pip install -r .github/releases/requirements.txt
     echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
-    if [[ $_HEAD_BRANCH == 'release-minor' ]] || [[ $_HEAD_BRANCH == 'restructure3' ]]; then
+    if [[ $_HEAD_BRANCH == 'release-minor' ]]; then
       echo "Updating versions for a minor release"
       python3 .github/releases/releaser.py -t minor
 
@@ -127,7 +127,7 @@ steps:
     fi
 
     RELEASE_TYPE='patch'
-    if [[ $_HEAD_BRANCH == 'release-minor' ]] || [[ $_HEAD_BRANCH == 'restructure3' ]]; then
+    if [[ $_HEAD_BRANCH == 'release-minor' ]]; then
       RELEASE_TYPE='minor'
     elif [[ $_HEAD_BRANCH == 'release-major' ]]; then
       RELEASE_TYPE='major'

@@ -83,7 +83,7 @@ steps:
   - -c
   - |
     pip install -r .github/releases/requirements.txt
-    if [[ $BRANCH_NAME == 'release-minor' ]] || [[ $BRANCH_NAME == 'restructure3' ]]; then
+    if [[ $BRANCH_NAME == 'release-minor' ]]; then
       python3 .github/releases/releaser.py -t minor -s true
 
     elif [[ $BRANCH_NAME == 'release-patch' ]]; then
