@@ -1,4 +1,4 @@
-## Deploy the application to a cluster
+# Deploy the application to a cluster
 
 ### Prerequisites
 

@@ -1,5 +1,7 @@
 # Releasing a new version of the Point of Sale Application
 
+> ⭐ &nbsp;&nbsp; Releases for this repository can only be triggered by Googlers.
+
 All releases of this sample application are handled using CloudBuild triggers
 set up in the [`point-of-sale-ci`](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) GCP project. We use the custom written [releaser.py](/.github/releases/releaser.py) script for updating the configuration files with the correct
 versions during the release process. The release process includes **three stages**:
@@ -12,7 +14,7 @@ versions during the release process. The release process includes **three stages
 
 ### Important resources regarding the release process:
 - [Versioning](#versioning) for this repository explained.
-- The [releaser.py](releaser.py) script that is used to bump the versions.
+- The [releaser.py](/.github/releases/releaser.py) script that is used to bump the versions.
 - Release specific `CloudBuild Trigger` configuration files.
   - [pos-check-for-release.yaml](/.github/cloudbuild/pos-check-for-release.yaml)
   - [pos-publish-release-artifacts.yaml](/.github/cloudbuild/pos-publish-release-artifacts.yaml)
@@ -43,6 +45,9 @@ versions during the release process. The release process includes **three stages
   - Trigger then, pushes the changes to the branch and adds a comment to the _pull request_ with the next steps.
   <p>
     <img src="/docs/images/release1.png">
+    <div align="center">
+         <strong>(click to enlarge)</strong>
+     </div>
   </p>
 - Follow the instructions on the _pull-request_ comment and **RUN** the `CloudBuild`
   trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
@@ -62,6 +67,9 @@ versions during the release process. The release process includes **three stages
       status update.
     <p>
       <img src="/docs/images/release2.png">
+      <div align="center">
+         <strong>(click to enlarge)</strong>
+      </div>
     </p>
 - Inspect the changes in the PR and **merge** it into **main**.
 - Publish the [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) that would have been created as part of the release trigger.
