@@ -55,6 +55,10 @@ def updatePackageJson(path: str, version: str) -> None:
         json.dump(data, packageJson, indent=2)
         packageJson.truncate()
 
+"""
+Utility method that takes in a path for a Deployment resource yaml file and
+updates the container image version to the one provided.
+"""
 def updateReleaseYaml(yamlPath: str, containerName: str, version: str) -> None:
     yDefinition = {}
     with open(yamlPath, 'r') as file:
@@ -116,6 +120,11 @@ def getReleaseVersions(sementicVersion, releaseType: str) -> Union[str, str]:
     nextVersion = semver.VersionInfo(*(nextVersion.major, nextVersion.minor, nextVersion.patch, "SNAPSHOT"))
     return currentReleaseVersion, nextVersion
 
+"""
+A utility method that takes in the parser and the new version string, and calls
+the necessary methods to update each of the different types of versioned files
+(pom.xml and package.json)
+"""
 def updateVersions(parser, version: str):
     updatePackageJson(UI_PACKAGE_JSON, version)
     updatePackageJson(RELEASE_PACKAGE_JSON, version)
@@ -123,6 +132,17 @@ def updateVersions(parser, version: str):
     for pom in POM_SOURCES_PATH:
         updatePomWithNewVersion(parser, pom, version, True)
 
+
+"""
+The main method reads the current version on the parent pom at the room of the
+repository. Then based on the provided flags it does one of three things:
+
+- p flag used: just print the current version and ecit
+- s flag used: update the versions of all the files to the next SNAPSHOT version
+- no flag used: update the versions of all the files to the next release version
+                based on the release type flag. If no release type flag is
+                provided then it is deemed as a patch release by default.
+"""
 def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
     parser = ET.XMLParser(remove_comments=False)
     currentVersion = getCurrentVersion(parser, PARENT_POM)
@@ -130,12 +150,14 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
 
     currentReleaseVersion, nextVersion = getReleaseVersions(sementicVersion, releaseType)
     if justPrint:
-        # we print the current version and exit
+        # if the [-p True] flag is used we print the current version and exit
         print(sementicVersion)
 
     elif setToSnapshot:
-        # this is to set the versions to the next SNAPSHOT version after the
-        # release artifacts are published
+        # if the [-s True] flag is used then the ask is to set the versions to
+        # the next SNAPSHOT version after the release artifacts are published
+        # we ensure that the current version is NOT a SNAPSHOT version and then
+        # update it the next patch version
 
         if sementicVersion.prerelease == "SNAPSHOT":
             print("Root pom version is {}; It is already on SNAPSHOT version".format(sementicVersion))
@@ -145,7 +167,8 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
         updateVersions(parser, str(snapshotVer))
 
     else:
-        # set the versions to the next release version and prepare to publish
+        # if none of the two flags [-p True and -s True] are set then the ask is
+        # to set the versions to the next release version and prepare to publish
         # artifacts
         print("""
             Version on main: {}
@@ -163,7 +186,9 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
             filaName = file.split(".")[0]
             updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
 
-
+"""
+Starting point of the releaser script
+"""
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Release manager")
     parser.add_argument(
