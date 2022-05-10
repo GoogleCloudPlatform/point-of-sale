@@ -53,7 +53,7 @@ steps:
   ###########################################################
   # Create a Github release artifact
   ###########################################################
-- id: 'comment-release-status-to-github'
+- id: 'create-github-release'
   name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
   secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
   entrypoint: bash
