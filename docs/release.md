@@ -10,28 +10,6 @@ versions during the release process. The release process includes **three stages
 3. Bumping the version in files _(pom.xml, package.json, Kubernetes manifests)_
    to the next release version `SNAPSHOT`
 ---
-### Versioning
-The versioning in this repo follows the [semantic versioning](https://semver.org/)
-guide. Thus, the release process supports triggering `major`, `minor` or `patch`
-releases. The configuration files _(pom.xml & package.json)_ in the **main**
-branch will always have the **SNAPSHOT** version of the upcoming **patch**
-release version. The [release script](/.github/releases/releaser.py) relies on
-this to decide the release version during the time of the release.
-
-_The following examples shows how the versions will change for each type of releases._
-| **Example** _(state of the repo before release)_    |   |
-|---                                                    |---|
-| _Most recent release version_                         | 4.12.3           |
-| _Version in the main branch_                          | 4.12.4-SNAPSHOT  |
-
-
-| Triggered release type    | Released version | **"main"** updated to  |
-|---                        |---               |---                     |
-| _patch_                   | 4.12.4           | 4.12.5-SNAPSHOT  |
-| _minor_                   | 4.13.0           | 4.13.1-SNAPSHOT  |
-| _major_                   | 5.0.0            | 5.0.1-SNAPSHOT  |
----
-
 ### How to carry-out a release
 
 - Checkout the repo locally
@@ -53,13 +31,13 @@ _The following examples shows how the versions will change for each type of rele
     the [release script](/.github/releases/releaser.py). The type of release is deduced from the
     **branch name**.
   - Trigger then, pushes the changes to the branch and adds a comment to the _pull request_ with the next steps.
-  <p align="center">
+  <p>
     <img src="/docs/images/release1.png">
   </p>
 - Follow the instructions on the _pull-request_ comment and trigger the `Cloud Build`
   trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in
   GCP console. Make sure, you run the trigger against the branch you create.
-  <p align="center">
+  <p>
     <img src="/docs/images/trigger.png">
   </p>
 
@@ -72,7 +50,7 @@ _The following examples shows how the versions will change for each type of rele
       the next patch release.
     - Trigger pushes the changes to the branch and adds a comment to the _pull request_ with a
       status update.
-    <p align="center">
+    <p>
       <img src="/docs/images/release1.png">
     </p>
 - Inspect the changes in the PR.
@@ -81,3 +59,25 @@ _The following examples shows how the versions will change for each type of rele
 - Finally, run the [`pos-deploy-release`](/.github/cloudbuild/pos-deploy-release.yaml) trigger
   _(on the main branch)_ to deploy the latest released version of the application
   to the main Kubernetes cluster.
+
+---
+### Versioning
+The versioning in this repo follows the [semantic versioning](https://semver.org/)
+guide. Thus, the release process supports triggering `major`, `minor` or `patch`
+releases. The configuration files _(pom.xml & package.json)_ in the **main**
+branch will always have the **SNAPSHOT** version of the upcoming **patch**
+release version. The [release script](/.github/releases/releaser.py) relies on
+this to decide the release version during the time of the release.
+
+_The following examples shows how the versions will change for each type of releases._
+| **Example** _(state of the repo before release)_    |   |
+|---                                                    |---|
+| _Most recent release version_                         | 4.12.3           |
+| _Version in the main branch_                          | 4.12.4-SNAPSHOT  |
+
+
+| Triggered release type    | Released version | **"main"** updated to  |
+|---                        |---               |---                     |
+| _patch_                   | 4.12.4           | 4.12.5-SNAPSHOT  |
+| _minor_                   | 4.13.0           | 4.13.1-SNAPSHOT  |
+| _major_                   | 5.0.0            | 5.0.1-SNAPSHOT  |
