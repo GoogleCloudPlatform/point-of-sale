@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The Spring profile environment variable is used by the applications to decide
-# which application.properties to load. The applications are configures to
-# either use an external MySQL DB or and embedded in-memory H2 database. If no
-# profile is set then the embedded in-memory H2 database is used.
-
-# [START anthosbaremetal_k8_manifests_springprofile_h2_configmap_spring_profile]
+# [START anthosbaremetal_common_payments_svc_service_payments_svc]
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: spring-profile
-data:
-  SPRING_PROFILES_ACTIVE: "INMEMORY"
-# [END anthosbaremetal_k8_manifests_springprofile_h2_configmap_spring_profile]
+  name: payments-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: payments
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+# [END anthosbaremetal_common_payments_svc_service_payments_svc]

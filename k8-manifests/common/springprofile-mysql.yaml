@@ -17,11 +17,11 @@
 # either use an external MySQL DB or and embedded in-memory H2 database. If no
 # profile is set then the embedded in-memory H2 database is used.
 
-# [START anthosbaremetal_k8_manifests_springprofile_mysql_configmap_spring_profile]
+# [START anthosbaremetal_common_springprofile_mysql_configmap_spring_profile]
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: spring-profile
 data:
   SPRING_PROFILES_ACTIVE: "DATABASE"
-# [END anthosbaremetal_k8_manifests_springprofile_mysql_configmap_spring_profile]
+# [END anthosbaremetal_common_springprofile_mysql_configmap_spring_profile]

@@ -20,7 +20,10 @@ metadata:
 deploy:
   kubectl:
     manifests:
-    - k8-manifests/service-configs.yaml
+    - k8-manifests/common/service-configs.yaml
+    - k8-manifests/common/api-server-svc.yaml
+    - k8-manifests/common/inventory-svc.yaml
+    - k8-manifests/common/payments-svc.yaml
 # [END anthosbaremetal_skaffold_config_setup]
 ---
 # [START anthosbaremetal_skaffold_config_db]
@@ -31,14 +34,14 @@ metadata:
 deploy:
   kubectl:
     manifests:
-    - k8-manifests/springprofile-mysql.yaml
-    - k8-manifests/mysql-db.yaml
+    - k8-manifests/common/springprofile-mysql.yaml
+    - k8-manifests/common/mysql-db.yaml
 profiles:
 - name: inmemory
   deploy:
     kubectl:
       manifests:
-      - k8-manifests/springprofile-h2.yaml
+      - k8-manifests/common/springprofile-h2.yaml
 # [END anthosbaremetal_skaffold_config_db]
 ---
 # [START anthosbaremetal_skaffold_config_backend]
@@ -90,5 +93,5 @@ requires:
 deploy:
   kubectl:
     manifests:
-    - k8-manifests/api-server-lb.yaml
+    - k8-manifests/common/api-server-lb.yaml
 # [END anthosbaremetal_skaffold_config_load_balancer]

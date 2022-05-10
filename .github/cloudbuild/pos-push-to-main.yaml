@@ -49,7 +49,7 @@ steps:
 
     ./mvnw install
     skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-db
-    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-inmemory
+    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-inmemory --tag=$COMMIT_SHA-inmemory
     EOF
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]

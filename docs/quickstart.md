@@ -1,4 +1,4 @@
-## Deploy the application to a cluster
+# Deploy the application to a cluster
 
 ### Prerequisites
 
@@ -42,7 +42,7 @@
     ```bash
     # generate the release kubernetes manifests
     skaffold render -p release > pos-quickstart.yaml
-   
+
     # apply the yaml files to the cluster
     kubectl apply -f pos-quickstart.yaml
     ```

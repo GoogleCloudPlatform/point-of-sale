@@ -29,7 +29,7 @@ the root of this _(`k8-manifests`)_ directory.
       ```shell
       # Example with Google Container Registry
       skaffold dev -p dev --default-repo gcr.io/<GOOGLE_CLOUD_PROJECT>
-    
+
       # Example with Google Artifact Registry
       skaffold dev -p dev --default-repo us-docker.pkg.dev/<GOOGLE_CLOUD_PROJECT>/<IMAGE_REPO> 
       ```
@@ -46,9 +46,9 @@ the root of this _(`k8-manifests`)_ directory.
 
       ```shell
       # Example with kubctl
-      kubectl apply -f ./         # apply the common resources first
+      kubectl apply -f common/    # apply the common resources first
       kubectl apply -f release/   # apply the Deployments next
-    
+
       # Example with skaffold
       skaffold dev -p release     # just point to the release profile
       ```

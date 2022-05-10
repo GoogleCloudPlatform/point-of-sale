@@ -31,7 +31,7 @@ spec:
       containers:
       - name: payments
         # TODO:: remove the snapshot tag once we make the first release
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v1-snapshot
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:v0.0.0
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
@@ -60,18 +60,3 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 10
 # [END anthosbaremetal_release_payments_deployment_payments]
----
-# [START anthosbaremetal_release_payments_service_payments_svc]
-apiVersion: v1
-kind: Service
-metadata:
-  name: payments-svc
-spec:
-  type: ClusterIP
-  selector:
-    app: payments
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-# [END anthosbaremetal_release_payments_service_payments_svc]
