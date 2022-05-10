@@ -21,11 +21,11 @@ cd point-of-sale
 ```
 
 ### Options available for local development:
-- [Local dev with changes continuously deployed to a Kubernetes cluster](#running-in-a-k8s-cluster-whilst-local-development)
+- [Local dev with changes continuously deployed to a Kubernetes cluster](#local-development-whilst-running-the-app-in-a-k8s-cluster)
 
-- [Local dev with the entire application running in the local machine](#running-everything-locally-whilst-local-development)
+- [Local dev with the entire application running in the local machine](#local-development-whilst-running-everything-locally)
 
-- [Hybrid setup (specifically for UI development)]()
+- [Hybrid setup (specifically for UI development)](#hybrid-setup-specifically-for-ui-development)
 ---
 
 ### Local development whilst running the app in a K8s cluster
