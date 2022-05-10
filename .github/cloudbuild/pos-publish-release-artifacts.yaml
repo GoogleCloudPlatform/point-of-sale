@@ -119,6 +119,7 @@ steps:
 
     rm release-pr.number
     rm release-version.txt
+    rm release.done
     rm /workspace/version-snapshot.txt
 
     git config user.email "$$GITHUB_EMAIL"
