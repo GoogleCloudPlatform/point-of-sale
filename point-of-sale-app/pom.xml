@@ -38,7 +38,7 @@
     <gson.version>2.9.0</gson.version>
     <log4j2.version>2.17.1</log4j2.version>
     <snakeyaml.version>1.30</snakeyaml.version>
-    <springboot.version>2.6.2</springboot.version>
+    <springboot.version>2.6.6</springboot.version>
     <apache.commons.version>3.12.0</apache.commons.version>
     <abm-edge.ui.version>0.1.0-SNAPSHOT</abm-edge.ui.version>
     <abm-edge.sdk.version>0.1.0-SNAPSHOT</abm-edge.sdk.version>
