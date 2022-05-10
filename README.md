@@ -20,6 +20,9 @@ If you’re using this app, please ★Star the repository to show your interest!
 
 > 👓 **Note to Googlers:** Please fill out the form at [go/using-pos](http://go/using-pos) if you are using this application.
 
+<p align="center">
+    <img src="docs/images/pos.png">
+</p>
 
 ### Edge computing
 
