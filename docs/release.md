@@ -1,14 +1,24 @@
 # Releasing a new version of the Point of Sale Application
 
-All releases of the sample application are handled using Cloud Build triggers
+All releases of this sample application are handled using CloudBuild triggers
 set up in the [`point-of-sale-ci`](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) GCP project. We use the custom written [releaser.py](/.github/releases/releaser.py) script for updating the configuration files with the correct
 versions during the release process. The release process includes **three stages**:
 1. Bumping the version in files _(pom.xml, package.json, Kubernetes manifests)_
    to the required release version
 2. Publishing the release artifacts _(jar files, container images)_ to a central
-   repository
+   repository and to Github
 3. Bumping the version in files _(pom.xml, package.json, Kubernetes manifests)_
    to the next release version `SNAPSHOT`
+
+### Important resources regarding the release process:
+- [Versioning](#versioning) for this repository explained.
+- Release specific `CloudBuild Trigger` configuration files.
+  - [pos-pr-open-for-release.yaml](/.github/cloudbuild/pos-pr-open-for-release.yaml)
+  - [pos-publish-release-artifacts.yaml](/.github/cloudbuild/pos-publish-release-artifacts.yaml)
+  - [pos-deploy-release.yaml](/.github/cloudbuild/pos-deploy-release.yaml)
+- [`CloudBuild Triggers`](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) in the `point-of-sale-ci` GCP project.
+  - Triggers that have the same name as the above yaml definitions are the ones
+    specific to releases
 ---
 ### How to carry-out a release
 
@@ -33,7 +43,7 @@ versions during the release process. The release process includes **three stages
   <p>
     <img src="/docs/images/release1.png">
   </p>
-- Follow the instructions on the _pull-request_ comment and **RUN** the `Cloud Build`
+- Follow the instructions on the _pull-request_ comment and **RUN** the `CloudBuild`
   trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
   you run the trigger against the branch you create.
   <p>
@@ -52,9 +62,8 @@ versions during the release process. The release process includes **three stages
     <p>
       <img src="/docs/images/release2.png">
     </p>
-- Inspect the changes in the PR.
-- Merge the PR into **main**.
-- Publish the [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases).
+- Inspect the changes in the PR and **merge** it into **main**.
+- Publish the [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) that would have been created as part of the release trigger.
 - Finally, run the [`pos-deploy-release`](/.github/cloudbuild/pos-deploy-release.yaml) trigger
   _(on the main branch)_ to deploy the latest released version of the application
   to the main Kubernetes cluster.
