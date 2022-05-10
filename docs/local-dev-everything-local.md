@@ -10,7 +10,7 @@ When running the whole application stack locally, there are two setup steps.
 
 The steps below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrains.com/idea/). However, it must be possible to replicate the same setup on another IDE _(e.g. VSCode)_ with some changes.
 
-#### Steps
+### Steps
 
 - **Open the cloned project in IntelliJ IDEA**
 
@@ -73,12 +73,74 @@ The steps below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrai
 ---
 ### Run the **NodeJS VueJS** based UI service
 
-#### Steps
+The steps below assumes that the IDE used is [VSCode](https://code.visualstudio.com/).
+However, it must be possible to replicate the same setup on another IDE
+_(e.g. IntelliJ)_ with some changes.
 
-The steps below assumes that the IDE used is [VSCode](https://code.visualstudio.com/). However, it must be possible to replicate the same setup on another IDE _(e.g. IntelliJ)_ with some changes.
+> Make sure your node version is **">=16.13.2 and <17"**
 
-- **Open the src/ui folder of the cloned project in VSCode**
+### Steps
 
-    This should automatically trigger the IDE to identify the [`root pom.xml`](/pom.xml)
-    file and load all the maven projects under [`src`](/src/). If those projects
-    were identified 
+- **Open the `src/ui` folder of the cloned project in VSCode**
+    <p align="center">
+        <img src="images/vscode.png">
+        <div align="center">
+            <strong>(click to enlarge)</strong>
+        </div>
+    </p>
+
+- **Create a local development environment config file**
+
+  We create a `.env.development.local` file and provide `IP_ADDRESS` of the API
+  server to use during local development. So in this case we use `localhost:8081`
+  as the `IP_ADDRESS` of the API server as configured earlier.
+
+  > Make sure to run the following commands from the root directory of the repository
+  ```sh
+  API_SERVER_IP=localhost:8081
+  sed "s/IP_ADDRESS/$API_SERVER_IP/g" src/ui/.env.development.sample > src/ui/.env.development.local
+  ```
+
+  The above would have created a file called `.env.development.local` under `src/ui`.
+  It contents should be as follows:
+  ```sh
+  VUE_APP_API_SERVER_URL='http://localhost:8081'
+  ```
+
+- **Install the required dependencies**
+  ```sh
+  npm install --prefix src/ui
+  ```
+
+- **Run the UI application**
+  ```sh
+  npm run serve --prefix src/ui
+  ```
+    ```sh
+    # expected output
+    > ui@0.1.0-SNAPSHOT serve
+    > npm run lint && vue-cli-service serve
+
+
+    > ui@0.1.0-SNAPSHOT lint
+    > vue-cli-service lint
+
+    DONE  No lint errors found!
+    INFO  Starting development server...
+
+
+    DONE  Compiled successfully in 5197ms                                                                                                                                                                                                                         5:42:07 p.m.
+
+
+    App running at:
+    - Local:   http://localhost:8080/
+    - Network: unavailable
+
+    Note that the development build is not optimized.
+    To create a production build, run npm run build.
+    ```
+
+You may now access the application by visiting `http://localhost:8080/` in a
+browser. As you make changes to the UI you should be able to see those take
+effect on the browser with a simple refresh. In order for changes to the Java
+services to take effect, you must restart the service that was changed.
