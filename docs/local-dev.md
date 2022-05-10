@@ -11,14 +11,14 @@ developement or run the services of the application locally as well.
 - A Google Cloud Project
 
 ---
-#### Clone the repo locally
+### Clone the repo locally
 
 ```sh
 git clone https://github.com/GoogleCloudPlatform/point-of-sale.git
 cd point-of-sale
 ```
 
-#### Two ways to do local development
+### There are two ways to do local development
 - [Local dev with changes continuously deployed to a Kubernetes cluster](#running-in-a-k8s-cluster-whilst-local-development)
 
 - [Local dev with the entire application running in the local machine](#running-everything-locally-whilst-local-development)
