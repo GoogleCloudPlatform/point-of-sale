@@ -21,16 +21,10 @@ cd point-of-sale
 #### Two ways to do local development
 - [Local dev with changes continuously deployed to a Kubernetes cluster](#running-in-a-k8s-cluster-whilst-local-development)
 
-- [Setting up the application for local development](#setting-up-the-application-for-local-development)
-    - [Prerequisites](#prerequisites)
-      - [Clone the repo locally](#clone-the-repo-locally)
-      - [Two ways to do local development](#two-ways-to-do-local-development)
-    - [Running in a K8s cluster whilst local development](#running-in-a-k8s-cluster-whilst-local-development)
-      - [Steps](#steps)
-  - [where skaffold was run.](#where-skaffold-was-run)
-    - [Running everything locally whilst local development](#running-everything-locally-whilst-local-development)
-      - [Setting up the API services](#setting-up-the-api-services)
-      - [Setting up the UI project](#setting-up-the-ui-project)
+- [Local dev with the entire application running in the local machine](#running-everything-locally-whilst-local-development)
+  - [Setting up the API services](#setting-up-the-api-services)
+
+  - [Setting up the UI project](#setting-up-the-ui-project)
 
 ---
 
