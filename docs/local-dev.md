@@ -91,8 +91,10 @@ the UI project to point to the public IP address of the _API Server Service_.
 
   - When following the steps here use the `Public IP Address` of the
     `API Server Service` instead of `localhost:8081`.
+
     ```sh
     API_SERVER_IP=$(kubectl get service/api-server-lb -o jsonpath={'.status.loadBalancer.ingress[0].ip'})
+
     sed "s/IP_ADDRESS/$API_SERVER_IP/g" src/ui/.env.development.sample > src/ui/.env.development.local
     ```
 
