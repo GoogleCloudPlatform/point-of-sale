@@ -1,10 +1,7 @@
 # Setting up the application for local development
 
 You may run the application on a `Kubernetes cluster` whilst doing local
-developement or run the services of the application locally as well. The steps
-below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrains.com/idea/).
-However, it must be possible to replicate the same setup on another IDE
-_(e.g. VSCode)_ with some changes.
+developement or run the services of the application locally as well.
 
 ### Prerequisites
 
@@ -24,7 +21,17 @@ cd point-of-sale
 #### Two ways to do local development
 - [Local dev with changes continuously deployed to a Kubernetes cluster](#running-in-a-k8s-cluster-whilst-local-development)
 
-- [Local dev with the entire application running in the local machine](#running-everything-locally-whilst-local-development)
+- [Setting up the application for local development](#setting-up-the-application-for-local-development)
+    - [Prerequisites](#prerequisites)
+      - [Clone the repo locally](#clone-the-repo-locally)
+      - [Two ways to do local development](#two-ways-to-do-local-development)
+    - [Running in a K8s cluster whilst local development](#running-in-a-k8s-cluster-whilst-local-development)
+      - [Steps](#steps)
+  - [where skaffold was run.](#where-skaffold-was-run)
+    - [Running everything locally whilst local development](#running-everything-locally-whilst-local-development)
+      - [Setting up the API services](#setting-up-the-api-services)
+      - [Setting up the UI project](#setting-up-the-ui-project)
+
 ---
 
 ### Running in a K8s cluster whilst local development
@@ -61,14 +68,13 @@ changes to the cluster as we continue to update the application.
 
 ### Running everything locally whilst local development
 
-### Stes
-- **Clone this repository**
-    ```sh
-    git clone https://github.com/GoogleCloudPlatform/point-of-sale.git
-    cd point-of-sale
-    ```
+#### Setting up the API services
 
-- **Open the project in IntelliJ IDEA**
+The steps below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrains.com/idea/).
+However, it must be possible to replicate the same setup on another IDE
+_(e.g. VSCode)_ with some changes.
+
+- **Open the cloned project in IntelliJ IDEA**
 
   This should automatically trigger the IDE to identify the [`root pom.xml`](/pom.xml)
   file and load all the maven projects under [`src`](/src/). If those projects
@@ -93,5 +99,38 @@ changes to the cluster as we continue to update the application.
 
 - **Set environment variables for the services**
 
-  ssIf running the application
+  To be able to run the services locally we must update the `Run configurations`
+  with some additional parameters. These values are passed in to the services as
+  `Config Map Values` in the K8s cluster based setup.
 
+  - Click on `Edit Configurations` _(see image above)_ from the top right menu
+  - In the window that pops up, set the following `Environment Variables` for
+    the three different services. If you don't see an option to fill in
+    environment variables, you can enable it from the `Modify options` dropdown.
+
+    <p align="center">
+        <img src="images/ide2.png">
+        <div align="center">
+            <strong>(click to enlarge)</strong>
+        </div>
+    </p>
+
+    | Service               | Variable Key      | Variable Value            |
+    |---------              |--------------     |----------------           |
+    | ApiServerApplication  | server.port       | 8081                      |
+    | ApiServerApplication  | INVENTORY_EP      | http://localhost:8082     |
+    | ApiServerApplication  | PAYMENTS_EP       | http://localhost:8083     |
+    | PaymentsApplication   | server.port       | 8083                      |
+    | InventoryApplication  | server.port       | 8082                      |
+    | InventoryApplication  | ACTIVE_ITEM_TYPE  | burgers                   |
+    | InventoryApplication  | ITEMS             | items:\n  - name: "BigBurger"\n    type: "burgers"\n    price: 5.50\n    imageUrl: "usr/lib/images/bigburger.png"\n    quantity: 200\n    labels: [ "retail", "restaurant", "food" ]\n  - name: "DoubleBurger"\n    type: "burgers"\n    price: 7.20\n    imageUrl: "usr/lib/images/burgers.png"\n    quantity: 200\n    labels: [ "retail", "restaurant", "food" ]\n  - name: "Shirt"\n    type: "textile"\n    price: 15.50\n    imageUrl: "usr/lib/images/shirt.png"\n    quantity: 50\n    labels: [ "retail", "textile", "clothing" ]\n  - name: "Short"\n    type: "textile"\n    price: 17.20\n    imageUrl: "usr/lib/images/short.png"\n    quantity: 20\n    labels: [ "retail", "textile", "clothing" ]                  |
+
+- **Run all three applications from the IDE**
+    <p align="center">
+        <img src="images/run-app.png">
+        <div align="center">
+            <strong>(click to enlarge)</strong>
+        </div>
+    </p>
+
+#### Setting up the UI project
