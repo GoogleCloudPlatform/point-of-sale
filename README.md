@@ -42,6 +42,12 @@ distributed across customer data centers and device fleets.
 - [Deploy the application to a cluster](/docs/quickstart.md) _(Quickstart)_
 
 ---
+
+### Development and Contributing
+- Read the [CONTRIBUTING guide](/CONTRIBUTING.md) for instructions on how to contribute
+- Follow the [local development guide](/docs/local-dev.md) to learn how to run and develop this app locally.
+
+---
 ### Releases
 This repository follows [semantic-versioning](https://semver.org/) to version
 its files. Please read [`Releasing a new version of the Point of Sale Application`](/docs/release.md)
