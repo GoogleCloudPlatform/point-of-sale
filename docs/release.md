@@ -13,7 +13,7 @@ versions during the release process. The release process includes **three stages
 ### Important resources regarding the release process:
 - [Versioning](#versioning) for this repository explained.
 - Release specific `CloudBuild Trigger` configuration files.
-  - [pos-pr-open-for-release.yaml](/.github/cloudbuild/pos-pr-open-for-release.yaml)
+  - [pos-check-for-release.yaml](/.github/cloudbuild/pos-check-for-release.yaml)
   - [pos-publish-release-artifacts.yaml](/.github/cloudbuild/pos-publish-release-artifacts.yaml)
   - [pos-deploy-release.yaml](/.github/cloudbuild/pos-deploy-release.yaml)
 - [`CloudBuild Triggers`](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) in the `point-of-sale-ci` GCP project.
@@ -35,7 +35,7 @@ versions during the release process. The release process includes **three stages
     ```
 - Create a **pull request** from the release branch _(e.g. `release-patch`)_ to
   the **main** branch.
-- This will automatically trigger the release steps defined in the [`pos-pr-open-for-release`](.github/cloudbuild/pos-pr-open-for-release.yaml) file.
+- This will automatically trigger the release steps defined in the [`pos-check-for-release`](.github/cloudbuild/pos-check-for-release.yaml) file.
   - Trigger updates the files _(pom.xml & package.json)_ with the next release version using
     the [release script](/.github/releases/releaser.py). The type of release is deduced from the
     **branch name**.

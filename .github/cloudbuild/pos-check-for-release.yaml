@@ -67,6 +67,7 @@ steps:
 
     else
       echo "Nothing to do since it's not a 'release' PR"
+      echo "RELEASE_COMPLETE" > /workspace/release.done
     fi
 
     VERSION=$(python3 .github/releases/releaser.py -p true)
