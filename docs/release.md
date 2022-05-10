@@ -1,5 +1,7 @@
 # Releasing a new version of the Point of Sale Application
 
+> ⭐ &nbsp;&nbsp; Releases for this repository can only be triggered by Googlers.
+
 All releases of this sample application are handled using CloudBuild triggers
 set up in the [`point-of-sale-ci`](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) GCP project. We use the custom written [releaser.py](/.github/releases/releaser.py) script for updating the configuration files with the correct
 versions during the release process. The release process includes **three stages**:
