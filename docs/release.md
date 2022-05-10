@@ -43,6 +43,9 @@ versions during the release process. The release process includes **three stages
   - Trigger then, pushes the changes to the branch and adds a comment to the _pull request_ with the next steps.
   <p>
     <img src="/docs/images/release1.png">
+    <div align="center">
+         <strong>(click to enlarge)</strong>
+     </div>
   </p>
 - Follow the instructions on the _pull-request_ comment and **RUN** the `CloudBuild`
   trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
@@ -62,6 +65,9 @@ versions during the release process. The release process includes **three stages
       status update.
     <p>
       <img src="/docs/images/release2.png">
+      <div align="center">
+         <strong>(click to enlarge)</strong>
+      </div>
     </p>
 - Inspect the changes in the PR and **merge** it into **main**.
 - Publish the [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) that would have been created as part of the release trigger.
