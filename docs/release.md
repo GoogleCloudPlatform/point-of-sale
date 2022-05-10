@@ -14,7 +14,7 @@ versions during the release process. The release process includes **three stages
 
 ### Important resources regarding the release process:
 - [Versioning](#versioning) for this repository explained.
-- The [releaser.py](releaser.py) script that is used to bump the versions.
+- The [releaser.py](/.github/releases/releaser.py) script that is used to bump the versions.
 - Release specific `CloudBuild Trigger` configuration files.
   - [pos-check-for-release.yaml](/.github/cloudbuild/pos-check-for-release.yaml)
   - [pos-publish-release-artifacts.yaml](/.github/cloudbuild/pos-publish-release-artifacts.yaml)
