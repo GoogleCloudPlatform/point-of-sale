@@ -33,9 +33,9 @@ versions during the release process. The release process includes **three stages
   <p>
     <img src="/docs/images/release1.png">
   </p>
-- Follow the instructions on the _pull-request_ comment and trigger the `Cloud Build`
-  trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in
-  GCP console. Make sure, you run the trigger against the branch you create.
+- Follow the instructions on the _pull-request_ comment and **RUN** the `Cloud Build`
+  trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
+  you run the trigger against the branch you create.
   <p>
     <img src="/docs/images/trigger.png">
   </p>
