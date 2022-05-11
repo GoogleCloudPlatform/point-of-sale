@@ -1,4 +1,4 @@
-# Point of Sale
+# Point of Sale (PoS)
 
 **Point of Sale** is a sample application that simulates a retail store kiosk
 used to submit and track orders and payments.
@@ -20,6 +20,9 @@ If you’re using this app, please ★Star the repository to show your interest!
 
 > 👓 **Note to Googlers:** Please fill out the form at [go/using-pos](http://go/using-pos) if you are using this application.
 
+<p align="center">
+    <img src="docs/images/pos.png">
+</p>
 
 ### Edge computing
 
@@ -36,7 +39,18 @@ distributed across customer data centers and device fleets.
 ---
 
 ### Resources
-- [Deploy the application to a cluster](/docs/quickstart.md) _(Quickstart)_
+- _(Quickstart)_ [Deploy this application to a cluster](/docs/quickstart.md)
+
+#### External use cases of this application
+- _(Solution guide)_ [VM based PoS deployed in an Anthos cluster using Anthos VMRuntime](https://github.com/GoogleCloudPlatform/anthos-samples/tree/main/anthos-vmruntime)
+- _(Solution guide)_ [Edge deployment of PoS using Anthos on bare metal](https://cloud.google.com/bare-metal/docs/tutorials/abm-edge-at-scale)
+- _(Tutorial)_ [PoS deployed in an Anthos bare metal cluster inside Openstack](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/installing/openstack-abm-install)
+
+---
+
+### Development and Contributing
+- Read the [CONTRIBUTING guide](/CONTRIBUTING.md) for instructions on how to contribute
+- Follow the [local development guide](/docs/local-dev.md) to learn how to run and develop this app locally
 
 ---
 ### Releases
