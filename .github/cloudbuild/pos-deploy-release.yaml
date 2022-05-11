@@ -33,7 +33,6 @@ steps:
     gcloud container clusters get-credentials --zone $_MAIN_CLUSTER_ZONE $_MAIN_CLUSTER
     kubectl create namespace $_MAIN_NS-db
     kubectl create namespace $_MAIN_NS-inmemory
-    kubectl apply -f /workspace/namespace.yaml
 
     skaffold run -p release -f=skaffold.yaml --namespace=$_MAIN_NS-db
     skaffold run -p release,inmemory -f=skaffold.yaml --namespace=$_MAIN_NS-inmemory
