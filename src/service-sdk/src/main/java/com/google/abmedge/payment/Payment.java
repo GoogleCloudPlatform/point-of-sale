@@ -50,14 +50,13 @@ public class Payment implements Serializable {
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<PaymentUnit> unitList;
+
   private PaymentType type;
   private BigDecimal paidAmount;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
-  public Payment() {
-  }
+  public Payment() {}
 
   public Payment(List<PaymentUnit> unitList, PaymentType type, BigDecimal paidAmount) {
     this.unitList = unitList;

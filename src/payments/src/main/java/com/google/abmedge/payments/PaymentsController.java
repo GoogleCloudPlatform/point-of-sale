@@ -46,14 +46,12 @@ public class PaymentsController {
   private PaymentGateway activePaymentGateway;
   private final DatabasePaymentGateway databasePaymentGateway;
 
-  public PaymentsController(
-      DatabasePaymentGateway databasePaymentGateway) {
+  public PaymentsController(DatabasePaymentGateway databasePaymentGateway) {
     this.databasePaymentGateway = databasePaymentGateway;
   }
 
   /**
-   * This method runs soon after the object for this class is created on startup of the
-   * application.
+   * This method runs soon after the object for this class is created on startup of the application.
    */
   @PostConstruct
   void init() {
@@ -94,7 +92,7 @@ public class PaymentsController {
    * to this request the API returns a bill with all the details.
    *
    * @param payment an object of type {@link Payment} containing details of all the items purchased
-   * in this payment, the amount paid and the type of payment
+   *     in this payment, the amount paid and the type of payment
    * @return a bill for the payment that was processed in string format
    */
   @PostMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -32,9 +32,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * APIs of the payments service are not exposed publicly.
  */
 @SpringBootApplication
-@EntityScan(basePackages={"com.google.abmedge.payment"})
-@ComponentScan(basePackages={"com.google.abmedge.payment", "com.google.abmedge.payments"})
-@EnableJpaRepositories(basePackages={"com.google.abmedge.payment"})
+@EntityScan(basePackages = {"com.google.abmedge.payment"})
+@ComponentScan(basePackages = {"com.google.abmedge.payment", "com.google.abmedge.payments"})
+@EnableJpaRepositories(basePackages = {"com.google.abmedge.payment"})
 public class PaymentsApplication {
 
   private static final Logger LOGGER = LogManager.getLogger(PaymentsApplication.class);

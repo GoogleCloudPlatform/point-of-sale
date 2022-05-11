@@ -60,7 +60,7 @@ public interface InventoryStoreConnector {
    *
    * @param id the ID of the item that is to be retrieved from the store
    * @return the item that has the given ID wrapped in an {@link Optional<Item>} object; if no such
-   * item exists then return {@link Optional#empty()}
+   *     item exists then return {@link Optional#empty()}
    */
   Optional<Item> getById(UUID id);
 

@@ -33,9 +33,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * the items. The APIs of the inventory service are not exposed publicly.
  */
 @SpringBootApplication
-@EntityScan(basePackages={"com.google.abmedge.inventory"})
-@ComponentScan(basePackages={"com.google.abmedge.inventory"})
-@EnableJpaRepositories(basePackages={"com.google.abmedge.inventory"})
+@EntityScan(basePackages = {"com.google.abmedge.inventory"})
+@ComponentScan(basePackages = {"com.google.abmedge.inventory"})
+@EnableJpaRepositories(basePackages = {"com.google.abmedge.inventory"})
 public class InventoryApplication {
   private static final Logger LOGGER = LogManager.getLogger(InventoryApplication.class);
 

@@ -44,15 +44,14 @@ public class PaymentUnit implements Serializable {
   @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID itemId;
+
   private String name;
   private BigDecimal quantity;
   private BigDecimal totalCost;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
-  public PaymentUnit() {
-  }
+  public PaymentUnit() {}
 
   public PaymentUnit(UUID itemId, String name, BigDecimal quantity, BigDecimal totalCost) {
     this.itemId = itemId;

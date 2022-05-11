@@ -48,16 +48,14 @@ public class DatabaseConnector implements InventoryStoreConnector {
 
   @Override
   public List<Item> getAllByType(String type) {
-    return Streamable.of(itemRepository.findAll())
-        .stream()
+    return Streamable.of(itemRepository.findAll()).stream()
         .filter(i -> i.getType().equals(type))
         .collect(Collectors.toList());
   }
 
   @Override
   public Set<String> getTypes() {
-    return Streamable.of(itemRepository.findAll())
-        .stream()
+    return Streamable.of(itemRepository.findAll()).stream()
         .map(Item::getType)
         .collect(Collectors.toSet());
   }

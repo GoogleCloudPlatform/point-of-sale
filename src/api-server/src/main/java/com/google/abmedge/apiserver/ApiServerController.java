@@ -71,18 +71,19 @@ public class ApiServerController {
   private static final String SWITCH_EP = "/switch";
   private static final String UPDATE_EP = "/update";
   private static final String PAY_EP = "/pay";
-  private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
-      .version(HttpClient.Version.HTTP_1_1)
-      .connectTimeout(Duration.ofSeconds(11))
-      .build();
+  private static final HttpClient HTTP_CLIENT =
+      HttpClient.newBuilder()
+          .version(HttpClient.Version.HTTP_1_1)
+          .connectTimeout(Duration.ofSeconds(11))
+          .build();
   /**
    * default service endpoints to use if they cannot be read from environment variables in {@link
    * #initServiceEndpoints()}
    */
   private static String INVENTORY_SERVICE = "http://inventory-svc:8080";
+
   private static String PAYMENTS_SERVICE = "http://payments-svc:8080";
   private static final Gson GSON = new Gson();
-
 
   @PostConstruct
   void init() {
@@ -98,25 +99,23 @@ public class ApiServerController {
   public ResponseEntity<String> items() {
     String itemsEndpoint = INVENTORY_SERVICE + ITEMS_EP;
     try {
-      HttpRequest request = HttpRequest.newBuilder()
-          .GET()
-          .uri(URI.create(itemsEndpoint))
-          .build();
-      HttpResponse<String> response = HTTP_CLIENT
-          .send(request, HttpResponse.BodyHandlers.ofString());
+      HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(itemsEndpoint)).build();
+      HttpResponse<String> response =
+          HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
       int statusCode = response.statusCode();
       if (statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NO_CONTENT.value()) {
         String responseItems = response.body();
-        LOGGER.info(String.format("Inventory service response for endpoint '%s' is: \n%s",
-            itemsEndpoint, responseItems));
+        LOGGER.info(
+            String.format(
+                "Inventory service response for endpoint '%s' is: \n%s",
+                itemsEndpoint, responseItems));
         return new ResponseEntity<>(responseItems, HttpStatus.OK);
       }
       LOGGER.error(
-          String.format("Failed to fetch items list from '%s'. Status code '%s'",
-              itemsEndpoint, statusCode));
+          String.format(
+              "Failed to fetch items list from '%s'. Status code '%s'", itemsEndpoint, statusCode));
     } catch (IOException | InterruptedException e) {
-      LOGGER.error(
-          String.format("Failed to fetch items list from '%s'", itemsEndpoint), e);
+      LOGGER.error(String.format("Failed to fetch items list from '%s'", itemsEndpoint), e);
     }
     return new ResponseEntity<>(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -125,25 +124,24 @@ public class ApiServerController {
   public ResponseEntity<String> types() {
     String itemsEndpoint = INVENTORY_SERVICE + TYPES_EP;
     try {
-      HttpRequest request = HttpRequest.newBuilder()
-          .GET()
-          .uri(URI.create(itemsEndpoint))
-          .build();
-      HttpResponse<String> response = HTTP_CLIENT
-          .send(request, HttpResponse.BodyHandlers.ofString());
+      HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(itemsEndpoint)).build();
+      HttpResponse<String> response =
+          HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
       int statusCode = response.statusCode();
       if (statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NO_CONTENT.value()) {
         String responseTypes = response.body();
-        LOGGER.info(String.format("Inventory service response for endpoint '%s' is: \n%s",
-            itemsEndpoint, responseTypes));
+        LOGGER.info(
+            String.format(
+                "Inventory service response for endpoint '%s' is: \n%s",
+                itemsEndpoint, responseTypes));
         return new ResponseEntity<>(responseTypes, HttpStatus.OK);
       }
       LOGGER.error(
-          String.format("Failed to fetch store types from '%s'. Status code '%s'",
+          String.format(
+              "Failed to fetch store types from '%s'. Status code '%s'",
               itemsEndpoint, statusCode));
     } catch (IOException | InterruptedException e) {
-      LOGGER.error(
-          String.format("Failed to fetch store types from '%s'", itemsEndpoint), e);
+      LOGGER.error(String.format("Failed to fetch store types from '%s'", itemsEndpoint), e);
     }
     return new ResponseEntity<>(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -152,22 +150,28 @@ public class ApiServerController {
   public ResponseEntity<Void> switchType(@PathVariable String type) {
     String switchEndpoint = INVENTORY_SERVICE + SWITCH_EP + "/" + type;
     try {
-      HttpRequest request = HttpRequest.newBuilder()
-          .POST(HttpRequest.BodyPublishers.noBody())
-          .uri(URI.create(switchEndpoint))
-          .build();
-      HttpResponse<String> response = HTTP_CLIENT
-          .send(request, HttpResponse.BodyHandlers.ofString());
+      HttpRequest request =
+          HttpRequest.newBuilder()
+              .POST(HttpRequest.BodyPublishers.noBody())
+              .uri(URI.create(switchEndpoint))
+              .build();
+      HttpResponse<String> response =
+          HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
       int statusCode = response.statusCode();
       if (statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NO_CONTENT.value()) {
         return new ResponseEntity<>(HttpStatus.OK);
       }
-      LOGGER.error(String.format("Failed to switch active inventory type to '%s' via endpoint '%s'."
-          + " Status code '%s'", type, switchEndpoint, statusCode));
+      LOGGER.error(
+          String.format(
+              "Failed to switch active inventory type to '%s' via endpoint '%s'."
+                  + " Status code '%s'",
+              type, switchEndpoint, statusCode));
     } catch (IOException | InterruptedException e) {
       LOGGER.error(
-          String.format("Failed to switch active inventory type to '%s' via endpoint '%s'.", type,
-              switchEndpoint), e);
+          String.format(
+              "Failed to switch active inventory type to '%s' via endpoint '%s'.",
+              type, switchEndpoint),
+          e);
     }
     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -180,11 +184,12 @@ public class ApiServerController {
    * PurchaseItem}.
    *
    * @param payRequest a deserialized JSON object that matches the class structure of {@link
-   * PayRequest} that contains details of the specific purchase for which a payment is being made
+   *     PayRequest} that contains details of the specific purchase for which a payment is being
+   *     made
    * @return the JSON serialized form of the {@link ResponseEntity} that contains an HTTP code
-   * indicating the status of the request and a string body representing the result of the pay
-   * event. The string body on the response can differ based on the request type and the status.
-   * <pre>
+   *     indicating the status of the request and a string body representing the result of the pay
+   *     event. The string body on the response can differ based on the request type and the status.
+   *     <pre>
    *   1. No purchase items on the request body -> an empty response body
    *   2. Failure to fetch details of the purchase items -> a simple failure message
    *   3. Failure to update the purchase items -> a simple failure message
@@ -202,8 +207,9 @@ public class ApiServerController {
     if (requestedItemList.isEmpty()) {
       return new ResponseEntity<>("", HttpStatus.OK);
     }
-    Map<String, Long> itemIdsToCountMap = requestedItemList.stream()
-        .collect(Collectors.toMap(pi -> pi.getItemId().toString(), PurchaseItem::getItemCount));
+    Map<String, Long> itemIdsToCountMap =
+        requestedItemList.stream()
+            .collect(Collectors.toMap(pi -> pi.getItemId().toString(), PurchaseItem::getItemCount));
     try {
       Optional<List<Item>> optionalItemList = getItemDetails(itemIdsToCountMap);
       if (optionalItemList.isEmpty()) {
@@ -214,9 +220,10 @@ public class ApiServerController {
       int totalItemsRetrieved = itemList.size();
       int totalItemsRequested = itemIdsToCountMap.size();
       if (totalItemsRetrieved != totalItemsRequested) {
-        LOGGER.warn(String.format(
-            "There is a mismatch between number of items requested and retrieved - %s/%s",
-            totalItemsRetrieved, totalItemsRequested));
+        LOGGER.warn(
+            String.format(
+                "There is a mismatch between number of items requested and retrieved - %s/%s",
+                totalItemsRetrieved, totalItemsRequested));
       }
       for (Item item : itemList) {
         UUID id = item.getId();
@@ -233,8 +240,8 @@ public class ApiServerController {
         return new ResponseEntity<>(
             "Failed to update purchased item information", HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      Optional<String> optionalBill = makePayment(
-          payRequest.getType(), payRequest.getPaidAmount(), totalCost, payUnits);
+      Optional<String> optionalBill =
+          makePayment(payRequest.getType(), payRequest.getPaidAmount(), totalCost, payUnits);
       if (optionalBill.isEmpty()) {
         return new ResponseEntity<>(
             "Failed to process payment for the order", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -275,35 +282,39 @@ public class ApiServerController {
       LOGGER.info(String.format("Setting inventory service endpoint to: %s", inventory));
       INVENTORY_SERVICE = inventory;
     } else {
-      LOGGER.warn(String.format("Could not read environment variable %s; thus defaulting to %s",
-          INVENTORY_EP_ENV, INVENTORY_SERVICE));
+      LOGGER.warn(
+          String.format(
+              "Could not read environment variable %s; thus defaulting to %s",
+              INVENTORY_EP_ENV, INVENTORY_SERVICE));
     }
     if (StringUtils.isNotBlank(payments)) {
       LOGGER.info(String.format("Setting payments service endpoint to: %s", payments));
       PAYMENTS_SERVICE = payments;
     } else {
-      LOGGER.warn(String.format("Could not read environment variable %s; thus defaulting to %s",
-          PAYMENTS_EP_ENV, PAYMENTS_SERVICE));
+      LOGGER.warn(
+          String.format(
+              "Could not read environment variable %s; thus defaulting to %s",
+              PAYMENTS_EP_ENV, PAYMENTS_SERVICE));
     }
   }
 
   private Optional<List<Item>> getItemDetails(Map<String, Long> itemIdsToCountMap)
       throws IOException, InterruptedException {
     String endpoint = INVENTORY_SERVICE + ITEMS_BY_ID_EP;
-    String jsonString = GSON.toJson(itemIdsToCountMap.keySet(), new TypeToken<Set<String>>() {
-    }.getType());
-    HttpRequest request = HttpRequest.newBuilder()
-        .POST(HttpRequest.BodyPublishers.ofString(jsonString))
-        .uri(URI.create(endpoint))
-        .setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .build();
-    HttpResponse<String> response = HTTP_CLIENT
-        .send(request, HttpResponse.BodyHandlers.ofString());
+    String jsonString =
+        GSON.toJson(itemIdsToCountMap.keySet(), new TypeToken<Set<String>>() {}.getType());
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .POST(HttpRequest.BodyPublishers.ofString(jsonString))
+            .uri(URI.create(endpoint))
+            .setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
+    HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
     int statusCode = response.statusCode();
     if (isSuccessResponse(statusCode)) {
-      List<Item> itemDetails = GSON.fromJson(response.body(), new TypeToken<List<Item>>() {
-      }.getType());
+      List<Item> itemDetails =
+          GSON.fromJson(response.body(), new TypeToken<List<Item>>() {}.getType());
       return Optional.of(itemDetails);
     }
     LOGGER.error(String.format("Failed to fetch items details from '%s'", endpoint));
@@ -313,13 +324,14 @@ public class ApiServerController {
   private boolean updateItemDetails(List<PurchaseItem> purchaseItems)
       throws IOException, InterruptedException {
     String endpoint = INVENTORY_SERVICE + UPDATE_EP;
-    String jsonString = GSON.toJson(purchaseItems, new TypeToken<List<PurchaseItem>>() {
-    }.getType());
-    HttpRequest request = HttpRequest.newBuilder()
-        .PUT(HttpRequest.BodyPublishers.ofString(jsonString))
-        .uri(URI.create(endpoint))
-        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .build();
+    String jsonString =
+        GSON.toJson(purchaseItems, new TypeToken<List<PurchaseItem>>() {}.getType());
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .PUT(HttpRequest.BodyPublishers.ofString(jsonString))
+            .uri(URI.create(endpoint))
+            .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
     int statusCode = response.statusCode();
     if (isSuccessResponse(statusCode)) {
@@ -330,18 +342,21 @@ public class ApiServerController {
   }
 
   private Optional<String> makePayment(
-      PaymentType paymentType, BigDecimal amountOnRequest, BigDecimal totalCost,
+      PaymentType paymentType,
+      BigDecimal amountOnRequest,
+      BigDecimal totalCost,
       List<PaymentUnit> payUnits)
       throws IOException, InterruptedException {
     String endpoint = PAYMENTS_SERVICE + PAY_EP;
     BigDecimal paidAmount = paymentType == PaymentType.CARD ? totalCost : amountOnRequest;
     Payment payment = new Payment(payUnits, PaymentType.CARD, paidAmount);
     String jsonString = GSON.toJson(payment, Payment.class);
-    HttpRequest request = HttpRequest.newBuilder()
-        .POST(HttpRequest.BodyPublishers.ofString(jsonString))
-        .uri(URI.create(endpoint))
-        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .build();
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .POST(HttpRequest.BodyPublishers.ofString(jsonString))
+            .uri(URI.create(endpoint))
+            .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
     int statusCode = response.statusCode();
     if (isSuccessResponse(statusCode)) {

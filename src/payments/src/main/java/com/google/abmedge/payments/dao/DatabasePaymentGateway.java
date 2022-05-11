@@ -34,8 +34,7 @@ public class DatabasePaymentGateway implements PaymentGateway {
 
   private final PaymentRepository paymentRepository;
 
-  public DatabasePaymentGateway(
-      PaymentRepository paymentRepository) {
+  public DatabasePaymentGateway(PaymentRepository paymentRepository) {
     this.paymentRepository = paymentRepository;
   }
 
@@ -45,9 +44,10 @@ public class DatabasePaymentGateway implements PaymentGateway {
       Payment saved = paymentRepository.save(payment);
       return BillGenerator.generateBill(saved.getId(), payment);
     } catch (Exception e) {
-      String msg = String.format(
-          "Failed to process new payment for ['type': '%s', 'items': '%s', 'amount': '%s']",
-          payment.getType(), payment.getUnitList().size(), payment.getPaidAmount());
+      String msg =
+          String.format(
+              "Failed to process new payment for ['type': '%s', 'items': '%s', 'amount': '%s']",
+              payment.getType(), payment.getUnitList().size(), payment.getPaidAmount());
       throw new PaymentProcessingFailedException(msg, e);
     }
   }
