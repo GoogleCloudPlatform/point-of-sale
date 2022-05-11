@@ -50,7 +50,7 @@ distributed across customer data centers and device fleets.
 
 ### Development and Contributing
 - Read the [CONTRIBUTING guide](/CONTRIBUTING.md) for instructions on how to contribute
-- Follow the [local development guide](/docs/local-dev.md) to learn how to run and develop this app locally.
+- Follow the [local development guide](/docs/local-dev.md) to learn how to run and develop this app locally
 
 ---
 ### Releases
