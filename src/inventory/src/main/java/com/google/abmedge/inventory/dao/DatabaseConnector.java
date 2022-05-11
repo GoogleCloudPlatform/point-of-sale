@@ -16,15 +16,14 @@
 
 package com.google.abmedge.inventory.dao;
 
-import com.google.abmedge.inventory.ItemRepository;
 import com.google.abmedge.inventory.Item;
+import com.google.abmedge.inventory.ItemRepository;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
@@ -36,8 +35,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseConnector implements InventoryStoreConnector {
 
-  @Autowired
-  private ItemRepository itemRepository;
+  private final ItemRepository itemRepository;
+
+  public DatabaseConnector(ItemRepository itemRepository) {
+    this.itemRepository = itemRepository;
+  }
 
   @Override
   public List<Item> getAll() {

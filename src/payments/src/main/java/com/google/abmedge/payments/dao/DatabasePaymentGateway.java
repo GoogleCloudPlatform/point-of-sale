@@ -21,7 +21,6 @@ import com.google.abmedge.payment.PaymentRepository;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.util.BillGenerator;
 import com.google.abmedge.payments.util.PaymentProcessingFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,8 +32,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabasePaymentGateway implements PaymentGateway {
 
-  @Autowired
-  private PaymentRepository paymentRepository;
+  private final PaymentRepository paymentRepository;
+
+  public DatabasePaymentGateway(
+      PaymentRepository paymentRepository) {
+    this.paymentRepository = paymentRepository;
+  }
 
   @Override
   public Bill pay(Payment payment) throws PaymentProcessingFailedException {

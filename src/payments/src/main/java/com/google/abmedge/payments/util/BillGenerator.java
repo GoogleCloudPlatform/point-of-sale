@@ -108,7 +108,7 @@ public class BillGenerator {
    *
    * @param itemIndex the place of this item in the bill so that the line starts with this number
    * @param paymentUnit the {@link PaymentUnit} object that contains details about the item in the
-   * payment event for which an entry is be generated
+   * payment event for which an entry is being generated
    * @return a string that contains a line with details about the purchase of one specific item that
    * can be appended to the bill
    */

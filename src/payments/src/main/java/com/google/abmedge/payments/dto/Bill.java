@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 /**
  * An instance of this class describes the bill for a single payment event that was expressed by one
  * instance of {@link Payment}. The bill object contains the original {@link Payment} object that
- * was used to generate the bill, the status of the payment (as expressable by {@link
+ * was used to generate the bill, the status of the payment (as expressible by {@link
  * PaymentStatus}), the balance on the bill based on how much was paid and a printable string
  * representation of the bill.
  */
