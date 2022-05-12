@@ -45,6 +45,8 @@
     <maven-checkstyle.plugin.version>3.1.2</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
     <jacoco-maven.plugin.version>0.8.7</jacoco-maven.plugin.version>
+    <coveo-fmt-maven-plugin.version>2.13</coveo-fmt-maven-plugin.version>
+    <googlejavaformat.version>1.15.0</googlejavaformat.version>
     <artifactregistry-maven-wagon.extension.version>2.1.5
     </artifactregistry-maven-wagon.extension.version>
   </properties>
@@ -109,12 +111,12 @@
       <dependency>
         <groupId>com.google.abm-edge</groupId>
         <artifactId>ui</artifactId>
-        <version>${pom.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.abm-edge</groupId>
         <artifactId>service-sdk</artifactId>
-        <version>${pom.version}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -157,6 +159,30 @@
               <phase>verify</phase>
               <goals>
                 <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>com.coveo</groupId>
+          <artifactId>fmt-maven-plugin</artifactId>
+          <version>${coveo-fmt-maven-plugin.version}</version>
+          <configuration>
+            <style>google</style>
+            <verbose>true</verbose>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>com.google.googlejavaformat</groupId>
+              <artifactId>google-java-format</artifactId>
+              <version>${googlejavaformat.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <!-- <phase>validate</phase> -->
+              <goals>
+                <goal>check</goal>
               </goals>
             </execution>
           </executions>

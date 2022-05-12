@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * This class represents the sgtructure of the request object that is expected to be received via
+ * This class represents the structure of the request object that is expected to be received via
  * {@link com.google.abmedge.apiserver.ApiServerController#pay(PayRequest)} method. The class
  * defines a collection of {@link PurchaseItem}s denoting the items for which the current payment is
  * being made. It also has reference to the type of the payment (as denoted by {@link PaymentType})

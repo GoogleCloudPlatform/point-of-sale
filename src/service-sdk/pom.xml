@@ -44,4 +44,14 @@
       <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!--Coveo plugin is used to validate for code formatting. It uses 'google-java-format'-->
+        <groupId>com.coveo</groupId>
+        <artifactId>fmt-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -23,7 +23,7 @@ public enum PaymentType {
   CARD("CARD"),
   CASH("CASH");
 
-  private String type;
+  private final String type;
 
   PaymentType(String type) {
     this.type = type;

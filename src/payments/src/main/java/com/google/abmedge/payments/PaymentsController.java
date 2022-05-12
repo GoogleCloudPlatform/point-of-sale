@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,12 +44,14 @@ public class PaymentsController {
   private static final Logger LOGGER = LogManager.getLogger(PaymentsController.class);
   private static final Gson GSON = new Gson();
   private PaymentGateway activePaymentGateway;
-  @Autowired
-  private DatabasePaymentGateway databasePaymentGateway;
+  private final DatabasePaymentGateway databasePaymentGateway;
+
+  public PaymentsController(DatabasePaymentGateway databasePaymentGateway) {
+    this.databasePaymentGateway = databasePaymentGateway;
+  }
 
   /**
-   * This method runs soon after the object for this class is created on startup of the
-   * application.
+   * This method runs soon after the object for this class is created on startup of the application.
    */
   @PostConstruct
   void init() {
@@ -91,7 +92,7 @@ public class PaymentsController {
    * to this request the API returns a bill with all the details.
    *
    * @param payment an object of type {@link Payment} containing details of all the items purchased
-   * in this payment, the amount paid and the type of payment
+   *     in this payment, the amount paid and the type of payment
    * @return a bill for the payment that was processed in string format
    */
   @PostMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)

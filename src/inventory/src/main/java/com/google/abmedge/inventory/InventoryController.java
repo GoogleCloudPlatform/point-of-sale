@@ -14,11 +14,11 @@
 
 package com.google.abmedge.inventory;
 
-import com.google.abmedge.payment.PurchaseItem;
 import com.google.abmedge.inventory.dao.DatabaseConnector;
 import com.google.abmedge.inventory.dao.InventoryStoreConnector;
 import com.google.abmedge.inventory.dto.Inventory;
 import com.google.abmedge.inventory.util.InventoryStoreConnectorException;
+import com.google.abmedge.payment.PurchaseItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
@@ -72,8 +72,7 @@ public class InventoryController {
   }
 
   /**
-   * This method runs soon after the object for this class is created on startup of the
-   * application.
+   * This method runs soon after the object for this class is created on startup of the application.
    */
   @PostConstruct
   void init() {
@@ -115,16 +114,14 @@ public class InventoryController {
         activeItemsType.equals(ALL_ITEMS)
             ? activeConnector.getAll()
             : activeConnector.getAllByType(activeItemsType);
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
-    }.getType());
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
   @GetMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> types() {
     Set<String> itemTypes = activeConnector.getTypes();
-    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {
-    }.getType());
+    String jsonString = GSON.toJson(itemTypes, new TypeToken<Set<String>>() {}.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -133,13 +130,13 @@ public class InventoryController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> items(@RequestBody List<String> idList) {
-    List<Item> inventoryItems = idList.stream()
-        .map(id -> activeConnector.getById(UUID.fromString(id)))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
-    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {
-    }.getType());
+    List<Item> inventoryItems =
+        idList.stream()
+            .map(id -> activeConnector.getById(UUID.fromString(id)))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+    String jsonString = GSON.toJson(inventoryItems, new TypeToken<List<Item>>() {}.getType());
     return new ResponseEntity<>(jsonString, HttpStatus.OK);
   }
 
@@ -149,9 +146,9 @@ public class InventoryController {
    * the deployment (e.g. textile, food, electronics, etc).
    *
    * <p>This method takes in a specific inventory type and changes the current context of the
-   * inventory service to that specific type by setting the {@link InventoryController#activeItemsType}
-   * variable. The inventory service APIs respond to requests by only loading and looking at the
-   * items in the inventory that match the current active 'type'.
+   * inventory service to that specific type by setting the {@link
+   * InventoryController#activeItemsType} variable. The inventory service APIs respond to requests
+   * by only loading and looking at the items in the inventory that match the current active 'type'.
    *
    * @param type the type to which the current context is to be switched to
    * @return HTTP 200 if the switch is done without any errors
@@ -171,7 +168,7 @@ public class InventoryController {
    * specific to the implementation of {@link InventoryStoreConnector} that is used.
    *
    * @param purchaseList a list of {@link PurchaseItem} objects that needs to be updated in the
-   * underlying datastore
+   *     underlying datastore
    * @return an object of {@link ResponseEntity} that only has an HTTP code without any payload
    */
   @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -306,16 +303,18 @@ public class InventoryController {
   private Map<String, Set<String>> getItemTypeToNamesMap() {
     Map<String, Set<String>> itemTypeToNameMap = new HashMap<>();
     List<Item> loadedItems = activeConnector.getAll();
-    loadedItems.forEach(i -> {
-      Set<String> itemNames = itemTypeToNameMap.computeIfAbsent(i.getType(), k -> new HashSet<>());
-      itemNames.add(i.getName());
-    });
+    loadedItems.forEach(
+        i -> {
+          Set<String> itemNames =
+              itemTypeToNameMap.computeIfAbsent(i.getType(), k -> new HashSet<>());
+          itemNames.add(i.getName());
+        });
     return itemTypeToNameMap;
   }
 
   private void insertIfNotExists(Item i, Map<String, Set<String>> itemTypeToNameMap) {
-    if (itemTypeToNameMap.containsKey(i.getType()) &&
-        itemTypeToNameMap.get(i.getType()).contains(i.getName())) {
+    if (itemTypeToNameMap.containsKey(i.getType())
+        && itemTypeToNameMap.get(i.getType()).contains(i.getName())) {
       LOGGER.warn(
           "Item ['type': {}, 'name': {}] already exists. Skipping..", i.getType(), i.getName());
       return;

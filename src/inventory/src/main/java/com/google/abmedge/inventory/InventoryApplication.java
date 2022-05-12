@@ -15,20 +15,13 @@
 package com.google.abmedge.inventory;
 
 import javax.annotation.PreDestroy;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 /**
  * The main entry point into the inventory server of the point-of-sale application stack. This class
@@ -40,9 +33,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
  * the items. The APIs of the inventory service are not exposed publicly.
  */
 @SpringBootApplication
-@EntityScan(basePackages={"com.google.abmedge.inventory"})
-@ComponentScan(basePackages={"com.google.abmedge.inventory"})
-@EnableJpaRepositories(basePackages={"com.google.abmedge.inventory"})
+@EntityScan(basePackages = {"com.google.abmedge.inventory"})
+@ComponentScan(basePackages = {"com.google.abmedge.inventory"})
+@EnableJpaRepositories(basePackages = {"com.google.abmedge.inventory"})
 public class InventoryApplication {
   private static final Logger LOGGER = LogManager.getLogger(InventoryApplication.class);
 
