@@ -47,9 +47,9 @@ public class BillGenerator {
    *
    * @param paymentId an identifier for the {@link Payment} event to be processed
    * @param payment the {@link Payment} activity to be processed that contains all the details about
-   * the items, amount and {@link PaymentType}
+   *     the items, amount and {@link PaymentType}
    * @return a {@link Bill} that contains the payment details and a string representation of the
-   * bill
+   *     bill
    */
   public static Bill generateBill(UUID paymentId, Payment payment) {
     float total = 0;
@@ -94,7 +94,7 @@ public class BillGenerator {
    * Utility method that generates the header section of the bill.
    *
    * @param paymentId the id to be included in the header of the bill identifying this specific
-   * payment
+   *     payment
    * @return a string containing the header for the generated bill
    */
   private static String billHeader(UUID paymentId) {
@@ -108,9 +108,9 @@ public class BillGenerator {
    *
    * @param itemIndex the place of this item in the bill so that the line starts with this number
    * @param paymentUnit the {@link PaymentUnit} object that contains details about the item in the
-   * payment event for which an entry is be generated
+   *     payment event for which an entry is being generated
    * @return a string that contains a line with details about the purchase of one specific item that
-   * can be appended to the bill
+   *     can be appended to the bill
    */
   private static String billItem(int itemIndex, PaymentUnit paymentUnit) {
     StringBuilder sb = new StringBuilder();
@@ -139,11 +139,11 @@ public class BillGenerator {
    * Using these two a line is generated that can be appended to the end of the bill.
    *
    * @param infoType a string explaining what the line is about which will be appended to the
-   * beginning of the generated line
+   *     beginning of the generated line
    * @param value the numeric value of the information line that is to be generated (e.g. the total
-   * value, the balance)
+   *     value, the balance)
    * @return the generated line with the information type at the beginning followed by spaces and
-   * the numeric value at the end formatted to 2 decimal points.
+   *     the numeric value at the end formatted to 2 decimal points.
    */
   private static String infoLine(String infoType, float value) {
     StringBuilder sb = new StringBuilder();

@@ -50,17 +50,18 @@ public class Item implements Serializable {
   @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID id;
+
   private String name;
   private String type;
   private BigDecimal price;
   private String imageUrl;
   private long quantity;
+
   @ElementCollection
   @CollectionTable(name = Item.LABELS_TABLE)
   private List<String> labels;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   public Item() {
     this.labels = new ArrayList<>();

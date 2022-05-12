@@ -18,9 +18,9 @@
 ###########################################################
 
 steps:
-###########################################################
-# npm install to ensure ui dependencies have no errors
-###########################################################
+  ###########################################################
+  # npm install to ensure ui dependencies have no errors
+  ###########################################################
 - id: 'npm-install'
   name: 'node:16.14.0'
   dir: 'src/ui'
@@ -30,10 +30,24 @@ steps:
   waitFor: [ '-' ]
 
   ###########################################################
+  # Verify that Java code has no errors
+  ###########################################################
+- id: 'maven-verify-java'
+  name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    # This will only check and report errors. Can fix them by using [./mvnw com.coveo:fmt-maven-plugin:format]
+    mvn clean verify -DskipTests
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
   # create namespace yaml for the PR
   ###########################################################
 - id: 'create-namespace.yaml'
-  name: ubuntu
+  name: 'ubuntu'
   entrypoint: bash
   args:
   - -c
@@ -75,7 +89,7 @@ steps:
   # create the skaffold deploy script
   ###########################################################
 - id: 'create-skaffold-exec-script'
-  name: ubuntu
+  name: 'ubuntu'
   entrypoint: bash
   args:
   - -c
