@@ -40,6 +40,7 @@ distributed across customer data centers and device fleets.
 
 ### Resources
 - _(Quickstart)_ [Deploy this application to a cluster](/docs/quickstart.md)
+- _(Anthos VMRuntime)_ [Run the entire application in a VM](/extras/anthos-vmruntime)
 
 #### External use cases of this application
 - _(Solution guide)_ [VM based PoS deployed in an Anthos cluster using Anthos VMRuntime](https://github.com/GoogleCloudPlatform/anthos-samples/tree/main/anthos-vmruntime)

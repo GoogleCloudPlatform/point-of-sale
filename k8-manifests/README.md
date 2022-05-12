@@ -1,5 +1,24 @@
 # Kubernetes manifests
 
+#### 🚀 &nbsp; (TLDR) Where is the manifest I can apply to my cluster!
+```sh
+# generate the release kubernetes manifests
+skaffold render -p release > pos-quickstart.yaml
+
+# apply the yaml files to the cluster
+kubectl apply -f pos-quickstart.yaml
+```
+
+#### 🤷 &nbsp; I don't have [skaffold](https://skaffold.dev/docs/install/) installed !
+```sh
+# apply all the manifests from the common/ folder except the 'springprofile-h2.yaml' file
+find k8-manifests/common -type f -not '(' -name '*h2.yaml' ')' | xargs -n 1 -I '{}' kubectl apply -f {}
+
+# apply the manifest for the PoS applications
+kubectl apply -f release/
+```
+---
+
 This directory holds the Kubernetes manifest files that can be used to deploy
 the **Point-of-Sale** application. The manifests are seperated into categories
 based on the deployment environment. You will notice multiple directories _(
