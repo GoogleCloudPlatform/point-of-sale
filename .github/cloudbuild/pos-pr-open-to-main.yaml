@@ -33,13 +33,13 @@ steps:
   # Verify that Java code has no errors
   ###########################################################
 - id: 'maven-verify-java'
-  name: ubuntu
+  name: 'gcr.io/cloud-builders/mvn'
   entrypoint: bash
   args:
   - -c
   - |
     # This will only check and report errors. Can fix them by using [./mvnw com.coveo:fmt-maven-plugin:format]
-    ./mvnw clean verify -DskipTests
+    mvn clean verify -DskipTests
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
@@ -47,7 +47,7 @@ steps:
   # create namespace yaml for the PR
   ###########################################################
 - id: 'create-namespace.yaml'
-  name: ubuntu
+  name: 'ubuntu'
   entrypoint: bash
   args:
   - -c
@@ -89,7 +89,7 @@ steps:
   # create the skaffold deploy script
   ###########################################################
 - id: 'create-skaffold-exec-script'
-  name: ubuntu
+  name: 'ubuntu'
   entrypoint: bash
   args:
   - -c
