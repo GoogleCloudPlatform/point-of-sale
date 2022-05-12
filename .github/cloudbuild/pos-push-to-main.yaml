@@ -60,6 +60,7 @@ steps:
   args:
   - -c
   - |
+      gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
       xargs -n 1 -I '{}' kubectl delete namespace {} < /workspace/k8.namespaces || true
 
 availableSecrets:
