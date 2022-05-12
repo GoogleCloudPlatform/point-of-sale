@@ -29,3 +29,44 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
 # line 141 (pos_payments.service) of the init-vm.sh file
 Environment=SPRING_PROFILES_ACTIVE=inmemory
 ```
+
+### Creating an image of this VM to be run in an Anthos cluster using Anthos VMRuntime
+
+> Make sure you stop the VM first.
+- Set your environment variables
+    ```sh
+    export PROJECT_ID=<YOUR_GCP_PROJECT>
+    export ZONE=<YOUR_GCP_ZONE>
+    export BUCKET_NAME=<STORAGE_BUCKET_NAME>
+    ```
+
+- Create a `Disk Image` of the VM
+    ```sh
+    gcloud compute images create pos-vm-image \
+        --source-disk=pos-vm \
+        --source-disk-zone=${YOUR_GCP_ZONE} \
+        --project=${PROJECT_ID}
+    ```
+
+- Create `Cloud Storage Bucket` to store the image
+    ```sh
+    gsutil mb -p ${PROJECT_ID} -c standard -b on gs://${BUCKET_NAME}
+    ```
+
+- Make the bucket **publicly readable**
+    ```sh
+    gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
+    ```
+
+- Upload the Disk Image we create to the Cloud Storage Bucket
+    ```sh
+    gcloud compute images export \
+        --destination-uri gs://${BUCKET_NAME}/pos-vm.qcow2 \
+        --image pos-vm-image \
+        --export-format qcow2 \
+        --project ${PROJECT_ID}
+    ```
+
+Now you can use the URL `https://storage.googleapis.com/${BUCKET_NAME}/pos-vm.qcow2`
+to refer to the VM image when creating your VM in an Anthos VMRuntime enabled
+cluster.
