@@ -86,7 +86,6 @@ After=pos_inventory.service
 After=pos_payments.service
 
 [Service]
-User=shabirmean
 WorkingDirectory=/pos
 
 Environment=API_SERVER_PORT=8081
@@ -108,7 +107,6 @@ PartOf=pos.service
 After=pos.service
 
 [Service]
-User=shabirmean
 WorkingDirectory=/pos
 
 Environment=INVENTORY_PORT=8082
@@ -133,7 +131,6 @@ PartOf=pos.service
 After=pos.service
 
 [Service]
-User=shabirmean
 WorkingDirectory=/pos
 
 Environment=PAYMENTS_PORT=8083

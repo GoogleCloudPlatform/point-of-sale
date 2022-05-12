@@ -2,13 +2,14 @@
 
 You can run all the services of the application in a single VM as a system
 service. Simply copy the [**init-vm.sh**](init-vm.sh) file into your VM and then
-execute it from inside the VM.
+execute it from inside the VM. This sets up all the services of the application
+to run as a system service inside your VM.
+
 ```sh
 sudo bash init-vm.sh
 ```
 
-This sets up all the services of the application to run as a system service
-inside your VM. Note that the `inventory service` and the `payments service`
+Note that the `inventory service` and the `payments service`
 [expects the hostname `mysql-db` to resolve to an IP address](init-vm.sh#L115)
 pointing to a MySQL service. This is because these _systemd service_ files were
 written for a use-case where the PoS application VM is run inside an Anthos on
