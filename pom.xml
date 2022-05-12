@@ -36,8 +36,7 @@
     <gson.version>2.9.0</gson.version>
     <log4j2.version>2.17.1</log4j2.version>
     <snakeyaml.version>1.30</snakeyaml.version>
-    <springboot.version>2.6.7</springboot.version>
-    <springboot.springbeans.version>5.3.20</springboot.springbeans.version>
+    <springboot.version>2.6.2</springboot.version>
     <apache.commons.version>3.12.0</apache.commons.version>
     <jib-maven.plugin.version>3.2.0</jib-maven.plugin.version>
     <spring-boot-maven.plugin.version>2.6.3</spring-boot-maven.plugin.version>
@@ -66,12 +65,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
         <version>${springboot.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -87,11 +80,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-jpa</artifactId>
         <version>${springboot.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-        <version>${springboot.springbeans.version}</version>
       </dependency>
       <dependency>
         <groupId>mysql</groupId>
