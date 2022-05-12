@@ -39,7 +39,7 @@ steps:
   - -c
   - |
     # This will only check and report errors. Can fix them by using [./mvnw com.coveo:fmt-maven-plugin:format]
-    ./mvnw clean verify -DskipTests
+    mvn clean verify -DskipTests
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
