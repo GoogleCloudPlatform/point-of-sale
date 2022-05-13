@@ -24,6 +24,13 @@ If you’re using this app, please ★Star the repository to show your interest!
     <img src="docs/images/pos.png">
 </p>
 
+### Play with it:
+- Latest release _(using MySQL DB)_: [abm-pos.com](http://abm-pos.com)
+- Latest release _(using H2 Embedded DB)_: [im.abm-pos.com](http://im.abm-pos.com)
+- Build from **main** branch  _(using MySQL DB)_: [staging.abm-pos.com](http://staging.abm-pos.com)
+- Build from **main** branch  _(using H2 Embedded D)_: [im.staging.abm-pos.com](http://im.staging.abm-pos.com)
+---
+
 ### Edge computing
 
 Edge computing is a distributed computing paradigm that brings computation and
@@ -40,6 +47,7 @@ distributed across customer data centers and device fleets.
 
 ### Resources
 - _(Quickstart)_ [Deploy this application to a cluster](/docs/quickstart.md)
+- _(Anthos VMRuntime)_ [Run the entire application in a VM](/extras/anthos-vmruntime)
 
 #### External use cases of this application
 - _(Solution guide)_ [VM based PoS deployed in an Anthos cluster using Anthos VMRuntime](https://github.com/GoogleCloudPlatform/anthos-samples/tree/main/anthos-vmruntime)
@@ -57,3 +65,6 @@ distributed across customer data centers and device fleets.
 This repository follows [semantic-versioning](https://semver.org/) to version
 its files. Please read [`Releasing a new version of the Point of Sale Application`](/docs/release.md)
 for detailed explanation on how to cut a release for this repository.
+
+See the [domain mapping](/docs/domain-mapping.md) guide for information on how
+to expose the application using a public domain.
