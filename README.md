@@ -25,10 +25,8 @@ If you’re using this app, please ★Star the repository to show your interest!
 </p>
 
 ### Play with it:
-- Latest release _(using MySQL DB)_: [abm-pos.com](http://abm-pos.com)
-- Latest release _(using H2 Embedded DB)_: [im.abm-pos.com](http://im.abm-pos.com)
-- Build from **main** branch  _(using MySQL DB)_: [staging.abm-pos.com](http://staging.abm-pos.com)
-- Build from **main** branch  _(using H2 Embedded D)_: [im.staging.abm-pos.com](http://im.staging.abm-pos.com)
+- Latest release: [abm-pos.com](http://abm-pos.com)
+- Build from **main** branch: [staging.abm-pos.com](http://staging.abm-pos.com)
 ---
 
 ### Edge computing
