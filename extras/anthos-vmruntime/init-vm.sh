@@ -17,6 +17,15 @@
 sudo apt update -y
 sudo apt install -y default-jre default-jdk
 
+# add a new user to the VM
+echo "##########################################################"
+echo "# Setting up new user for the VM                         #"
+echo "# Follow the prompt and provide the required infromation #"
+echo "# Note down the password you set for the user            #"
+echo "##########################################################"
+sudo adduser abmuser
+sudo adduser abmuser sudo
+
 # clone the Point of Sale repository
 git clone https://github.com/GoogleCloudPlatform/point-of-sale
 
@@ -30,9 +39,9 @@ sudo mkdir -p /pos/jars
 sudo mkdir -p /pos/scripts
 
 # copy the built artifacts to the /pos directory
-sudo cp point-of-sale/src/api-server/target/api-server-0.1.0-SNAPSHOT.jar /pos/jars/api-server.jar
-sudo cp point-of-sale/src/inventory/target/inventory-0.1.0-SNAPSHOT.jar /pos/jars/inventory.jar
-sudo cp point-of-sale/src/payments/target/payments-0.1.0-SNAPSHOT.jar /pos/jars/payments.jar
+sudo cp point-of-sale/src/api-server/target/api-server-*-SNAPSHOT.jar /pos/jars/api-server.jar
+sudo cp point-of-sale/src/inventory/target/inventory-*-SNAPSHOT.jar /pos/jars/inventory.jar
+sudo cp point-of-sale/src/payments/target/payments-*-SNAPSHOT.jar /pos/jars/payments.jar
 
 # delete the repository and maven jars that were downloaded
 # we do this to minimize the size of the VM disk
@@ -42,17 +51,17 @@ rm -rf ~/.m2/repository/*
 # create the scripts that will be run by the systemd services
 cat <<EOF | sudo tee -a /pos/scripts/api-server.sh -
 #!/bin/sh
-java -jar /pos/jars/api-server.jar --server.port=$API_SERVER_PORT
+java -jar /pos/jars/api-server.jar --server.port=\$API_SERVER_PORT
 EOF
 
 cat <<EOF | sudo tee -a /pos/scripts/inventory.sh -
 #!/bin/sh
-java -jar /pos/jars/inventory.jar --server.port=$INVENTORY_PORT
+java -jar /pos/jars/inventory.jar --server.port=\$INVENTORY_PORT
 EOF
 
 cat <<EOF | sudo tee -a /pos/scripts/payments.sh -
 #!/bin/sh
-java -jar /pos/jars/payments.jar --server.port=$PAYMENTS_PORT
+java -jar /pos/jars/payments.jar --server.port=\$PAYMENTS_PORT
 EOF
 
 # make the above scripts executable
