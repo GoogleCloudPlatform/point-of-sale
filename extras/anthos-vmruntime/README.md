@@ -44,7 +44,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     ```sh
     gcloud compute images create pos-vm-image \
         --source-disk=pos-vm \
-        --source-disk-zone=${YOUR_GCP_ZONE} \
+        --source-disk-zone=${ZONE} \
         --project=${PROJECT_ID}
     ```
 
