@@ -30,9 +30,9 @@ sudo mkdir -p /pos/jars
 sudo mkdir -p /pos/scripts
 
 # copy the built artifacts to the /pos directory
-sudo cp point-of-sale/src/api-server/target/api-server-0.1.0-SNAPSHOT.jar /pos/jars/api-server.jar
-sudo cp point-of-sale/src/inventory/target/inventory-0.1.0-SNAPSHOT.jar /pos/jars/inventory.jar
-sudo cp point-of-sale/src/payments/target/payments-0.1.0-SNAPSHOT.jar /pos/jars/payments.jar
+sudo cp point-of-sale/src/api-server/target/api-server-*-SNAPSHOT.jar /pos/jars/api-server.jar
+sudo cp point-of-sale/src/inventory/target/inventory-*-SNAPSHOT.jar /pos/jars/inventory.jar
+sudo cp point-of-sale/src/payments/target/payments-*-SNAPSHOT.jar /pos/jars/payments.jar
 
 # delete the repository and maven jars that were downloaded
 # we do this to minimize the size of the VM disk
