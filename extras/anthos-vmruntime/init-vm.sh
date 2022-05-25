@@ -42,17 +42,17 @@ rm -rf ~/.m2/repository/*
 # create the scripts that will be run by the systemd services
 cat <<EOF | sudo tee -a /pos/scripts/api-server.sh -
 #!/bin/sh
-java -jar /pos/jars/api-server.jar --server.port=$API_SERVER_PORT
+java -jar /pos/jars/api-server.jar --server.port=\$API_SERVER_PORT
 EOF
 
 cat <<EOF | sudo tee -a /pos/scripts/inventory.sh -
 #!/bin/sh
-java -jar /pos/jars/inventory.jar --server.port=$INVENTORY_PORT
+java -jar /pos/jars/inventory.jar --server.port=\$INVENTORY_PORT
 EOF
 
 cat <<EOF | sudo tee -a /pos/scripts/payments.sh -
 #!/bin/sh
-java -jar /pos/jars/payments.jar --server.port=$PAYMENTS_PORT
+java -jar /pos/jars/payments.jar --server.port=\$PAYMENTS_PORT
 EOF
 
 # make the above scripts executable
