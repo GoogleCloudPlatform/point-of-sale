@@ -17,6 +17,15 @@
 sudo apt update -y
 sudo apt install -y default-jre default-jdk
 
+# add a new user to the VM
+echo "##########################################################"
+echo "# Setting up new user for the VM                         #"
+echo "# Follow the prompt and provide the required infromation #"
+echo "# Note down the password you set for the user            #"
+echo "##########################################################"
+sudo adduser abmuser
+sudo adduser abmuser sudo
+
 # clone the Point of Sale repository
 git clone https://github.com/GoogleCloudPlatform/point-of-sale
 
