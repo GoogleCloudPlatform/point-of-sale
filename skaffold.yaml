@@ -65,7 +65,7 @@ profiles:
       jib:
         project: src/payments
     tagPolicy:
-      sha256: { }
+      gitCommit: { }
     local:
       concurrency: 0
   deploy:
