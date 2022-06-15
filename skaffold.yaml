@@ -65,7 +65,7 @@ profiles:
       jib:
         project: src/payments
     tagPolicy:
-      gitCommit: { }
+      sha256: { }
     local:
       concurrency: 0
   deploy:
@@ -75,6 +75,19 @@ profiles:
       - k8-manifests/dev/inventory.yaml
       - k8-manifests/dev/payments.yaml
 - name: release
+  build:
+    artifacts:
+    - image: api-server
+      jib:
+        project: src/api-server
+    - image: inventory
+      jib:
+        project: src/inventory
+    - image: payments
+      jib:
+        project: src/payments
+    tagPolicy:
+      sha256: { }
   deploy:
     kubectl:
       manifests:
