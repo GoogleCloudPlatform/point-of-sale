@@ -74,7 +74,7 @@ profiles:
       - k8-manifests/dev/api-server.yaml
       - k8-manifests/dev/inventory.yaml
       - k8-manifests/dev/payments.yaml
-- name: release
+- name: publish
   build:
     artifacts:
     - image: api-server
@@ -88,6 +88,7 @@ profiles:
         project: src/payments
     tagPolicy:
       sha256: { }
+- name: release
   deploy:
     kubectl:
       manifests:
