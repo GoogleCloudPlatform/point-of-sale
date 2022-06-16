@@ -53,6 +53,7 @@ requires:
 - configs: [ setup, db ]
 profiles:
 - name: dev
+# dev profile is used to continuously build and deploy local changes
   build:
     artifacts:
     - image: api-server
@@ -75,6 +76,7 @@ profiles:
       - k8-manifests/dev/inventory.yaml
       - k8-manifests/dev/payments.yaml
 - name: publish
+# publish profile is used to build and upload artifacts to remote repository
   build:
     artifacts:
     - image: api-server
@@ -89,6 +91,7 @@ profiles:
     tagPolicy:
       sha256: { }
 - name: release
+# release profile is used to deploy the latest release manifests to a cluster
   deploy:
     kubectl:
       manifests:
