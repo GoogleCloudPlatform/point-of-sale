@@ -26,6 +26,8 @@ cd point-of-sale
 - [Local dev with the entire application running in the local machine](#local-development-whilst-running-everything-locally)
 
 - [Hybrid setup (specifically for UI development)](#hybrid-setup-specifically-for-ui-development)
+
+- [Local dev and only publish images without deploying to a cluster](#hybrid-setup-specifically-for-ui-development)
 ---
 
 ### Local development whilst running the app in a K8s cluster
@@ -107,3 +109,17 @@ project running locally and the rest will be running inside the cluster.
 **If you type in the Public IP Address directly in the browser, then the UI that
 is loaded is not from your local build; thus you will not see your changes
 through that IP. You must use `http://localhost:8080/`**.
+
+---
+
+### Local dev and only publish images without deploying to a cluster
+
+If you want to just package your changes into a container image and publish it
+to a repository without deploying them to a cluster, you can use the `skaffold build`
+command.
+
+```sh
+skaffold build -p dev --default-repo=<AR_REPO/GCR_REPO> -t <TAG>
+```
+The above command will build the container image with the local changes you have
+and push it to the provided repository with the given tag.
