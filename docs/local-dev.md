@@ -27,7 +27,7 @@ cd point-of-sale
 
 - [Hybrid setup (specifically for UI development)](#hybrid-setup-specifically-for-ui-development)
 
-- [Local dev and only publish images without deploying to a cluster](#hybrid-setup-specifically-for-ui-development)
+- [Build, render and deploy separate](#build-render-and-deploy-separate)
 ---
 
 ### Local development whilst running the app in a K8s cluster
@@ -112,14 +112,15 @@ through that IP. You must use `http://localhost:8080/`**.
 
 ---
 
-### Local dev and only publish images without deploying to a cluster
+### Build, render and deploy separate
 
-If you want to just package your changes into a container image and publish it
-to a repository without deploying them to a cluster, you can use the `skaffold build`
-command.
+You can use `skaffold` to do the _build_, _render manifests_ and _deploy_ steps
+separately using the following three commands.
 
 ```sh
-skaffold build -p dev --default-repo=<AR_REPO/GCR_REPO> -t <TAG>
+skaffold build -p dev --default-repo=<AR_REPO/GCR_REPO> --file-output=artifacts.json
+skaffold render -p dev --default-repo=<AR_REPO/GCR_REPO> --build-artifacts=artifacts.json > rendered.manifests
+skaffold apply -f rendered.manifests
 ```
-The above command will build the container image with the local changes you have
-and push it to the provided repository with the given tag.
+This enables you to commit the rendered manifest to a separate repository from
+where it is synced to a cluster using [Config Sync](https://cloud.google.com/anthos-config-management/docs/config-sync-overview).
