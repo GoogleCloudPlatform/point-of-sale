@@ -152,7 +152,7 @@ availableSecrets:
   inline:
   - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
     envMap:
-      GITHUB_TOKEN: 'CiQAuVI6Z6SmElkMGYKweoYVJ8s5yTX2lWqv43jtHpqCJdlYsnUSUgBHWet7iFKbxqSzrSu51o/m7WF5LJZguKEzQZ/vl+thI2Vw66b91vA/4+nHJPuFmdZSNMt2J61ObUy1B1Ou+UC5M1uv1At9bmtdCPxfva6dJsg='
+      GITHUB_TOKEN: 'CiQAuVI6Z2oetrIQ8MVr4yyBFPz86812sVKpvFsFghoGPxu8fsYSUgBHWet7Wbc0nLm4tQfd+L5QrUGtY7uQLLjMQMSmOlVKT8DX5aSbk7x8axTTXx9SmWGNRFTo9T2rPMn1POPa+LoXBS210+2LsI4xJFy1zfvu0Lk='
   - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHEMAIL_KEYRING_NAME/cryptoKeys/$_GHEMAIL_KEY_NAME'
     envMap:
       GITHUB_EMAIL: 'CiQA/ThyQ4p/sDUR2fsc4Q2GgF/PntA048keplEhVQTrmgESLfcSOACXDXFpPP/ASB9nwBao91OK4677dEaGsJQjVKkStDpHtY1ZtF7qefjxq1qK93BSezLllJX/rHbY'
