@@ -157,7 +157,7 @@ availableSecrets:
   inline:
   - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
     envMap:
-      GITHUB_TOKEN: 'CiQAuVI6Z2oetrIQ8MVr4yyBFPz86812sVKpvFsFghoGPxu8fsYSUgBHWet7Wbc0nLm4tQfd+L5QrUGtY7uQLLjMQMSmOlVKT8DX5aSbk7x8axTTXx9SmWGNRFTo9T2rPMn1POPa+LoXBS210+2LsI4xJFy1zfvu0Lk='
+      GITHUB_TOKEN: 'CiQAuVI6Z8ScZ7/C1mpk3v6HaLAUDqqxRpSq8vY4p2cZGWPRUQsSUQBHWet7reBZhIX73mbWYPprxFziQMqakDZW1aleLQ4iASIScVMOY/QQXOZH70IrsAw02xmIuxqBYj/UxqHUIuUhd8sd9Xm3wzfydaIhH9hH8Q=='
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
