@@ -53,19 +53,15 @@ The steps below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrai
             </div>
         </p>
 
-    | Service               | Variable Key      | Variable Value            |
-    |---------              |--------------     |----------------           |
-    | ApiServerApplication  | server.port       | 8081                      |
-    | PaymentsApplication   | server.port       | 8083                      |
-    | InventoryApplication  | server.port       | 8082                      |
-    | ApiServerApplication  | INVENTORY_EP      | http://localhost:8082     |
-    | ApiServerApplication  | PAYMENTS_EP       | http://localhost:8083     |
-    | InventoryApplication  | ACTIVE_ITEM_TYPE  | burgers                   |
-
-      Also set the environment variable `ITEMS` for the `InventoryApplication` service to:
-      ```shell
-      items:\n- name: "BigBurger"\n  type: "burgers"\n  price: 5.50\n  imageUrl: "usr/lib/images/bigburger.png"\n  quantity: 200\n  labels: [ "retail", "restaurant", "food" ]\n- name: "DoubleBurger"\n  type: "burgers"\n  price: 7.20\n  imageUrl: "usr/lib/images/burgers.png"\n  quantity: 200\n  labels: [ "retail", "restaurant", "food" ]\n- name: "Shirt"\n  type: "textile"\n  price: 15.50\n  imageUrl: "usr/lib/images/shirt.png"\n  quantity: 50\n  labels: [ "retail", "textile", "clothing" ]\n- name: "Short"\n  type: "textile"\n  price: 17.20\n  imageUrl: "usr/lib/images/short.png"\n  quantity: 20\n  labels: [ "retail", "textile", "clothing" ]
-      ```
+    | Service              | Variable Key     | Variable Value        |
+    | -------------------- | ---------------- | --------------------- |
+    | ApiServerApplication | server.port      | 8081                  |
+    | PaymentsApplication  | server.port      | 8083                  |
+    | InventoryApplication | server.port      | 8082                  |
+    | ApiServerApplication | INVENTORY_EP     | http://localhost:8082 |
+    | ApiServerApplication | PAYMENTS_EP      | http://localhost:8083 |
+    | InventoryApplication | ACTIVE_ITEM_TYPE | burgers               |
+    | InventoryApplication | ITEMS            | <pre>items:\n- name: "BigBurger"\n  type: "burgers"\n  price: 5.50\n  imageUrl: "usr/lib/images/bigburger.png"\n  quantity: 200\n  labels: [ "retail", "restaurant", "food" ]\n- name: "DoubleBurger"\n  type: "burgers"\n  price: 7.20\n  imageUrl: "usr/lib/images/burgers.png"\n  quantity: 200\n  labels: [ "retail", "restaurant", "food" ]\n- name: "Shirt"\n  type: "textile"\n  price: 15.50\n  imageUrl: "usr/lib/images/shirt.png"\n  quantity: 50\n  labels: [ "retail", "textile", "clothing" ]\n- name: "Short"\n  type: "textile"\n  price: 17.20\n  imageUrl: "usr/lib/images/short.png"\n  quantity: 20\n  labels: [ "retail", "textile", "clothing" ]</pre>               |
 
 - **Run all three applications from the IDE**
     <p align="center">
