@@ -26,6 +26,8 @@ cd point-of-sale
 - [Local dev with the entire application running in the local machine](#local-development-whilst-running-everything-locally)
 
 - [Hybrid setup (specifically for UI development)](#hybrid-setup-specifically-for-ui-development)
+
+- [Build, render and deploy separate](#build-render-and-deploy-separate)
 ---
 
 ### Local development whilst running the app in a K8s cluster
@@ -107,3 +109,18 @@ project running locally and the rest will be running inside the cluster.
 **If you type in the Public IP Address directly in the browser, then the UI that
 is loaded is not from your local build; thus you will not see your changes
 through that IP. You must use `http://localhost:8080/`**.
+
+---
+
+### Build, render and deploy separate
+
+You can use `skaffold` to do the _build_, _render manifests_ and _deploy_ steps
+separately using the following three commands.
+
+```sh
+skaffold build -p dev --default-repo=<AR_REPO/GCR_REPO> --file-output=artifacts.json
+skaffold render -p dev --default-repo=<AR_REPO/GCR_REPO> --build-artifacts=artifacts.json > rendered.manifests
+skaffold apply -f rendered.manifests
+```
+This enables you to commit the rendered manifest to a separate repository from
+where it is synced to a cluster using [Config Sync](https://cloud.google.com/anthos-config-management/docs/config-sync-overview).
