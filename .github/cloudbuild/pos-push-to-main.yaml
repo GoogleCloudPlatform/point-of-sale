@@ -19,46 +19,57 @@
 
 steps:
   ###########################################################
-  # create namespace yaml for the PR
+  # Deploy the latest from main the staging namespace
   ###########################################################
-- id: 'create-deploy-script'
-  name: ubuntu
+- id: 'deploy-to-k8s-staging'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
   entrypoint: bash
   args:
   - -c
   - |
-    cat <<EOF > /workspace/namespace.yaml -
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: $_STAGING_NS
-    EOF
-
-    cat <<EOF > /workspace/deploy.sh -
-    #!/bin/bash
-
     gcloud container clusters get-credentials --zone $_MAIN_CLUSTER_ZONE $_MAIN_CLUSTER
-    kubectl apply -f /workspace/namespace.yaml
+    kubectl create namespace $_STAGING_NS-db
+    kubectl create namespace $_STAGING_NS-inmemory
 
     ./mvnw install
-    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS --tag=$COMMIT_SHA
-    EOF
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
-
-  ###########################################################
-  # skaffold deploy to kubernetes cluster
-  ###########################################################
-- id: 'deploy-to-k8s'
-  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  dir: 'point-of-sale-app'
-  args: [
-      'bash',
-      '/workspace/deploy.sh'
-  ]
+    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-db --tag=$COMMIT_SHA-db
+    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=$_STAGING_NS-inmemory --tag=$COMMIT_SHA-inmemory
   # waitFor: commented out, so this step waits for all previous steps
 
-timeout: 900s
+  ###########################################################
+  # Get the namespaces for the most recent PRs
+  ###########################################################
+- id: 'get-namespaces'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    gh pr list --state closed --limit 10 --json number --jq '.[].number' > /workspace/pr.numbers
+    xargs -n 1 -I '{}' echo pr-{}-db < /workspace/pr.numbers > /workspace/k8.namespaces
+    xargs -n 1 -I '{}' echo pr-{}-inmemory < /workspace/pr.numbers >> /workspace/k8.namespaces
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # cleanup old namespaces and resources
+  ###########################################################
+- id: 'delete-namespace-for-closed-prs'
+  name: 'gcr.io/cloud-builders/kubectl'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+      gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+      xargs -n 1 -I '{}' kubectl delete namespace {} < /workspace/k8.namespaces || true
+
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN: 'CiQAuVI6Z8ScZ7/C1mpk3v6HaLAUDqqxRpSq8vY4p2cZGWPRUQsSUQBHWet7reBZhIX73mbWYPprxFziQMqakDZW1aleLQ4iASIScVMOY/QQXOZH70IrsAw02xmIuxqBYj/UxqHUIuUhd8sd9Xm3wzfydaIhH9hH8Q=='
+
+timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
   logging: GCS_ONLY

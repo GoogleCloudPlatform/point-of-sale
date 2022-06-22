@@ -1,0 +1,162 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+###########################################################
+# This is a GCP CloudBuild Trigger config file. The trigger
+# is to be used to build and publish the latest release
+# artifacts to repostiories (container-image and maven).
+# The trigger associated to this cloudbuild confiuration
+# needs to be manually RUN pointing to the release-branch
+###########################################################
+
+steps:
+  ###########################################################
+  # publish jars to artifact registry
+  ###########################################################
+- id: 'publish-jars'
+  name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    echo "Deploying the maven jars..."
+    ./mvnw deploy
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+ ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
+- id: 'publish-images'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    VERSION=$(cat /workspace/release-version.txt)
+    echo "Publishing images with tag v$$VERSION..."
+    ./mvnw install
+    skaffold build -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --tag=v$$VERSION
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # Create a Github release artifact
+  ###########################################################
+- id: 'create-github-release'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    VERSION=$(cat /workspace/release-version.txt)
+
+    git config user.email "$$GITHUB_EMAIL"
+    git config user.name "Anthos DPE"
+
+    # as per: https://stackoverflow.com/a/67886960/3396045
+    git remote set-branches --add origin $BRANCH_NAME
+    git fetch 'origin'
+    git checkout --track origin/$BRANCH_NAME
+
+    git tag v$$VERSION -a "Release: v$$VERSION"
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $BRANCH_NAME --tags
+
+    gh release create v$$VERSION -t "Release v$$VERSION" -F CHANGELOG.md -d
+  # waitFor: commented out, so this step waits for all previous steps
+
+- id: 'update-to-next-snapshot'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    pip install -r .github/releases/requirements.txt
+    if [[ $BRANCH_NAME == 'release-minor' ]]; then
+      python3 .github/releases/releaser.py -t minor -s true
+
+    elif [[ $BRANCH_NAME == 'release-patch' ]]; then
+      python3 .github/releases/releaser.py -t patch -s true
+
+    elif [[ $BRANCH_NAME == 'release-major' ]]; then
+      python3 .github/releases/releaser.py -t major -s true
+
+    else
+      echo "Nothing to do since it's not a 'release' PR"
+      exit 0
+    fi
+
+    VERSION=$(python3 .github/releases/releaser.py -p true)
+    echo "Next SNAPSHOT version is [$$VERSION]"
+    echo "$$VERSION" > /workspace/version-snapshot.txt
+  # waitFor: commented out, so this step waits for all previous steps
+
+  ###########################################################
+  # Push the version changes and comment about the release
+  # status on the release PR
+  ###########################################################
+- id: 'push-comment-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    PR_NUMBER=$(cat release-pr.number)
+    VERSION=$(cat release-version.txt)
+    SNAPSHOT_VERSION=$(cat /workspace/version-snapshot.txt)
+
+    rm release-pr.number
+    rm release-version.txt
+    rm release.done
+    rm /workspace/version-snapshot.txt
+
+    git config user.email "$$GITHUB_EMAIL"
+    git config user.name "Anthos DPE"
+
+    # as per: https://stackoverflow.com/a/67886960/3396045
+    git remote set-branches --add origin $BRANCH_NAME
+    git fetch 'origin'
+    git checkout --track origin/$BRANCH_NAME
+
+    git add -A
+    git commit -m "release: bump version to next snapshot"
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $BRANCH_NAME
+
+    LAST_COMMIT=$(cat .git/refs/heads/$BRANCH_NAME)
+    cat <<EOF > /workspace/gh-comment.txt -
+    :zap:  Release Status :zap: </br>
+    - **Artifacts published**: [Maven JARs and Container images](https://console.cloud.google.com/artifacts/browse/point-of-sale-ci?project=point-of-sale-ci) for release version **v$$VERSION** have been published to Artifact Registry
+    - **Manifests updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
+    - **Version bumped:** Version in the _pom.xml/package.json_ has been bumped ($$LAST_COMMIT) to the snapshot version of the next **patch** release **v$$SNAPSHOT_VERSION**
+    - **Github release created:** A draft [Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) has been created. Inspect and **publish it**
+    - **Merge PR:** Inspect the latest changes and merge the PR to **main** to complete the release.
+
+    :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against the **main** to deploy the latest release!!!
+    EOF
+    gh pr comment $$PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+  # waitFor: commented out, so this step waits for all previous steps
+
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN: 'CiQAuVI6Z8ScZ7/C1mpk3v6HaLAUDqqxRpSq8vY4p2cZGWPRUQsSUQBHWet7reBZhIX73mbWYPprxFziQMqakDZW1aleLQ4iASIScVMOY/QQXOZH70IrsAw02xmIuxqBYj/UxqHUIuUhd8sd9Xm3wzfydaIhH9hH8Q=='
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHEMAIL_KEYRING_NAME/cryptoKeys/$_GHEMAIL_KEY_NAME'
+    envMap:
+      GITHUB_EMAIL: 'CiQA/ThyQ4p/sDUR2fsc4Q2GgF/PntA048keplEhVQTrmgESLfcSOACXDXFpPP/ASB9nwBao91OK4677dEaGsJQjVKkStDpHtY1ZtF7qefjxq1qK93BSezLllJX/rHbY'
+timeout: 1800s
+logsBucket: 'gs://pos-cloudbuild-logs'
+options:
+    logging: GCS_ONLY

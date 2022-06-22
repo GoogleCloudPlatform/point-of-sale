@@ -18,14 +18,28 @@
 ###########################################################
 
 steps:
-###########################################################
-# npm install to ensure ui dependencies have no errors
-###########################################################
+  ###########################################################
+  # npm install to ensure ui dependencies have no errors
+  ###########################################################
 - id: 'npm-install'
   name: 'node:16.14.0'
-  dir: 'point-of-sale-app/ui'
+  dir: 'src/ui'
   entrypoint: 'npm'
   args: [ 'install' ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
+  # Verify that Java code has no errors
+  ###########################################################
+- id: 'maven-verify-java'
+  name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    # This will only check and report errors. Can fix them by using [./mvnw com.coveo:fmt-maven-plugin:format]
+    mvn clean verify -DskipTests
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
@@ -33,16 +47,23 @@ steps:
   # create namespace yaml for the PR
   ###########################################################
 - id: 'create-namespace.yaml'
-  name: ubuntu
+  name: 'ubuntu'
   entrypoint: bash
   args:
   - -c
   - |
     cat <<EOF > /workspace/namespace.yaml -
+    # namespace to deploy the mysql db based deployment
     apiVersion: v1
     kind: Namespace
     metadata:
-      name: pr-$_PR_NUMBER
+      name: pr-$_PR_NUMBER-db
+    ---
+    # namespace to deploy the inmemory h2 db based deployment
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: pr-$_PR_NUMBER-inmemory
     EOF
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
@@ -68,7 +89,7 @@ steps:
   # create the skaffold deploy script
   ###########################################################
 - id: 'create-skaffold-exec-script'
-  name: ubuntu
+  name: 'ubuntu'
   entrypoint: bash
   args:
   - -c
@@ -79,7 +100,8 @@ steps:
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
 
     ./mvnw install
-    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER --tag=pr-$_PR_NUMBER
+    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-db --tag=pr-$_PR_NUMBER-db
+    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-inmemory --tag=pr-$_PR_NUMBER-inmemory
 
     EOF
   # indicates that the step need not wait for any other step
@@ -90,7 +112,6 @@ steps:
   ###########################################################
 - id: 'deploy-to-k8s'
   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-  dir: 'point-of-sale-app'
   args: [
       'bash',
       '/workspace/deploy.sh',
@@ -107,8 +128,10 @@ steps:
   - -c
   - |
     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-    kubectl -n pr-$_PR_NUMBER get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER.ip
-    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER.ip)] saved to file /workspace/pr-$_PR_NUMBER.ip"
+    kubectl -n pr-$_PR_NUMBER-db get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-db.ip
+    kubectl -n pr-$_PR_NUMBER-inmemory get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-inmemory.ip
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-db.ip)] saved to file /workspace/pr-$_PR_NUMBER-db.ip"
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)] saved to file /workspace/pr-$_PR_NUMBER-inmemory.ip"
 
   waitFor: [ 'deploy-to-k8s' ]
 
@@ -122,15 +145,20 @@ steps:
   args:
   - -c
   - |
-    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body "Access the Point-of-Sale at: [$(cat /workspace/pr-$_PR_NUMBER.ip)](http://$(cat /workspace/pr-$_PR_NUMBER.ip))"
+    cat <<EOF > /workspace/gh-comment.txt -
+    :zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
+    - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
+    - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
+    EOF
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
   waitFor: [ 'get-external-loadbalancer-ip' ]
 
 availableSecrets:
   inline:
   - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
     envMap:
-      GITHUB_TOKEN: 'CiQAuVI6Z93rj1B1R4yer3G1VzEmW7aHtjATP2jOtyJjkW5qOR8SUQBHWet7zXRDJQTBSvFZuXXsOBIxtvf0VDM610Tjgb5XJY8hbIuBxhsMfDy3+/p2ojVnYmE+Mg9NDg5FGZhlJlB/+PBMCumkbMovTXD582u17A=='
-timeout: 900s
+      GITHUB_TOKEN: 'CiQAuVI6Z8ScZ7/C1mpk3v6HaLAUDqqxRpSq8vY4p2cZGWPRUQsSUQBHWet7reBZhIX73mbWYPprxFziQMqakDZW1aleLQ4iASIScVMOY/QQXOZH70IrsAw02xmIuxqBYj/UxqHUIuUhd8sd9Xm3wzfydaIhH9hH8Q=='
+timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
   logging: GCS_ONLY

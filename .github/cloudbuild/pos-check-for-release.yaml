@@ -1,0 +1,156 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+###########################################################
+# This is a GCP CloudBuild Trigger config file. The trigger
+# is for when a PR is open from a branch named release-x.
+# x can be major, minor, or patch.
+###########################################################
+
+steps:
+  ###########################################################
+  # Gating step to ensure we run it only once
+  ###########################################################
+- id: 'gate-ci'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    touch /workspace/release.done
+    COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
+    if [[ $$COMMIT_MSG == 'update version before release' ]] || [[ $$COMMIT_MSG == 'bump version to next snapshot' ]]; then
+      echo "Commit message [$$COMMIT_MSG] indicates release version already being updated. Skip steps."
+      echo "RELEASE_COMPLETE" > /workspace/release.done
+    fi
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
+
+  ###########################################################
+  # Version bump on release PR
+  ###########################################################
+- id: 'bump-version'
+  name: 'python'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    STATUS=$(cat /workspace/release.done)
+    if [[ $$STATUS == 'RELEASE_COMPLETE' ]]; then
+      exit 0
+    fi
+
+    pip install -r .github/releases/requirements.txt
+    echo "PR openned on branch [$_HEAD_BRANCH] for pr-$_PR_NUMBER"
+    if [[ $_HEAD_BRANCH == 'release-minor' ]]; then
+      echo "Updating versions for a minor release"
+      python3 .github/releases/releaser.py -t minor
+
+    elif [[ $_HEAD_BRANCH == 'release-patch' ]]; then
+      echo "Updating versions for a patch release"
+      python3 .github/releases/releaser.py -t patch
+
+    elif [[ $_HEAD_BRANCH == 'release-major' ]]; then
+      echo "Updating versions for a major release"
+      python3 .github/releases/releaser.py -t major
+
+    else
+      echo "Nothing to do since it's not a 'release' PR"
+      echo "RELEASE_COMPLETE" > /workspace/release.done
+    fi
+
+    VERSION=$(python3 .github/releases/releaser.py -p true)
+    echo "$$VERSION" > release-version.txt
+  # indicates that the step need not wait for any other step
+  waitFor: [ 'gate-ci' ]
+
+  ###########################################################
+  # Push the version changes to the repo
+  ###########################################################
+- id: 'push-changes-to-repo'
+  name: 'gcr.io/cloud-builders/git'
+  secretEnv: [ 'GITHUB_TOKEN', 'GITHUB_EMAIL' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    STATUS=$(cat /workspace/release.done)
+    if [[ $$STATUS == 'RELEASE_COMPLETE' ]]; then
+      exit 0
+    fi
+
+    # we do this so that the deploy triggers can know the PR number
+    echo "$_PR_NUMBER" > release-pr.number
+
+    git config user.email "$$GITHUB_EMAIL"
+    git config user.name "Anthos DPE"
+
+    # as per: https://stackoverflow.com/a/67886960/3396045
+    git remote set-branches --add origin $_HEAD_BRANCH
+    git fetch 'origin'
+    git checkout --track origin/$_HEAD_BRANCH
+
+    git add -A
+    git commit -m "release: update version before release"
+    git push -u https://$$GITHUB_TOKEN@github.com/GoogleCloudPlatform/point-of-sale.git $_HEAD_BRANCH
+  waitFor: [ 'bump-version' ]
+
+  ###########################################################
+  # Comment about the release status on the release PR
+  ###########################################################
+- id: 'comment-release-status-to-github'
+  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+  secretEnv: [ 'GITHUB_TOKEN' ]
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    STATUS=$(cat /workspace/release.done)
+    if [[ $$STATUS == 'RELEASE_COMPLETE' ]]; then
+      exit 0
+    fi
+
+    COMMIT_MSG=$(git log -1 --oneline --format=%s | sed 's/^.*: //')
+    if [[ $$COMMIT_MSG != 'update version before release' ]]; then
+      echo "Commit message [$$COMMIT_MSG] is not a release commit. Skipping step."
+      exit 0
+    fi
+
+    RELEASE_TYPE='patch'
+    if [[ $_HEAD_BRANCH == 'release-minor' ]]; then
+      RELEASE_TYPE='minor'
+    elif [[ $_HEAD_BRANCH == 'release-major' ]]; then
+      RELEASE_TYPE='major'
+    fi
+
+    LAST_COMMIT=$(cat .git/refs/heads/$_HEAD_BRANCH)
+    cat <<EOF > /workspace/gh-comment.txt -
+    :zap:  Release Status :zap: </br>
+    - **Version updated**: Version in the `pom.xml/package.json` has been updated to the next **$$RELEASE_TYPE** release version.
+    - **Publish Artifacts:** Check the most recent commit ($$LAST_COMMIT) for correctness and run the ["pos-publish-release-artifacts"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against this branch **[$BRANCH_NAME]** to upload the artifacts _(Jars and Images)_ to Artifact registry.
+    EOF
+    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+  # waitFor: commented out, so this step waits for all previous steps
+
+availableSecrets:
+  inline:
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+    envMap:
+      GITHUB_TOKEN: 'CiQAuVI6Z8ScZ7/C1mpk3v6HaLAUDqqxRpSq8vY4p2cZGWPRUQsSUQBHWet7reBZhIX73mbWYPprxFziQMqakDZW1aleLQ4iASIScVMOY/QQXOZH70IrsAw02xmIuxqBYj/UxqHUIuUhd8sd9Xm3wzfydaIhH9hH8Q=='
+  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHEMAIL_KEYRING_NAME/cryptoKeys/$_GHEMAIL_KEY_NAME'
+    envMap:
+      GITHUB_EMAIL: 'CiQA/ThyQ4p/sDUR2fsc4Q2GgF/PntA048keplEhVQTrmgESLfcSOACXDXFpPP/ASB9nwBao91OK4677dEaGsJQjVKkStDpHtY1ZtF7qefjxq1qK93BSezLllJX/rHbY'
+logsBucket: 'gs://pos-cloudbuild-logs'
+options:
+    logging: GCS_ONLY
