@@ -17,7 +17,7 @@
     "vuex": "3.6.2"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "6.0.0",
+    "@fortawesome/fontawesome-free": "6.2.0",
     "@vue/cli-service": "5.0.1",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-vue": "8.5.0",
