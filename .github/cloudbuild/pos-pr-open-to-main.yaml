@@ -150,6 +150,7 @@ steps:
     - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
     - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
     EOF
+    echo "Commenting on PR #$_PR_NUMBER of $_HEAD_REPO_URL...
     gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
   waitFor: [ 'get-external-loadbalancer-ip' ]
 
