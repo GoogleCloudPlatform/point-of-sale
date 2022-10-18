@@ -45,7 +45,7 @@
     <h2.embedded.db.version>2.1.214</h2.embedded.db.version>
     <maven-checkstyle.plugin.version>3.1.2</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
-    <jacoco-maven.plugin.version>0.8.7</jacoco-maven.plugin.version>
+    <jacoco-maven.plugin.version>0.8.8</jacoco-maven.plugin.version>
     <coveo-fmt-maven-plugin.version>2.13</coveo-fmt-maven-plugin.version>
     <googlejavaformat.version>1.15.0</googlejavaformat.version>
     <artifactregistry-maven-wagon.extension.version>2.1.5

@@ -145,7 +145,7 @@ steps:
 
     :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against the **main** to deploy the latest release!!!
     EOF
-    gh pr comment $$PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+    gh pr comment $$PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps
 
 availableSecrets:
