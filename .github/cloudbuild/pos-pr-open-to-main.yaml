@@ -52,6 +52,7 @@ steps:
   args:
   - -c
   - |
+    echo "$_PR_NUMBER"
     cat <<EOF > /workspace/namespace.yaml -
     # namespace to deploy the mysql db based deployment
     apiVersion: v1
