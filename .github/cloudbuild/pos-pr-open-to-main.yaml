@@ -145,6 +145,12 @@ steps:
   args:
   - -c
   - |
+    cat <<EOF > /workspace/gh-comment.txt -
+    #:zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
+    #- **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
+    #- **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
+    Test
+    EOF
     echo ">>>> $_PR_NUMBER"
     echo ">>>> $_HEAD_REPO_URL"
     gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
@@ -159,9 +165,3 @@ timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
   logging: GCS_ONLY
-
-    # cat <<EOF > /workspace/gh-comment.txt -
-    # :zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
-    # - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
-    # - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
-    # EOF
