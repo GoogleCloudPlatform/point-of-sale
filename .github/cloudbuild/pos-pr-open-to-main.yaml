@@ -18,122 +18,118 @@
 ###########################################################
 
 steps:
-#   ###########################################################
-#   # npm install to ensure ui dependencies have no errors
-#   ###########################################################
-# - id: 'npm-install'
-#   name: 'node:16.14.0'
-#   dir: 'src/ui'
-#   entrypoint: 'npm'
-#   args: [ 'install' ]
-#   # indicates that the step need not wait for any other step
-#   waitFor: [ '-' ]
+  ###########################################################
+  # npm install to ensure ui dependencies have no errors
+  ###########################################################
+- id: 'npm-install'
+  name: 'node:16.14.0'
+  dir: 'src/ui'
+  entrypoint: 'npm'
+  args: [ 'install' ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
 
-#   ###########################################################
-#   # Verify that Java code has no errors
-#   ###########################################################
-# - id: 'maven-verify-java'
-#   name: 'gcr.io/cloud-builders/mvn'
-#   entrypoint: bash
-#   args:
-#   - -c
-#   - |
-#     # This will only check and report errors. Can fix them by using [./mvnw com.coveo:fmt-maven-plugin:format]
-#     mvn clean verify -DskipTests
-#   # indicates that the step need not wait for any other step
-#   waitFor: [ '-' ]
+  ###########################################################
+  # Verify that Java code has no errors
+  ###########################################################
+- id: 'maven-verify-java'
+  name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    # This will only check and report errors. Can fix them by using [./mvnw com.coveo:fmt-maven-plugin:format]
+    mvn clean verify -DskipTests
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
 
-#   ###########################################################
-#   # create namespace yaml for the PR
-#   ###########################################################
-# - id: 'create-namespace.yaml'
-#   name: 'ubuntu'
-#   entrypoint: bash
-#   args:
-#   - -c
-#   - |
-#     cat <<EOF > /workspace/namespace.yaml -
-#     # namespace to deploy the mysql db based deployment
-#     apiVersion: v1
-#     kind: Namespace
-#     metadata:
-#       name: pr-$_PR_NUMBER-db
-#     ---
-#     # namespace to deploy the inmemory h2 db based deployment
-#     apiVersion: v1
-#     kind: Namespace
-#     metadata:
-#       name: pr-$_PR_NUMBER-inmemory
-#     EOF
-#   # indicates that the step need not wait for any other step
-#   waitFor: [ '-' ]
+  ###########################################################
+  # create namespace yaml for the PR
+  ###########################################################
+- id: 'create-namespace.yaml'
+  name: 'ubuntu'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/namespace.yaml -
+    # namespace to deploy the mysql db based deployment
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: pr-$_PR_NUMBER-db
+    ---
+    # namespace to deploy the inmemory h2 db based deployment
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: pr-$_PR_NUMBER-inmemory
+    EOF
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
 
-#   ###########################################################
-#   # apply the namespace.yaml to the dev cluster
-#   ###########################################################
-# - id: 'create-k8s-namespace'
-#   name: 'gcr.io/cloud-builders/kubectl'
-#   dir: '.github/cloudbuild'
-#   env:
-#   - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
-#   - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
-#   args: [
-#       'apply',
-#       '-f',
-#       '/workspace/namespace.yaml'
-#   ]
-#   # indicates that the step need not wait for any other step
-#   waitFor: [ 'create-namespace.yaml' ]
+  ###########################################################
+  # apply the namespace.yaml to the dev cluster
+  ###########################################################
+- id: 'create-k8s-namespace'
+  name: 'gcr.io/cloud-builders/kubectl'
+  dir: '.github/cloudbuild'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_DEV_CLUSTER_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_DEV_CLUSTER'
+  args: [
+      'apply',
+      '-f',
+      '/workspace/namespace.yaml'
+  ]
+  # indicates that the step need not wait for any other step
+  waitFor: [ 'create-namespace.yaml' ]
 
-#   ###########################################################
-#   # create the skaffold deploy script
-#   ###########################################################
-# - id: 'create-skaffold-exec-script'
-#   name: 'ubuntu'
-#   entrypoint: bash
-#   args:
-#   - -c
-#   - |
-#     cat <<EOF > /workspace/deploy.sh -
-#     #!/bin/bash
+  ###########################################################
+  # create the skaffold deploy script
+  ###########################################################
+- id: 'create-skaffold-exec-script'
+  name: 'ubuntu'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    cat <<EOF > /workspace/deploy.sh -
+    #!/bin/bash
+    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    ./mvnw install
+    skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-db --tag=pr-$_PR_NUMBER-db
+    skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-inmemory --tag=pr-$_PR_NUMBER-inmemory
+    EOF
+  # indicates that the step need not wait for any other step
+  waitFor: [ '-' ]
 
-#     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+  ###########################################################
+  # skaffold deploy to kubernetes cluster
+  ###########################################################
+- id: 'deploy-to-k8s'
+  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  args: [
+      'bash',
+      '/workspace/deploy.sh',
+  ]
+  # waitFor: commented out, so this step waits for all previous steps
 
-#     ./mvnw install
-#     skaffold run -p dev -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-db --tag=pr-$_PR_NUMBER-db
-#     skaffold run -p dev,inmemory -f=skaffold.yaml --default-repo=us-docker.pkg.dev/$PROJECT_ID/$_POS_IMAGE_REPO --namespace=pr-$_PR_NUMBER-inmemory --tag=pr-$_PR_NUMBER-inmemory
-
-#     EOF
-#   # indicates that the step need not wait for any other step
-#   waitFor: [ '-' ]
-
-#   ###########################################################
-#   # skaffold deploy to kubernetes cluster
-#   ###########################################################
-# - id: 'deploy-to-k8s'
-#   name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
-#   args: [
-#       'bash',
-#       '/workspace/deploy.sh',
-#   ]
-#   # waitFor: commented out, so this step waits for all previous steps
-
-#   ###########################################################
-#   # fetch the External IP for the API-Server
-#   ###########################################################
-# - id: 'get-external-loadbalancer-ip'
-#   name: 'gcr.io/cloud-builders/kubectl'
-#   entrypoint: bash
-#   args:
-#   - -c
-#   - |
-#     gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
-#     kubectl -n pr-$_PR_NUMBER-db get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-db.ip
-#     kubectl -n pr-$_PR_NUMBER-inmemory get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-inmemory.ip
-#     echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-db.ip)] saved to file /workspace/pr-$_PR_NUMBER-db.ip"
-#     echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)] saved to file /workspace/pr-$_PR_NUMBER-inmemory.ip"
-
-#   waitFor: [ 'deploy-to-k8s' ]
+  ###########################################################
+  # fetch the External IP for the API-Server
+  ###########################################################
+- id: 'get-external-loadbalancer-ip'
+  name: 'gcr.io/cloud-builders/kubectl'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    gcloud container clusters get-credentials --zone $_DEV_CLUSTER_ZONE $_DEV_CLUSTER
+    kubectl -n pr-$_PR_NUMBER-db get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-db.ip
+    kubectl -n pr-$_PR_NUMBER-inmemory get service/$_LB_SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /workspace/pr-$_PR_NUMBER-inmemory.ip
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-db.ip)] saved to file /workspace/pr-$_PR_NUMBER-db.ip"
+    echo "External IP [$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)] saved to file /workspace/pr-$_PR_NUMBER-inmemory.ip"
+  waitFor: [ 'deploy-to-k8s' ]
 
   ###########################################################
   # Comment the fetched IP in the GitHub Pull request
@@ -146,15 +142,12 @@ steps:
   - -c
   - |
     cat <<EOF > /workspace/gh-comment.txt -
-    #:zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
-    #- **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
-    #- **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
-    Test
+    :zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
+    - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
+    - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
     EOF
-    echo ">>>> $_PR_NUMBER"
-    echo ">>>> $_HEAD_REPO_URL"
     gh pr comment $_PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
-  # waitFor: [ 'get-external-loadbalancer-ip' ]
+  waitFor: [ 'get-external-loadbalancer-ip' ]
 
 availableSecrets:
   inline:
