@@ -28,10 +28,22 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 1000
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
       - name: api-server
-        # TODO:: remove the snapshot tag once we make the first release
         image: us-docker.pkg.dev/point-of-sale-ci/pos-images/api-server:v0.1.0
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - all
         env:
         - name: INVENTORY_EP
           valueFrom:

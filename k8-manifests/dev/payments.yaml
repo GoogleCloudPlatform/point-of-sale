@@ -28,9 +28,22 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 1000
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
       - name: payments
         image: payments
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - all
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
