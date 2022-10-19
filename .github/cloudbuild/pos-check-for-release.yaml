@@ -140,7 +140,7 @@ steps:
     - **Version updated**: Version in the `pom.xml/package.json` has been updated to the next **$$RELEASE_TYPE** release version.
     - **Publish Artifacts:** Check the most recent commit ($$LAST_COMMIT) for correctness and run the ["pos-publish-release-artifacts"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against this branch **[$BRANCH_NAME]** to upload the artifacts _(Jars and Images)_ to Artifact registry.
     EOF
-    gh pr comment $_PR_NUMBER --repo $_HEAD_REPO_URL --body-file /workspace/gh-comment.txt
+    gh pr comment $_PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps
 
 availableSecrets:
