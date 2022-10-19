@@ -8,7 +8,7 @@
     "release:major": "standard-version --release-as major"
   },
   "devDependencies": {
-    "standard-version": "^9.3.2"
+    "standard-version": "9.3.2"
   },
   "standard-version": {
     "types": [
