@@ -26,7 +26,7 @@
   <name>inventory</name>
   <description>Application to manage inventory for the Edge Use case workload</description>
   <properties>
-    <java.version>19</java.version>
+    <java.version>17</java.version>
     <spring.boot.mainclass>com.google.abmedge.inventory.InventoryApplication</spring.boot.mainclass>
   </properties>
   <dependencies>
