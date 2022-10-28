@@ -27,7 +27,7 @@
   <description>Application to process payments for the Edge Use case workload
   </description>
   <properties>
-    <java.version>11</java.version>
+    <java.version>19</java.version>
     <spring.boot.mainclass>com.google.abmedge.payments.PaymentsApplication</spring.boot.mainclass>
   </properties>
   <dependencies>
