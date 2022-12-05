@@ -49,7 +49,7 @@ distributed across customer data centers and device fleets.
 
 #### External use cases of this application
 - _(Solution guide)_ [VM based PoS deployed in an Anthos cluster using Anthos VMRuntime](https://github.com/GoogleCloudPlatform/anthos-samples/tree/main/anthos-vmruntime)
-- _(Solution guide)_ [Edge deployment of PoS using Anthos on bare metal](https://cloud.google.com/bare-metal/docs/tutorials/abm-edge-at-scale)
+- _(Solution guide)_ [Edge deployment of PoS using Anthos on bare metal](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/installing/install-edge-profile)
 - _(Tutorial)_ [PoS deployed in an Anthos bare metal cluster inside Openstack](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/installing/openstack-abm-install)
 
 ---
