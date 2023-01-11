@@ -43,7 +43,7 @@
     <spring-boot-maven.plugin.version>2.7.5</spring-boot-maven.plugin.version>
     <mysql.connector.version>8.0.31</mysql.connector.version>
     <h2.embedded.db.version>2.1.214</h2.embedded.db.version>
-    <maven-checkstyle.plugin.version>3.2.0</maven-checkstyle.plugin.version>
+    <maven-checkstyle.plugin.version>3.2.1</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
     <jacoco-maven.plugin.version>0.8.8</jacoco-maven.plugin.version>
     <coveo-fmt-maven-plugin.version>2.13</coveo-fmt-maven-plugin.version>
