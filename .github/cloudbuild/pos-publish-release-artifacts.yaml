@@ -149,10 +149,13 @@ steps:
   # waitFor: commented out, so this step waits for all previous steps
 
 availableSecrets:
+  secretManager:
+  - versionName: projects/$PROJECT_ID/secrets/_GHTOKEN_SECRET_NAME/versions/_GHTOKEN_SECRET_VERSION
+    env: 'GITHUB_TOKEN'
   inline:
-  - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
-    envMap:
-      GITHUB_TOKEN: 'CiQAuVI6Z/c868Z4fvpyy/hzIZcn/L9G9CEu3ZHqLJfoCBkJFdASUQBHWet7Ce948YvMSQdEaB96OIbJXR/xixXGMrrF/enjBjDfCSgRsH9SAyTVWJwsWH7S2stzlonhEGVWWh3Uiplswt27KofuL6P6cQ+f1CJRdw=='
+  # - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
+  #   envMap:
+  #     GITHUB_TOKEN: 'CiQAuVI6Z/c868Z4fvpyy/hzIZcn/L9G9CEu3ZHqLJfoCBkJFdASUQBHWet7Ce948YvMSQdEaB96OIbJXR/xixXGMrrF/enjBjDfCSgRsH9SAyTVWJwsWH7S2stzlonhEGVWWh3Uiplswt27KofuL6P6cQ+f1CJRdw=='
   - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHEMAIL_KEYRING_NAME/cryptoKeys/$_GHEMAIL_KEY_NAME'
     envMap:
       GITHUB_EMAIL: 'CiQA/ThyQ4p/sDUR2fsc4Q2GgF/PntA048keplEhVQTrmgESLfcSOACXDXFpPP/ASB9nwBao91OK4677dEaGsJQjVKkStDpHtY1ZtF7qefjxq1qK93BSezLllJX/rHbY'
