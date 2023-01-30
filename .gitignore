@@ -6,6 +6,7 @@ target
 .factorypath
 .project
 .settings
+.vscode
 
 test-server
 test-server.yaml

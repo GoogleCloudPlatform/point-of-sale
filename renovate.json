@@ -29,7 +29,7 @@
      "stabilityDays":0
   },
   "labels": ["dependencies"],
-  "javascript":{
+  "js":{
     "addLabels": ["lang: javascript"]
   },
   "java":{
