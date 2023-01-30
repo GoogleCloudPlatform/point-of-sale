@@ -13,47 +13,51 @@
 # limitations under the License.
 
 # [START anthosbaremetal_skaffold_config_setup]
-apiVersion: skaffold/v2beta21
+apiVersion: skaffold/v4beta2
 kind: Config
 metadata:
-  name: setup # module defining setup steps
+  name: setup
+manifests:
+  rawYaml:
+  - k8-manifests/common/service-configs.yaml
+  - k8-manifests/common/api-server-svc.yaml
+  - k8-manifests/common/inventory-svc.yaml
+  - k8-manifests/common/payments-svc.yaml
 deploy:
-  kubectl:
-    manifests:
-    - k8-manifests/common/service-configs.yaml
-    - k8-manifests/common/api-server-svc.yaml
-    - k8-manifests/common/inventory-svc.yaml
-    - k8-manifests/common/payments-svc.yaml
+  kubectl: {}
 # [END anthosbaremetal_skaffold_config_setup]
 ---
 # [START anthosbaremetal_skaffold_config_db]
-apiVersion: skaffold/v2beta21
+apiVersion: skaffold/v4beta2
 kind: Config
 metadata:
-  name: db # module defining spring profile & db configuration
+  name: db
+manifests:
+  rawYaml:
+  - k8-manifests/common/springprofile-mysql.yaml
+  - k8-manifests/common/mysql-db.yaml
 deploy:
-  kubectl:
-    manifests:
-    - k8-manifests/common/springprofile-mysql.yaml
-    - k8-manifests/common/mysql-db.yaml
+  kubectl: {}
 profiles:
 - name: inmemory
+  manifests:
+    rawYaml:
+    - k8-manifests/common/springprofile-h2.yaml
   deploy:
-    kubectl:
-      manifests:
-      - k8-manifests/common/springprofile-h2.yaml
+    kubectl: {}
 # [END anthosbaremetal_skaffold_config_db]
 ---
 # [START anthosbaremetal_skaffold_config_backend]
-apiVersion: skaffold/v2beta21
+apiVersion: skaffold/v4beta2
 kind: Config
 metadata:
-  name: backend # module defining backend services
+  name: backend
 requires:
-- configs: [ setup, db ]
+- configs:
+  - setup
+  - db
 profiles:
 - name: dev
-# dev profile is used to continuously build and deploy local changes
   build:
     artifacts:
     - image: api-server
@@ -66,34 +70,37 @@ profiles:
       jib:
         project: src/payments
     tagPolicy:
-      gitCommit: { }
+      gitCommit: {}
     local:
       concurrency: 0
+  manifests:
+    rawYaml:
+    - k8-manifests/dev/api-server.yaml
+    - k8-manifests/dev/inventory.yaml
+    - k8-manifests/dev/payments.yaml
   deploy:
-    kubectl:
-      manifests:
-      - k8-manifests/dev/api-server.yaml
-      - k8-manifests/dev/inventory.yaml
-      - k8-manifests/dev/payments.yaml
+    kubectl: {}
 - name: release
-# release profile is used to deploy the latest release manifests to a cluster
+  manifests:
+    rawYaml:
+    - k8-manifests/release/api-server.yaml
+    - k8-manifests/release/inventory.yaml
+    - k8-manifests/release/payments.yaml
   deploy:
-    kubectl:
-      manifests:
-      - k8-manifests/release/api-server.yaml
-      - k8-manifests/release/inventory.yaml
-      - k8-manifests/release/payments.yaml
+    kubectl: {}
 # [END anthosbaremetal_skaffold_config_backend]
 ---
 # [START anthosbaremetal_skaffold_config_load_balancer]
-apiVersion: skaffold/v2beta21
+apiVersion: skaffold/v4beta2
 kind: Config
 metadata:
-  name: load-balancer # module defining ingress into the application
+  name: load-balancer
 requires:
-- configs: [ backend ]
+- configs:
+  - backend
+manifests:
+  rawYaml:
+  - k8-manifests/common/api-server-lb.yaml
 deploy:
-  kubectl:
-    manifests:
-    - k8-manifests/common/api-server-lb.yaml
+  kubectl: {}
 # [END anthosbaremetal_skaffold_config_load_balancer]
