@@ -109,7 +109,7 @@ steps:
   # skaffold deploy to kubernetes cluster
   ###########################################################
 - id: 'deploy-to-k8s'
-  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  name: 'gcr.io/k8s-skaffold/skaffold:v2.1.0'
   args: [
       'bash',
       '/workspace/deploy.sh',

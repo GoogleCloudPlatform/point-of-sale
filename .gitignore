@@ -39,3 +39,4 @@ rename.sh
 .npm_audit
 artifacts.json
 rendered.manifests
+.mvn/wrapper/maven-wrapper.jar
