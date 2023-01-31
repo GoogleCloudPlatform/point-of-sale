@@ -9,7 +9,7 @@ developement or run the services of the application locally as well.
 - [kubectl CLI](https://kubernetes.io/docs/tasks/tools/)
 - [skaffold CLI](https://skaffold.dev/docs/install/)
 - A Google Cloud Project
-- Java **(Version 11)**
+- Java **(Version 17)**
 - Node **(Version >=16.13.2, <17)**
 
 ---
