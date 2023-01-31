@@ -25,7 +25,7 @@ steps:
   # Deploy the latest release manifests to the main cluster
   ###########################################################
 - id: 'deploy-to-k8s-main'
-  name: 'gcr.io/k8s-skaffold/skaffold:v1.36.0'
+  name: 'gcr.io/k8s-skaffold/skaffold:v2.1.0'
   entrypoint: bash
   args:
   - -c
