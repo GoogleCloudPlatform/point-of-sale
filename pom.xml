@@ -39,7 +39,6 @@
     <springboot.version>2.7.8</springboot.version>
     <springboot.springbeans.version>5.3.25</springboot.springbeans.version>
     <apache.commons.version>3.12.0</apache.commons.version>
-    <jib-maven.plugin.version>3.3.1</jib-maven.plugin.version>
     <spring-boot-maven.plugin.version>2.7.8</spring-boot-maven.plugin.version>
     <mysql.connector.version>8.0.31</mysql.connector.version>
     <h2.embedded.db.version>2.1.214</h2.embedded.db.version>
@@ -139,10 +138,10 @@
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>jib-maven-plugin</artifactId>
-          <version>${jib-maven.plugin.version}</version>
+          <version>3.3.1</version>
           <configuration>
             <from>
-              <image>gcr.io/distroless/java11-debian11</image>
+              <image>eclipse-temurin:17.0.4.1_1-jre-alpine</image>
             </from>
           </configuration>
         </plugin>
