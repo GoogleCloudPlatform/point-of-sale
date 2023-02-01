@@ -33,17 +33,16 @@
 
   <properties>
     <main.basedir>${project.basedir}</main.basedir>
-    <gson.version>2.10</gson.version>
+    <gson.version>2.10.1</gson.version>
     <log4j2.version>2.17.1</log4j2.version>
     <snakeyaml.version>1.33</snakeyaml.version>
     <springboot.version>2.7.8</springboot.version>
     <springboot.springbeans.version>5.3.25</springboot.springbeans.version>
     <apache.commons.version>3.12.0</apache.commons.version>
-    <jib-maven.plugin.version>3.3.1</jib-maven.plugin.version>
     <spring-boot-maven.plugin.version>2.7.8</spring-boot-maven.plugin.version>
     <mysql.connector.version>8.0.32</mysql.connector.version>
     <h2.embedded.db.version>2.1.214</h2.embedded.db.version>
-    <maven-checkstyle.plugin.version>3.2.0</maven-checkstyle.plugin.version>
+    <maven-checkstyle.plugin.version>3.2.1</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
     <jacoco-maven.plugin.version>0.8.8</jacoco-maven.plugin.version>
     <coveo-fmt-maven-plugin.version>2.13</coveo-fmt-maven-plugin.version>
@@ -139,10 +138,10 @@
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>jib-maven-plugin</artifactId>
-          <version>${jib-maven.plugin.version}</version>
+          <version>3.3.1</version>
           <configuration>
             <from>
-              <image>gcr.io/distroless/java11-debian11</image>
+              <image>eclipse-temurin:17.0.4.1_1-jre-alpine</image>
             </from>
           </configuration>
         </plugin>
