@@ -34,5 +34,9 @@
   },
   "java":{
     "addLabels": ["lang: java"]
-  }
+  },
+  "schedule": [
+    "every 3 months on the first day of the month"
+  ],
+  "timezone": "America/New_York"
 }
