@@ -65,7 +65,7 @@ steps:
 
 availableSecrets:
   secretManager:
-  - versionName: projects/$PROJECT_NUMBER/secrets/$_GHTOKEN_SECRET_NAME/versions/$_GHTOKEN_SECRET_VERSION
+  - versionName: projects/$PROJECT_NUMBER/secrets/$_GHTOKEN_SECRET_NAME/versions/latest
     env: 'GITHUB_TOKEN'
   # inline:
   # - kmsKeyName: 'projects/$PROJECT_ID/locations/global/keyRings/$_GHTOKEN_KEYRING_NAME/cryptoKeys/$_GHTOKEN_KEY_NAME'
