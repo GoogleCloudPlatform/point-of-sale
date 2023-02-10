@@ -58,13 +58,31 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
     ```
 
-- Upload the Disk Image we create to the Cloud Storage Bucket
+- Export the Disk Image we create to the Cloud Storage Bucket
     ```sh
     gcloud compute images export \
         --destination-uri gs://${BUCKET_NAME}/pos-vm.qcow2 \
         --image pos-vm-image \
         --export-format qcow2 \
         --project ${PROJECT_ID}
+    ```
+
+- Download the Disk Image
+    ```sh
+    gcloud storage cp gs://${BUCKET_NAME}/pos-vm.qcow2 pos-vm.qcow2
+    ```
+
+- Enable Cloud Init
+    ```sh
+    virt-sysprep -a pos-vm.qcow2 \
+        --uninstall google-compute-engine,google-compute-engine-oslogin,google-guest-agent,google-osconfig-agent \
+        --delete '/etc/cloud/cloud.cfg.d/*.cfg' \
+        --write /etc/cloud/cloud.cfg.d/10_anthos.cfg:'datasource_list: [ NoCloud, ConfigDrive, None ]\n'
+    ```
+
+- Upload the Disk Image
+    ```sh
+    gcloud storage cp pos-vm.qcow2 gs://${BUCKET_NAME}/pos-vm.qcow2
     ```
 
 Now you can use the URL `https://storage.googleapis.com/${BUCKET_NAME}/pos-vm.qcow2`
