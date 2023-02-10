@@ -84,7 +84,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     ```
     > NOTE: In many recent Linux distributions `virt-sysprep` is part of the `libguestfs-tools` package.
 
-- Upload the Disk Image to Cloud Storage Bucket
+- Upload the prepared Disk Image to the Cloud Storage Bucket
     ```sh
     gcloud storage cp pos-vm.qcow2 gs://${BUCKET_NAME}/pos-vm.qcow2
     ```
