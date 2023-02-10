@@ -54,7 +54,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     ```
 
 - Make the bucket **publicly readable**
-    > **Note**: For typical use the bucket should be **private**, and add [credentials](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/vm-runtime/create-storage-credentials) in VM Runtime tto import the private image.
+    > **Note**: For typical use the bucket should be **private**, and add [credentials](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/vm-runtime/create-storage-credentials) in VM Runtime to access the private image.
     ```sh
     gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
     ```
