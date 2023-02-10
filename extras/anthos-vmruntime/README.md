@@ -60,7 +60,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     ```
 
 
-- Export the Disk Image we create to the Cloud Storage Bucket
+- Export the Disk Image we created to the Cloud Storage Bucket
     ```sh
     gcloud compute images export \
         --destination-uri gs://${BUCKET_NAME}/pos-vm.qcow2 \
