@@ -69,20 +69,21 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
         --project ${PROJECT_ID}
     ```
 
-- Download the Disk Image
+- Download the Disk Image locally
     ```sh
     gcloud storage cp gs://${BUCKET_NAME}/pos-vm.qcow2 pos-vm.qcow2
     ```
 
-- Enable Cloud Init
+- Enable Cloud Init using virt-sysprep
     ```sh
     virt-sysprep -a pos-vm.qcow2 \
         --uninstall google-compute-engine,google-compute-engine-oslogin,google-guest-agent,google-osconfig-agent \
         --delete '/etc/cloud/cloud.cfg.d/*.cfg' \
         --write /etc/cloud/cloud.cfg.d/10_anthos.cfg:'datasource_list: [ NoCloud, ConfigDrive, None ]\n'
     ```
+    > NOTE: On recent Ubuntu `virt-sysprep` is part of the `libguestfs-tools` package.
 
-- Upload the Disk Image
+- Upload the Disk Image to Cloud Storage Bucket
     ```sh
     gcloud storage cp pos-vm.qcow2 gs://${BUCKET_NAME}/pos-vm.qcow2
     ```
