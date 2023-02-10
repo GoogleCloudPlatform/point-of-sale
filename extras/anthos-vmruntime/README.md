@@ -82,7 +82,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
         --mkdir /etc/cloud/cloud.cfg.d \
         --write /etc/cloud/cloud.cfg.d/10_anthos.cfg:'datasource_list: [ NoCloud, ConfigDrive, None ]\n'
     ```
-    > NOTE: On recent Ubuntu `virt-sysprep` is part of the `libguestfs-tools` package.
+    > NOTE: In many recent Linux distributions `virt-sysprep` is part of the `libguestfs-tools` package.
 
 - Upload the Disk Image to Cloud Storage Bucket
     ```sh
