@@ -16,8 +16,8 @@ annotations:
   - type: comment
     text: "/gcbrun"
 trustedContributors:
-  - @GoogleCloudPlatform/point-of-sale
   - release-please[bot]
   - renovate[bot]
   - forking-renovate[bot]
   - dependabot[bot]
+  - @GoogleCloudPlatform/point-of-sale
