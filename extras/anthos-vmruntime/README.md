@@ -54,7 +54,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     ```
 
 - Make the bucket **publicly readable**
-    > NOTE: For typical use the bucket should be **private** and [credentials](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/vm-runtime/create-storage-credentials) used to import the image into VM Runtime.
+    > **Note**: For typical use the bucket should be **private**, and add [credentials](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/vm-runtime/create-storage-credentials) in VM Runtime tto import the private image.
     ```sh
     gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
     ```
@@ -82,7 +82,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
         --mkdir /etc/cloud/cloud.cfg.d \
         --write /etc/cloud/cloud.cfg.d/10_anthos.cfg:'datasource_list: [ NoCloud, ConfigDrive, None ]\n'
     ```
-    > NOTE: In many recent Linux distributions `virt-sysprep` is part of the `libguestfs-tools` package.
+    > **Note**: In many recent Linux distributions `virt-sysprep` is part of the `libguestfs-tools` package.
 
 - Upload the prepared Disk Image to the Cloud Storage Bucket
     ```sh
