@@ -79,6 +79,7 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     virt-sysprep -a pos-vm.qcow2 \
         --uninstall google-compute-engine,google-compute-engine-oslogin,google-guest-agent,google-osconfig-agent \
         --delete '/etc/cloud/cloud.cfg.d/*.cfg' \
+        --mkdir /etc/cloud/cloud.cfg.d \
         --write /etc/cloud/cloud.cfg.d/10_anthos.cfg:'datasource_list: [ NoCloud, ConfigDrive, None ]\n'
     ```
     > NOTE: On recent Ubuntu `virt-sysprep` is part of the `libguestfs-tools` package.
