@@ -54,17 +54,39 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
     ```
 
 - Make the bucket **publicly readable**
+    > **Note**: For typical use the bucket should be **private**, and [credentials](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/vm-runtime/create-storage-credentials) for the bucket added into VM Runtime to securely access the private image.
     ```sh
     gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
     ```
 
-- Upload the Disk Image we create to the Cloud Storage Bucket
+
+- Export the Disk Image we created to the Cloud Storage Bucket
     ```sh
     gcloud compute images export \
         --destination-uri gs://${BUCKET_NAME}/pos-vm.qcow2 \
         --image pos-vm-image \
         --export-format qcow2 \
         --project ${PROJECT_ID}
+    ```
+
+- Download the Disk Image locally
+    ```sh
+    gcloud storage cp gs://${BUCKET_NAME}/pos-vm.qcow2 pos-vm.qcow2
+    ```
+
+- Enable Cloud Init using virt-sysprep
+    ```sh
+    virt-sysprep -a pos-vm.qcow2 \
+        --uninstall google-compute-engine,google-compute-engine-oslogin,google-guest-agent,google-osconfig-agent \
+        --delete '/etc/cloud/cloud.cfg.d/*.cfg' \
+        --mkdir /etc/cloud/cloud.cfg.d \
+        --write /etc/cloud/cloud.cfg.d/10_anthos.cfg:'datasource_list: [ NoCloud, ConfigDrive, None ]\n'
+    ```
+    > **Note**: In many recent Linux distributions `virt-sysprep` is part of the `libguestfs-tools` package.
+
+- Upload the prepared Disk Image to the Cloud Storage Bucket
+    ```sh
+    gcloud storage cp pos-vm.qcow2 gs://${BUCKET_NAME}/pos-vm.qcow2
     ```
 
 Now you can use the URL `https://storage.googleapis.com/${BUCKET_NAME}/pos-vm.qcow2`
