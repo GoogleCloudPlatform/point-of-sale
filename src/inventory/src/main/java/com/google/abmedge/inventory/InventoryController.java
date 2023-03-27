@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -295,7 +296,7 @@ public class InventoryController {
     inventoryList = inventoryList.replaceAll("\\\\n", "\n");
     LOGGER.debug(inventoryList);
     Map<String, Set<String>> itemTypeToNameMap = getItemTypeToNamesMap();
-    Yaml yaml = new Yaml(new Constructor(Inventory.class));
+    Yaml yaml = new Yaml(new Constructor(Inventory.class, new LoaderOptions()));
     Inventory inventory = yaml.load(inventoryList);
     inventory.getItems().forEach(i -> insertIfNotExists(i, itemTypeToNameMap));
   }
