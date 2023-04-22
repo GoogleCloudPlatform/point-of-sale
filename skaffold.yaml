@@ -81,6 +81,7 @@ profiles:
   deploy:
     kubectl: {}
 - name: release
+  activation:
     - env: spring_profiles_active=prod
   manifests:
     rawYaml:
