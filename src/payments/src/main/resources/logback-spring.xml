@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--    Start with the provided Spring Defaults-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!--    Include Stackdriver in prod-->
+    <springProfile name="prod">
+        <include resource="com/google/cloud/spring/logging/logback-appender.xml"/>
+        <root level="INFO">
+            <appender-ref ref="STACKDRIVER"/>
+        </root>
+    </springProfile>
+    <!--    Otherwise, just use the console appender-->
+    <springProfile name="default">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>
