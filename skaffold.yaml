@@ -81,6 +81,7 @@ profiles:
   deploy:
     kubectl: {}
 - name: release
+    - env: spring_profiles_active=prod
   manifests:
     rawYaml:
     - k8-manifests/release/api-server.yaml
