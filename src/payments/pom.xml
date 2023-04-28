@@ -50,11 +50,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>spring-cloud-gcp-data-spanner</artifactId>
+      <artifactId>spring-cloud-gcp-starter-data-spanner</artifactId>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>

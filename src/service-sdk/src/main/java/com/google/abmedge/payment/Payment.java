@@ -26,8 +26,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 /**
  * This class contains a single payment action for a purchase done via the Point-Of-Sales UI. A
@@ -43,8 +41,6 @@ public class Payment implements Serializable {
 
   @Id
   @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
-  @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID id;
 

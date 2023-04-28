@@ -18,7 +18,6 @@ package com.google.abmedge.inventory;
 
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import java.util.UUID;
-import org.springframework.data.repository.CrudRepository;
 
 // This will be AUTO IMPLEMENTED by Spring into a Bean called itemRepository
 // CRUD refers Create, Read, Update, Delete

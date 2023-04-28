@@ -22,7 +22,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import org.hibernate.annotations.Type;
 
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
@@ -37,11 +36,9 @@ public class PaymentUnit implements Serializable {
   public static final String PAYMENT_UNIT_TABLE = "payment_units";
 
   @Id
-  @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID id = UUID.randomUUID();
 
-  @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID itemId;
 

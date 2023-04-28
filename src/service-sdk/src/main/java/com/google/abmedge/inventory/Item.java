@@ -29,8 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 /**
  * An instance of the {@link Item} class is a representation of an item as it will be stored in the
@@ -46,8 +44,6 @@ public class Item implements Serializable {
 
   @Id
   @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
-  @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(columnDefinition = "CHAR(36)")
   private UUID id;
 
