@@ -14,18 +14,15 @@
 
 package com.google.abmedge.payment;
 
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
+
 
 /**
  * This class contains a single payment action for a purchase done via the Point-Of-Sales UI. A
@@ -33,24 +30,22 @@ import javax.persistence.Version;
  * inside the {@link #unitList} collection. An object of this class also carries information about
  * the type of payment (as defined by {@link PaymentType}) and the total amount paid.
  */
-@Entity
 @Table(name = Payment.PAYMENTS_TABLE)
 public class Payment implements Serializable {
 
   public static final String PAYMENTS_TABLE = "payments";
 
-  @Id
-  @GeneratedValue(generator = "uuid2")
-  @Column(columnDefinition = "CHAR(36)")
+  @Column(name="payment_id")
+  @PrimaryKey
   private UUID id;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @Interleaved
   private List<PaymentUnit> unitList;
 
   private PaymentType type;
   private BigDecimal paidAmount;
 
-  @Version private Long version;
+  private Long version;
 
   public Payment() {}
 

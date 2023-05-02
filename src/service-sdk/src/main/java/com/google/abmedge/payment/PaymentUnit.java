@@ -14,14 +14,13 @@
 
 package com.google.abmedge.payment;
 
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+
 
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
@@ -29,24 +28,27 @@ import javax.persistence.Version;
  * them. Usually a {@link Payment} includes a collection of {@link PaymentUnit}s making up a bill
  * which shows multiple purchased items.
  */
-@Entity
 @Table(name = PaymentUnit.PAYMENT_UNIT_TABLE)
 public class PaymentUnit implements Serializable {
 
   public static final String PAYMENT_UNIT_TABLE = "payment_units";
 
-  @Id
-  @Column(columnDefinition = "CHAR(36)")
-  private UUID id = UUID.randomUUID();
+  @Column(name="payment_id")
+  @PrimaryKey(keyOrder = 1)
+  private UUID paymentId;
 
-  @Column(columnDefinition = "CHAR(36)")
+  @Column(name="payment_unit_id")
+  @PrimaryKey(keyOrder = 2)
+  private UUID id;
+
+  @Column(name = "item_id")
   private UUID itemId;
 
   private String name;
   private BigDecimal quantity;
   private BigDecimal totalCost;
 
-  @Version private Long version;
+  private Long version;
 
   public PaymentUnit() {}
 
