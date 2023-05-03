@@ -44,7 +44,7 @@ public class DatabasePaymentGateway implements PaymentGateway {
   public Bill pay(Payment payment) throws PaymentProcessingFailedException {
     try {
       Payment saved = paymentRepository.save(payment);
-      return BillGenerator.generateBill(saved.getId(), payment);
+      return BillGenerator.generateBill(saved.getPaymentId(), payment);
     } catch (Exception e) {
       String msg =
           String.format(

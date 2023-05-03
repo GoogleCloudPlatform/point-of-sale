@@ -19,6 +19,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,6 +54,7 @@ public class Item implements Serializable {
   private Long version;
 
   public Item() {
+    this.id = UUID.randomUUID();
     this.labels = new ArrayList<>();
   }
 
@@ -61,7 +63,7 @@ public class Item implements Serializable {
     copyItem.id = item.id;
     copyItem.type = item.type;
     copyItem.name = item.name;
-    copyItem.price = item.price;
+    copyItem.price = item.price.setScale(9, RoundingMode.HALF_EVEN);
     copyItem.imageUrl = item.imageUrl;
     copyItem.quantity = item.quantity;
     copyItem.getLabels().addAll(item.getLabels());

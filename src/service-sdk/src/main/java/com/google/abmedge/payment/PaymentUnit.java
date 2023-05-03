@@ -19,6 +19,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 
@@ -48,15 +49,25 @@ public class PaymentUnit implements Serializable {
   private BigDecimal quantity;
   private BigDecimal totalCost;
 
-  private Long version;
+  private Long version = 1L;
 
-  public PaymentUnit() {}
+  public PaymentUnit() {
+    this.id = UUID.randomUUID();
+  }
 
   public PaymentUnit(UUID itemId, String name, BigDecimal quantity, BigDecimal totalCost) {
     this.itemId = itemId;
     this.name = name;
-    this.quantity = quantity;
-    this.totalCost = totalCost;
+    this.quantity = quantity.setScale(9, RoundingMode.HALF_EVEN);
+    this.totalCost = totalCost.setScale(9, RoundingMode.HALF_EVEN);
+  }
+
+  public UUID getPaymentId() {
+    return paymentId;
+  }
+
+  public void setPaymentId(UUID paymentId) {
+    this.paymentId = paymentId;
   }
 
   public UUID getId() {
@@ -88,7 +99,7 @@ public class PaymentUnit implements Serializable {
   }
 
   public void setQuantity(BigDecimal quantity) {
-    this.quantity = quantity;
+    this.quantity = quantity.setScale(9, RoundingMode.HALF_EVEN);
   }
 
   public BigDecimal getTotalCost() {
@@ -96,6 +107,6 @@ public class PaymentUnit implements Serializable {
   }
 
   public void setTotalCost(BigDecimal totalCost) {
-    this.totalCost = totalCost;
+    this.totalCost = totalCost.setScale(9, RoundingMode.HALF_EVEN);
   }
 }

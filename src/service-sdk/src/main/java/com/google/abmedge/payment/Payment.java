@@ -20,6 +20,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +38,7 @@ public class Payment implements Serializable {
 
   @Column(name="payment_id")
   @PrimaryKey
-  private UUID id;
+  private UUID paymentId;
 
   @Interleaved
   private List<PaymentUnit> unitList;
@@ -45,22 +46,27 @@ public class Payment implements Serializable {
   private PaymentType type;
   private BigDecimal paidAmount;
 
-  private Long version;
+  private Long version = 1L;
 
-  public Payment() {}
+  public Payment() {
+    this.paymentId = UUID.randomUUID();
+
+  }
 
   public Payment(List<PaymentUnit> unitList, PaymentType type, BigDecimal paidAmount) {
+    this.paymentId = UUID.randomUUID();
+    unitList.forEach(u -> u.setPaymentId(this.paymentId));
     this.unitList = unitList;
     this.type = type;
-    this.paidAmount = paidAmount;
+    this.paidAmount = paidAmount.setScale(9, RoundingMode.HALF_EVEN);
   }
 
-  public UUID getId() {
-    return id;
+  public UUID getPaymentId() {
+    return paymentId;
   }
 
-  public void setId(UUID id) {
-    this.id = id;
+  public void setPaymentId(UUID paymentId) {
+    this.paymentId = paymentId;
   }
 
   public List<PaymentUnit> getUnitList() {
@@ -84,6 +90,6 @@ public class Payment implements Serializable {
   }
 
   public void setPaidAmount(BigDecimal paidAmount) {
-    this.paidAmount = paidAmount;
+    this.paidAmount = paidAmount.setScale(9, RoundingMode.HALF_EVEN);
   }
 }

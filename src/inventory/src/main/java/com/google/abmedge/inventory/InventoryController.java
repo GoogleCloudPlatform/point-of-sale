@@ -321,7 +321,6 @@ public class InventoryController {
       return;
     }
     try {
-      i.setId(UUID.randomUUID());
       activeConnector.insert(i);
     } catch (InventoryStoreConnectorException e) {
       LOGGER.error("Failed to insert item '{}' of type '{}'", i.getName(), i.getType(), e);
