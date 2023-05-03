@@ -35,7 +35,7 @@ The steps below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrai
         </div>
     </p>
 
-  - **Configure your app to connect to Spanner**
+  - **Configure your app to connect to Spanner**  
     One option is to create an `application-local.properties` file to point to your Spanner or Spanner Emulator instance:
     ```
     spring.cloud.gcp.spanner.project-id=
