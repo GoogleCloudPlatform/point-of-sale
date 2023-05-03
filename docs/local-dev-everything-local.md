@@ -35,6 +35,18 @@ The steps below assumes that the IDE used is [IntelliJ IDEA](https://www.jetbrai
         </div>
     </p>
 
+  - **Configure your app to connect to Spanner**
+    One option is to create an `application-local.properties` file to point to your Spanner or Spanner Emulator instance:
+    ```
+    spring.cloud.gcp.spanner.project-id=
+    spring.cloud.gcp.spanner.instance-id=
+    spring.cloud.gcp.spanner.database=
+    
+    #If using the emulator:
+    spring.cloud.gcp.spanner.emulator.enabled=true
+    spring.cloud.gcp.spanner.emulator-host=
+    ```
+
   - **Set environment variables for the services**
 
       To be able to run the services locally we must update the `Run configurations`
