@@ -37,7 +37,7 @@ public class Item implements Serializable {
   public static final String ITEMS_TABLE = "items";
   public static final String LABELS_TABLE = "labels";
 
-  @Column(name="item_id")
+  @Column(name = "item_id")
   @PrimaryKey
   private UUID id;
 

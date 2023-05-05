@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
  * information such as the item, the number of it being purchased and the total cost for all of
@@ -34,11 +33,11 @@ public class PaymentUnit implements Serializable {
 
   public static final String PAYMENT_UNIT_TABLE = "payment_units";
 
-  @Column(name="payment_id")
+  @Column(name = "payment_id")
   @PrimaryKey(keyOrder = 1)
   private UUID paymentId;
 
-  @Column(name="payment_unit_id")
+  @Column(name = "payment_unit_id")
   @PrimaryKey(keyOrder = 2)
   private UUID id;
 

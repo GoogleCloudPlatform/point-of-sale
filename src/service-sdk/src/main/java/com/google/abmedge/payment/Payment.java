@@ -24,7 +24,6 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
-
 /**
  * This class contains a single payment action for a purchase done via the Point-Of-Sales UI. A
  * single payment can contain the purchase of multiple items described as {@link PaymentUnit}s
@@ -36,12 +35,11 @@ public class Payment implements Serializable {
 
   public static final String PAYMENTS_TABLE = "payments";
 
-  @Column(name="payment_id")
+  @Column(name = "payment_id")
   @PrimaryKey
   private UUID paymentId;
 
-  @Interleaved
-  private List<PaymentUnit> unitList;
+  @Interleaved private List<PaymentUnit> unitList;
 
   private PaymentType type;
   private BigDecimal paidAmount;
@@ -50,7 +48,6 @@ public class Payment implements Serializable {
 
   public Payment() {
     this.paymentId = UUID.randomUUID();
-
   }
 
   public Payment(List<PaymentUnit> unitList, PaymentType type, BigDecimal paidAmount) {
