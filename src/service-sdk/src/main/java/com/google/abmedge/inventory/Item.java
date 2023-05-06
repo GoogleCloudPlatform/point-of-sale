@@ -35,7 +35,6 @@ import java.util.UUID;
 public class Item implements Serializable {
 
   public static final String ITEMS_TABLE = "items";
-  public static final String LABELS_TABLE = "labels";
 
   @Column(name = "item_id")
   @PrimaryKey
@@ -47,10 +46,8 @@ public class Item implements Serializable {
   private String imageUrl;
   private long quantity;
 
-  // @Interleaved
   private List<String> labels;
 
-  // @Version
   private Long version;
 
   public Item() {

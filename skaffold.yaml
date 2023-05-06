@@ -45,6 +45,12 @@ profiles:
     - k8-manifests/common/springprofile-h2.yaml
   deploy:
     kubectl: {}
+- name: jss
+  manifests:
+    rawYaml:
+    - k8-manifests/common/springprofile-jss.yaml
+  deploy:
+    kubectl: {}
 # [END anthosbaremetal_skaffold_config_db]
 ---
 # [START anthosbaremetal_skaffold_config_backend]
