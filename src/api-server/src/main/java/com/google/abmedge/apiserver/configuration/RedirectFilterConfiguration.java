@@ -21,8 +21,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Configuration
 public class RedirectFilterConfiguration {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(RedirectFilterConfiguration.class);
+  private static final Logger LOGGER = LogManager.getLogger(RedirectFilterConfiguration.class);
 
   @Bean
   public FilterRegistrationBean<OncePerRequestFilter> spaRedirectFiler() {
