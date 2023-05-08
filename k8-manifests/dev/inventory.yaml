@@ -49,6 +49,11 @@ spec:
             configMapKeyRef:
               name: spring-profile
               key: SPRING_PROFILES_ACTIVE
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: service-configs
+              key: MYSQL_HOST
         - name: ACTIVE_ITEM_TYPE
           valueFrom:
             configMapKeyRef:
