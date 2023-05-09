@@ -27,7 +27,7 @@
     cd point-of-sale
     ```
 
-3. **Create a GKE cluster and Spanner instance**
+3. **Create a GKE cluster.**
     ```bash
     export CLUSTER_NAME=pos-cluster
     export ZONE=us-central1-b
@@ -37,8 +37,6 @@
         --machine-type=e2-standard-2 \
         --num-nodes=2
     ```
-
-https://cloud.google.com/spanner/docs/free-trial-quickstart#create-gcloud
 
 4. **Deploy the sample app to the cluster.**
     ```bash

@@ -23,5 +23,5 @@ kind: ConfigMap
 metadata:
   name: spring-profile
 data:
-  SPRING_PROFILES_ACTIVE: "database"
+  SPRING_PROFILES_ACTIVE: "DATABASE"
 # [END anthosbaremetal_common_springprofile_mysql_configmap_spring_profile]
