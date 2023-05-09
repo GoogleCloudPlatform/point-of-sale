@@ -41,10 +41,6 @@ repository, then you may follow these steps:
   [the quickstart](https://github.com/GoogleCloudPlatform/point-of-sale/blob/spanner/docs/quickstart.md)
   guide to get the application deployed with the following
   **changes**:
-  - Generate Yaml files with the spring profile `jss` instead of `release`
-    ```bash
-    skaffold render -p jss > pos-quickstart.yaml
-    ```
   - Update the values for the following variables in the generated
     `pos-quickstart.yaml` file before applying it to the GKE cluster.
     ```bash
@@ -52,6 +48,10 @@ repository, then you may follow these steps:
     PROJECT_ID: "UPDATE_ME"
     SPANNER_ID: "UPDATE_ME"
     SPANNER_DATABASE: "UPDATE_ME"
+    ```
+    - Set the `springprofile` to `jss` inside the `pos-quickstart.yaml` file
+    ```bash
+    SPRING_PROFILES_ACTIVE: jss
     ```
   - Apply the Yaml manifest to the GKE cluster.
 
