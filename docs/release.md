@@ -25,7 +25,7 @@ versions during the release process. The release process includes **three stages
 ---
 ### How to carry-out a release
 
-- Checkout the repo locally.
+- Checkout the repo locally and start from the brancj `jss`
 
 - Create a new branch which has the following name format: `release-<type>`. The
   `type` can be one of: ***patch***, ***minor***, ***major*** _(e.g. release-patch, release-minor)_
