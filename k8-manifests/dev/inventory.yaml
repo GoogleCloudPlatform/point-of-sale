@@ -26,7 +26,9 @@ spec:
       labels:
         app: inventory
     spec:
-      serviceAccountName: default
+      serviceAccountName: pos-wi
+      nodeSelector:
+        iam.gke.io/gke-metadata-server-enabled: "true"
       terminationGracePeriodSeconds: 5
       securityContext:
         runAsNonRoot: true
