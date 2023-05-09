@@ -29,7 +29,7 @@ Terraform scripts in the
 [GoogleCloudPlatform/terraform-example-java-dynamic-point-of-sale](https://github.com/GoogleCloudPlatform/terraform-example-java-dynamic-point-of-sale)
 repository, then you may follow these steps:
 
-- Use branch `spanner` of this repository
+#### Spanner setup
 - Create a
   [Cloud Spanner](https://cloud.google.com/spanner/docs/quickstart-console)
   instance
@@ -37,23 +37,62 @@ repository, then you may follow these steps:
 - Apply the
   [schema for this application](https://github.com/GoogleCloudPlatform/point-of-sale/blob/spanner/extras/spanner/pos_db.sql) into the created database
   _(you can apply via cloud console)_
-- Follow
-  [the quickstart](https://github.com/GoogleCloudPlatform/point-of-sale/blob/spanner/docs/quickstart.md)
-  guide to get the application deployed with the following
-  **changes**:
-  - Update the values for the following variables in the generated
-    `pos-quickstart.yaml` file before applying it to the GKE cluster.
-    ```bash
-    # file: k8-manifests/common/service-configs.yaml
-    PROJECT_ID: "UPDATE_ME"
-    SPANNER_ID: "UPDATE_ME"
-    SPANNER_DATABASE: "UPDATE_ME"
-    ```
-    - Set the `springprofile` to `jss` inside the `pos-quickstart.yaml` file
-    ```bash
-    SPRING_PROFILES_ACTIVE: jss
-    ```
-  - Apply the Yaml manifest to the GKE cluster.
+
+#### Workload identity setup
+- Create a [new GKE cluster with Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
+- Create a Kubernetes Service Account called `pos-wi`
+  ```bash
+  kubectl create serviceaccount pos-wi \
+        --namespace default
+  ```
+- Create a new Google Cloud Service Account called `pos-wi`
+  ```bash
+  gcloud iam service-accounts create pos-wi \
+        --project=<REPLACE_PROJECT_ID>
+  ```
+- Apply the `spanner.databaseUser` role to the Google Cloud Service Account
+  ```bash
+  export PROJECT_ID=<REPLACE_PROJECT_ID>
+
+  gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member "serviceAccount:pos-wi@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role "roles/spanner.databaseUser"
+  ```
+- Associate the Kubernetes Service Account principal to the Google Service Account
+  ```bash
+  export PROJECT_ID=<REPLACE_PROJECT_ID>
+
+  gcloud iam service-accounts add-iam-policy-binding                  \
+    pos-wi@$PROJECT_ID.iam.gserviceaccount.com                        \
+    --role "roles/iam.workloadIdentityUser"                           \
+    --member "serviceAccount:$PROJECT_ID.svc.id.goog[default/pos-wi]" \
+    --project $PROJECT_ID
+  ```
+- Annotate the Kubernetes Service Account to use the Google Service Account
+  ```bash
+  kubectl annotate serviceaccount pos-wi --namespace default
+    iam.gke.io/gcp-service-account=pos-wi@shabir-jss-22-test.iam.gserviceaccount.com
+  ```
+
+#### Deploying the application
+- Use branch `spanner` of this repository
+- Generate the Kubernetes manifests for the application
+  ```bash
+  skaffold render -p release > pos-quickstart.yaml
+  ```
+- Update the values for the following variables in the generated
+  `pos-quickstart.yaml` file
+  ```bash
+  # file: k8-manifests/common/service-configs.yaml
+  PROJECT_ID: "UPDATE_ME"
+  SPANNER_ID: "UPDATE_ME"
+  SPANNER_DATABASE: "UPDATE_ME"
+  ```
+- Set the `springprofile` to `jss` inside the `pos-quickstart.yaml` file
+  ```bash
+  SPRING_PROFILES_ACTIVE: jss
+  ```
+- Apply the Yaml manifest to the GKE cluster.
 
 ---
 ### Try with Spanner emulator
