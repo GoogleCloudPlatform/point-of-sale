@@ -28,7 +28,7 @@ spec:
     spec:
       serviceAccountName: pos-wi
       nodeSelector:
-        iam.gke.io/gke-metadata-server-enabled: "true"
+        iam.gke.io/gke-metadata-server-enabled: 'true'
       terminationGracePeriodSeconds: 5
       securityContext:
         runAsNonRoot: true
@@ -37,14 +37,14 @@ spec:
         fsGroup: 1000
       containers:
       - name: payments
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:spanner-v0.1.0
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/payments:spanner-v0.1.0:v0.2.0
         securityContext:
           privileged: false
           allowPrivilegeEscalation: false
           runAsNonRoot: true
           capabilities:
             drop:
-              - all
+            - all
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
