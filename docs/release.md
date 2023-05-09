@@ -34,8 +34,10 @@ versions during the release process. The release process includes **three stages
   file and adjust the auto-generated notes as suitable.
     ```sh
     # run from the root of the repo
-    npm install && npm run release
+    npm install && npm run release:<ADD_TYPE>
     ```
+  Ignore the tags and etc and just push the branch only with the `CHANGELOG`
+  and `package.json` updates.
 - Create a **pull request** from the release branch _(e.g. `release-patch`)_ to
   the **jss** branch.
 - This will automatically trigger the release steps defined in the [`pos-check-for-release-jss`](/.github/cloudbuild/pos-check-for-release.yaml) file.
