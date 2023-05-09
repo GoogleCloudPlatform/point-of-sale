@@ -37,7 +37,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: inventory
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory:spanner-v0.1.0
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/inventory:v0.1.0
         securityContext:
           privileged: false
           allowPrivilegeEscalation: false

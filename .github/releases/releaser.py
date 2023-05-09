@@ -184,7 +184,7 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
         for file in listdir(RELEASE_YAML_DIR):
             filePath = "{}{}".format(RELEASE_YAML_DIR, file)
             filaName = file.split(".")[0]
-            updateReleaseYaml(filePath, filaName, str(currentReleaseVersion))
+            updateReleaseYaml(filePath, filaName, "{}-jss".format(str(currentReleaseVersion)))
 
 """
 Starting point of the releaser script

@@ -38,7 +38,7 @@ versions during the release process. The release process includes **three stages
     ```
 - Create a **pull request** from the release branch _(e.g. `release-patch`)_ to
   the **jss** branch.
-- This will automatically trigger the release steps defined in the [`pos-check-for-release`](/.github/cloudbuild/pos-check-for-release.yaml) file.
+- This will automatically trigger the release steps defined in the [`pos-check-for-release-jss`](/.github/cloudbuild/pos-check-for-release.yaml) file.
   - Trigger updates the files _(pom.xml & package.json)_ with the next release version using
     the [release script](/.github/releases/releaser.py). The type of release is deduced from the
     **branch name**.
@@ -50,7 +50,7 @@ versions during the release process. The release process includes **three stages
      </div>
   </p>
 - Follow the instructions on the _pull-request_ comment and **RUN** the `CloudBuild`
-  trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
+  trigger backed by the [`pos-publish-release-artifacts-jss`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
   you run the trigger against the branch you create.
   <p>
     <img src="/docs/images/trigger.png">
