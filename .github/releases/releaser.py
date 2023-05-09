@@ -90,23 +90,23 @@ construct the next release version based on the requested release type:
     patch-release:
         for patch releases we have to keep the previous minor version but
         increment the patch identifier.
-        E.g: current version on main branch: 0.5.3-SNAPSHOT
+        E.g: current version on jss branch: 0.5.3-SNAPSHOT
                 released version: 0.5.3
-                main branch after release: 0.5.4-SNAPSHOT (patch bumped)
+                jss branch after release: 0.5.4-SNAPSHOT (patch bumped)
 
     minor-release:
         for minor releases we bump minor and set patch to 0 for the release
         then we bump patch by one for the next release version
-        E.g: current version on main branch: 0.5.3-SNAPSHOT
+        E.g: current version on jss branch: 0.5.3-SNAPSHOT
                 released version: 0.6.0
-                main branch after release: 0.6.1-SNAPSHOT (patch bumped from release)
+                jss branch after release: 0.6.1-SNAPSHOT (patch bumped from release)
 
     major-release:
         for major releases we bump the major version and set both minor/patch
         to 0 for the release; then we bump patch by one for the next release version
-            E.g: current version on main branch: 0.5.3-SNAPSHOT
+            E.g: current version on jss branch: 0.5.3-SNAPSHOT
                 released version: 1.0.0
-                main branch after release: 1.0.1-SNAPSHOT (patch bumped from release)
+                jss branch after release: 1.0.1-SNAPSHOT (patch bumped from release)
 """
 def getReleaseVersions(sementicVersion, releaseType: str) -> Union[str, str]:
     currentReleaseVersion = None
@@ -151,7 +151,7 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
     currentReleaseVersion, nextVersion = getReleaseVersions(sementicVersion, releaseType)
     if justPrint:
         # if the [-p True] flag is used we print the current version and exit
-        print(sementicVersion)
+        print("{}-jss".format(sementicVersion))
 
     elif setToSnapshot:
         # if the [-s True] flag is used then the ask is to set the versions to
@@ -171,9 +171,9 @@ def main(releaseType: str, justPrint: bool, setToSnapshot: bool):
         # to set the versions to the next release version and prepare to publish
         # artifacts
         print("""
-            Version on main: {}
+            Version on jss: {}
             Version released now: {}
-            Updated version on main: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
+            Updated version on jss: {}""".format(sementicVersion, currentReleaseVersion, nextVersion))
 
         if sementicVersion.prerelease != "SNAPSHOT":
             print("Root pom version is {}; Can only release from a SNAPSHOT version".format(sementicVersion))

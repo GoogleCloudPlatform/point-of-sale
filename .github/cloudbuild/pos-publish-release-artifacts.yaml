@@ -141,9 +141,9 @@ steps:
     - **Manifests updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
     - **Version bumped:** Version in the _pom.xml/package.json_ has been bumped ($$LAST_COMMIT) to the snapshot version of the next **patch** release **v$$SNAPSHOT_VERSION**
     - **Github release created:** A draft [Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) has been created. Inspect and **publish it**
-    - **Merge PR:** Inspect the latest changes and merge the PR to **main** to complete the release.
+    - **Merge PR:** Inspect the latest changes and merge the PR to **jss** to complete the release.
 
-    :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against the **main** to deploy the latest release!!!
+    :rocket:
     EOF
     gh pr comment $$PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps
