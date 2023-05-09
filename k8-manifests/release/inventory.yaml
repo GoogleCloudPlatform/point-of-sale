@@ -59,6 +59,21 @@ spec:
             configMapKeyRef:
               name: service-configs
               key: ITEMS
+        - name: PROJECT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: service-configs
+              key: PROJECT_ID
+        - name: SPANNER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: service-configs
+              key: SPANNER_ID
+        - name: SPANNER_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: service-configs
+              key: SPANNER_DATABASE
         resources:
           requests:
             cpu: 100m
