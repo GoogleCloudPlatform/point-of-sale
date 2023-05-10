@@ -25,10 +25,13 @@ steps:
   # publish jars to artifact registry
   ###########################################################
 - id: 'publish-jars'
-  name: maven:3.9.1-eclipse-temurin-17-alpine
-  entrypoint: mvn
+  name: 'gcr.io/k8s-skaffold/skaffold:v2.4.1'
+  entrypoint: bash
   args:
-  - deploy
+  - -c
+  - |
+    echo "Deploying the maven jars..."
+    ./mvnw deploy
   # indicates that the step need not wait for any other step
   waitFor: [ '-' ]
 
