@@ -58,8 +58,8 @@ versions during the release process. The release process includes **three stages
     <img src="/docs/images/trigger.png">
   </p>
 
-    - Trigger builds and deploys the ***Maven Jars*** for the sample application
-      to the [`pos-jars`](https://console.cloud.google.com/artifacts/maven/point-of-sale-ci/us/pos-jars?project=point-of-sale-ci) repository.
+    - ~~Trigger builds and deploys the ***Maven Jars*** for the sample application
+      to the [`pos-jars`](https://console.cloud.google.com/artifacts/maven/point-of-sale-ci/us/pos-jars?project=point-of-sale-ci) repository.~~
     - Trigger builds and deploys the ***container images*** for the sample application
       to the [`pos-images`](https://pantheon.corp.google.com/artifacts/docker/point-of-sale-ci/us/pos-images?project=point-of-sale-ci) repository.
     - Trigger creates a [***Git Tag***](https://github.com/GoogleCloudPlatform/point-of-sale/tags) and a [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) which you can inspect and publish later.
