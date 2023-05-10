@@ -14,41 +14,30 @@
 
 package com.google.abmedge.inventory;
 
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 /**
  * An instance of the {@link Item} class is a representation of an item as it will be stored in the
  * inventory. This class describes the information about a specific item that is available and
  * provides a utility method to get a deep copy of it.
  */
-@Entity
 @Table(name = Item.ITEMS_TABLE)
 public class Item implements Serializable {
 
   public static final String ITEMS_TABLE = "items";
-  public static final String LABELS_TABLE = "labels";
 
-  @Id
-  @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
-  @Type(type = "org.hibernate.type.UUIDCharType")
-  @Column(columnDefinition = "CHAR(36)")
+  @Column(name = "item_id")
+  @PrimaryKey
   private UUID id;
 
   private String name;
@@ -57,13 +46,12 @@ public class Item implements Serializable {
   private String imageUrl;
   private long quantity;
 
-  @ElementCollection
-  @CollectionTable(name = Item.LABELS_TABLE)
   private List<String> labels;
 
-  @Version private Long version;
+  private Long version;
 
   public Item() {
+    this.id = UUID.randomUUID();
     this.labels = new ArrayList<>();
   }
 
@@ -72,7 +60,7 @@ public class Item implements Serializable {
     copyItem.id = item.id;
     copyItem.type = item.type;
     copyItem.name = item.name;
-    copyItem.price = item.price;
+    copyItem.price = item.price.setScale(9, RoundingMode.HALF_EVEN);
     copyItem.imageUrl = item.imageUrl;
     copyItem.quantity = item.quantity;
     copyItem.getLabels().addAll(item.getLabels());

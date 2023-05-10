@@ -35,7 +35,6 @@ metadata:
 manifests:
   rawYaml:
   - k8-manifests/common/springprofile-mysql.yaml
-  - k8-manifests/common/mysql-db.yaml
 deploy:
   kubectl: {}
 profiles:
