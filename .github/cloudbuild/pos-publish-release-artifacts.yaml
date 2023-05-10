@@ -25,7 +25,7 @@ steps:
   # publish jars to artifact registry
   ###########################################################
 - id: 'publish-jars'
-  name: maven:3.9.1-eclipse-temurin-17-alpine
+  name: maven:3.9.1-eclipse-temurin-17
   entrypoint: bash
   args:
   - -c
@@ -39,7 +39,7 @@ steps:
   # skaffold deploy to kubernetes cluster
   ###########################################################
 - id: 'publish-images'
-  name: 'gcr.io/k8s-skaffold/skaffold:v2.1.0'
+  name: 'gcr.io/k8s-skaffold/skaffold:v2.4.1'
   entrypoint: bash
   args:
   - -c
