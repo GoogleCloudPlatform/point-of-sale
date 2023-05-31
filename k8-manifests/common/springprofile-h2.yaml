@@ -23,5 +23,5 @@ kind: ConfigMap
 metadata:
   name: spring-profile
 data:
-  SPRING_PROFILES_ACTIVE: "INMEMORY"
+  SPRING_PROFILES_ACTIVE: "inmemory"
 # [END anthosbaremetal_common_springprofile_h2_configmap_spring_profile]
