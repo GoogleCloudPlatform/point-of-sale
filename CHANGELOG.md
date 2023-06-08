@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/mokkapps/changelog-generator-demo/compare/v0.2.0-jss...v0.2.1) (2023-06-08)
+
+
+### Features
+
+* logging & tracing ([#234](https://github.com/GoogleCloudPlatform/point-of-sale/issues/234)) ([c6d3cfb](https://github.com/mokkapps/changelog-generator-demo/commits/c6d3cfb99f91b37ccf038247e8a69eeb183b0a57))
+
+
+### Bug Fixes
+
+* kernel issue with alpine image ([d7ca5fd](https://github.com/mokkapps/changelog-generator-demo/commits/d7ca5fd9c388dcbe3dfbf2e475c548ad7627481c))
+* maven cloud build step ([eac734b](https://github.com/mokkapps/changelog-generator-demo/commits/eac734b2db52ec5916b90bea410032187f7f5d18))
+* skaffold syntax ([4971bfa](https://github.com/mokkapps/changelog-generator-demo/commits/4971bfae784a6d210f80fe702324a02e3341abfc))
+* skaffold syntax ([85760b4](https://github.com/mokkapps/changelog-generator-demo/commits/85760b44eb92d243c47243fd3d757b89fadf8c25))
+
 ### 0.2.0-jss (2023-05-09)
 
 ### Release type:
