@@ -19,7 +19,7 @@
   <parent>
     <groupId>com.google.abm-edge</groupId>
     <artifactId>abm-edge-usecase</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.3.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>payments</artifactId>
@@ -59,6 +59,10 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>spring-cloud-gcp-starter-data-spanner</artifactId>
+    </dependency>
+    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
     </dependency>
@@ -89,7 +93,7 @@
         <version>3.3.1</version>
         <configuration>
           <from>
-            <image>eclipse-temurin:17.0.4.1_1-jre-alpine</image>
+            <image>eclipse-temurin:17.0.7_7-jre-jammy</image>
           </from>
         </configuration>
       </plugin>
