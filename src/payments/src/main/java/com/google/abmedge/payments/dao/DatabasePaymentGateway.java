@@ -21,6 +21,8 @@ import com.google.abmedge.payment.PaymentRepository;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.util.BillGenerator;
 import com.google.abmedge.payments.util.PaymentProcessingFailedException;
+
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,6 +41,7 @@ public class DatabasePaymentGateway implements PaymentGateway {
   }
 
   @Override
+  @NewSpan("DatabasePaymentGateway.pay")
   public Bill pay(Payment payment) throws PaymentProcessingFailedException {
     try {
       Payment saved = paymentRepository.save(payment);
