@@ -255,7 +255,12 @@ public class ApiServerController {
     } catch (IOException | InterruptedException e) {
       return new ResponseEntity<>("FAILED", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    Thread.sleep(DELAY);
+    try {
+      Thread.sleep(DELAY);
+    } catch (InterruptedException e){
+      LOGGER.error("Interrupted during delay:");
+      e.printStackTrace();
+    }
     return new ResponseEntity<>(responseStr, HttpStatus.OK);
   }
 
