@@ -258,7 +258,7 @@ public class ApiServerController {
     }
     try {
       Thread.sleep(DELAY);
-    } catch (InterruptedException e){
+    } catch (InterruptedException e) {
       LOGGER.error("Interrupted during delay:");
       e.printStackTrace();
     }
