@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
