@@ -158,7 +158,7 @@ export default {
         this.notifyFailure('Payment attempt failed!');
         return;
       }
-      this.notifySuccess('Payment successfull!');
+      this.notifySuccess('Payment successful!');
       this.printedBill = responseData.printedBill;
       setTimeout(() => {
         this.clearBill();
