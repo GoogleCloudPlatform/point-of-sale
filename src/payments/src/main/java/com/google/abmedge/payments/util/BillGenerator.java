@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 
 public class BillGenerator {
 
@@ -51,6 +52,7 @@ public class BillGenerator {
    * @return a {@link Bill} that contains the payment details and a string representation of the
    *     bill
    */
+  @NewSpan("BillGenerator.generateBill")
   public static Bill generateBill(UUID paymentId, Payment payment) {
     float total = 0;
     StringBuilder billBuilder = new StringBuilder();
@@ -97,6 +99,7 @@ public class BillGenerator {
    *     payment
    * @return a string containing the header for the generated bill
    */
+  @NewSpan("BillGenerator.billHeader")
   private static String billHeader(UUID paymentId) {
     return BILL_HEADER
         + String.format("              Payment id: %s              \n", paymentId)
@@ -112,6 +115,7 @@ public class BillGenerator {
    * @return a string that contains a line with details about the purchase of one specific item that
    *     can be appended to the bill
    */
+  @NewSpan("BillGenerator.billItem")
   private static String billItem(int itemIndex, PaymentUnit paymentUnit) {
     StringBuilder sb = new StringBuilder();
     UUID unitId = paymentUnit.getItemId();
@@ -145,6 +149,7 @@ public class BillGenerator {
    * @return the generated line with the information type at the beginning followed by spaces and
    *     the numeric value at the end formatted to 2 decimal points.
    */
+  @NewSpan("BillGenerator.infoLine")
   private static String infoLine(String infoType, float value) {
     StringBuilder sb = new StringBuilder();
     String formattedValue = String.format("%.2f", value);
