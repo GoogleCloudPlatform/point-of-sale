@@ -24,22 +24,26 @@ steps:
   ###########################################################
   # publish jars to artifact registry
   ###########################################################
-- id: 'publish-jars'
-  name: gcr.io/google.com/cloudsdktool/cloud-sdk
-  entrypoint: bash
-  args:
-  - -c
-  - |
-    echo "Deploying the maven jars..."
-    ./mvnw deploy
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
+# - id: 'publish-jars'
+#   name: gcr.io/google.com/cloudsdktool/cloud-sdk
+#   entrypoint: bash
+#   args:
+#   - -c
+#   - |
+#     echo "Deploying the maven jars..."
+#     ./mvnw deploy
+#   # indicates that the step need not wait for any other step
+#   waitFor: [ '-' ]
+
+###########################################################
+# WE DONT DEPLOY THE MAVEN JARS FOR THE JSS BRANCH
+###########################################################
 
  ###########################################################
   # skaffold deploy to kubernetes cluster
   ###########################################################
 - id: 'publish-images'
-  name: 'gcr.io/k8s-skaffold/skaffold:v2.1.0'
+  name: 'gcr.io/k8s-skaffold/skaffold:v2.4.1'
   entrypoint: bash
   args:
   - -c
@@ -137,13 +141,13 @@ steps:
     LAST_COMMIT=$(cat .git/refs/heads/$BRANCH_NAME)
     cat <<EOF > /workspace/gh-comment.txt -
     :zap:  Release Status :zap: </br>
-    - **Artifacts published**: [Maven JARs and Container images](https://console.cloud.google.com/artifacts/browse/point-of-sale-ci?project=point-of-sale-ci) for release version **v$$VERSION** have been published to Artifact Registry
+    - ~~**Artifacts published**: [Maven JARs and Container images](https://console.cloud.google.com/artifacts/browse/point-of-sale-ci?project=point-of-sale-ci) for release version **v$$VERSION** have been published to Artifact Registry~~
     - **Manifests updated**: [Release manifests](https://github.com/GoogleCloudPlatform/point-of-sale/tree/$BRANCH_NAME/k8-manifests/release) have been updated to use the version **v$$VERSION** images
     - **Version bumped:** Version in the _pom.xml/package.json_ has been bumped ($$LAST_COMMIT) to the snapshot version of the next **patch** release **v$$SNAPSHOT_VERSION**
     - **Github release created:** A draft [Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) has been created. Inspect and **publish it**
-    - **Merge PR:** Inspect the latest changes and merge the PR to **main** to complete the release.
+    - **Merge PR:** Inspect the latest changes and merge the PR to **jss** to complete the release.
 
-    :rocket: Don't forget to run the ["pos-deploy-release"](https://console.cloud.google.com/cloud-build/triggers;region=global?project=point-of-sale-ci) trigger against the **main** to deploy the latest release!!!
+    :rocket:
     EOF
     gh pr comment $$PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
   # waitFor: commented out, so this step waits for all previous steps

@@ -14,15 +14,13 @@
 
 package com.google.abmedge.payment;
 
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import org.hibernate.annotations.Type;
 
 /**
  * This class represents a payment for a specific item that is being purchased. It contains
@@ -30,34 +28,45 @@ import org.hibernate.annotations.Type;
  * them. Usually a {@link Payment} includes a collection of {@link PaymentUnit}s making up a bill
  * which shows multiple purchased items.
  */
-@Entity
 @Table(name = PaymentUnit.PAYMENT_UNIT_TABLE)
 public class PaymentUnit implements Serializable {
 
   public static final String PAYMENT_UNIT_TABLE = "payment_units";
 
-  @Id
-  @Type(type = "org.hibernate.type.UUIDCharType")
-  @Column(columnDefinition = "CHAR(36)")
-  private UUID id = UUID.randomUUID();
+  @Column(name = "payment_id")
+  @PrimaryKey(keyOrder = 1)
+  private UUID paymentId;
 
-  @Type(type = "org.hibernate.type.UUIDCharType")
-  @Column(columnDefinition = "CHAR(36)")
+  @Column(name = "payment_unit_id")
+  @PrimaryKey(keyOrder = 2)
+  private UUID id;
+
+  @Column(name = "item_id")
   private UUID itemId;
 
   private String name;
   private BigDecimal quantity;
   private BigDecimal totalCost;
 
-  @Version private Long version;
+  private Long version = 1L;
 
-  public PaymentUnit() {}
+  public PaymentUnit() {
+    this.id = UUID.randomUUID();
+  }
 
   public PaymentUnit(UUID itemId, String name, BigDecimal quantity, BigDecimal totalCost) {
     this.itemId = itemId;
     this.name = name;
-    this.quantity = quantity;
-    this.totalCost = totalCost;
+    this.quantity = quantity.setScale(9, RoundingMode.HALF_EVEN);
+    this.totalCost = totalCost.setScale(9, RoundingMode.HALF_EVEN);
+  }
+
+  public UUID getPaymentId() {
+    return paymentId;
+  }
+
+  public void setPaymentId(UUID paymentId) {
+    this.paymentId = paymentId;
   }
 
   public UUID getId() {
@@ -89,7 +98,7 @@ public class PaymentUnit implements Serializable {
   }
 
   public void setQuantity(BigDecimal quantity) {
-    this.quantity = quantity;
+    this.quantity = quantity.setScale(9, RoundingMode.HALF_EVEN);
   }
 
   public BigDecimal getTotalCost() {
@@ -97,6 +106,6 @@ public class PaymentUnit implements Serializable {
   }
 
   public void setTotalCost(BigDecimal totalCost) {
-    this.totalCost = totalCost;
+    this.totalCost = totalCost.setScale(9, RoundingMode.HALF_EVEN);
   }
 }
