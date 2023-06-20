@@ -21,7 +21,6 @@ import com.google.abmedge.payment.PaymentRepository;
 import com.google.abmedge.payments.dto.Bill;
 import com.google.abmedge.payments.util.BillGenerator;
 import com.google.abmedge.payments.util.PaymentProcessingFailedException;
-
 import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Component;
 

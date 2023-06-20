@@ -40,8 +40,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -203,7 +203,8 @@ public class ApiServerController {
    * </pre>
    */
   @PostMapping(value = "/pay")
-  public ResponseEntity<String> pay(@RequestBody PayRequest payRequest) throws InterruptedException {
+  public ResponseEntity<String> pay(@RequestBody PayRequest payRequest)
+      throws InterruptedException {
     BigDecimal totalCost = new BigDecimal(0);
     String responseStr;
     List<PurchaseItem> requestedItemList = payRequest.getItems();
