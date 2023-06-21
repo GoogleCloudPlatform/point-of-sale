@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
@@ -42,11 +43,13 @@ public class DatabaseConnector implements InventoryStoreConnector {
   }
 
   @Override
+  @NewSpan("DatabaseConnector.getAll")
   public List<Item> getAll() {
     return Streamable.of(itemRepository.findAll()).toList();
   }
 
   @Override
+  @NewSpan("DatabaseConnector.getAllByType")
   public List<Item> getAllByType(String type) {
     return Streamable.of(itemRepository.findAll()).stream()
         .filter(i -> i.getType().equals(type))
@@ -54,6 +57,7 @@ public class DatabaseConnector implements InventoryStoreConnector {
   }
 
   @Override
+  @NewSpan("DatabaseConnector.getTypes")
   public Set<String> getTypes() {
     return Streamable.of(itemRepository.findAll()).stream()
         .map(Item::getType)
@@ -61,16 +65,19 @@ public class DatabaseConnector implements InventoryStoreConnector {
   }
 
   @Override
+  @NewSpan("DatabaseConnector.getById")
   public Optional<Item> getById(UUID id) {
     return itemRepository.findById(id);
   }
 
   @Override
+  @NewSpan("DatabaseConnector.insert")
   public void insert(Item item) throws InventoryStoreConnectorException {
     itemRepository.save(item);
   }
 
   @Override
+  @NewSpan("DatabaseConnector.insertAll")
   public void insert(List<Item> items) throws InventoryStoreConnectorException {
     for (Item i : items) {
       insert(i);
@@ -78,16 +85,19 @@ public class DatabaseConnector implements InventoryStoreConnector {
   }
 
   @Override
+  @NewSpan("DatabaseConnector.update")
   public void update(Item item) throws InventoryStoreConnectorException {
     itemRepository.save(item);
   }
 
   @Override
+  @NewSpan("DatabaseConnector.delete")
   public void delete(UUID id) throws InventoryStoreConnectorException {
     itemRepository.deleteById(id);
   }
 
   @Override
+  @NewSpan("DatabaseConnector.deleteAll")
   public void delete(List<UUID> ids) {
     itemRepository.deleteAllById(ids);
   }

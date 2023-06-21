@@ -35,7 +35,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: api-server
-        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/api-server:v0.2.0-jss
+        image: us-docker.pkg.dev/point-of-sale-ci/pos-images/api-server:v0.3.0-jss
         securityContext:
           privileged: false
           allowPrivilegeEscalation: false

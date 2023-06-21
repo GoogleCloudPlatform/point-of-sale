@@ -40,6 +40,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -84,6 +86,9 @@ public class ApiServerController {
 
   private static String PAYMENTS_SERVICE = "http://payments-svc:8080";
   private static final Gson GSON = new Gson();
+
+  @Value("${payment.delay:0}")
+  private long DELAY;
 
   @PostConstruct
   void init() {
@@ -198,7 +203,8 @@ public class ApiServerController {
    * </pre>
    */
   @PostMapping(value = "/pay")
-  public ResponseEntity<String> pay(@RequestBody PayRequest payRequest) {
+  public ResponseEntity<String> pay(@RequestBody PayRequest payRequest)
+      throws InterruptedException {
     BigDecimal totalCost = new BigDecimal(0);
     String responseStr;
     List<PurchaseItem> requestedItemList = payRequest.getItems();
@@ -250,6 +256,7 @@ public class ApiServerController {
     } catch (IOException | InterruptedException e) {
       return new ResponseEntity<>("FAILED", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    Thread.sleep(DELAY);
     return new ResponseEntity<>(responseStr, HttpStatus.OK);
   }
 
@@ -298,6 +305,7 @@ public class ApiServerController {
     }
   }
 
+  @NewSpan("ApiServerController.getItemDetails")
   private Optional<List<Item>> getItemDetails(Map<String, Long> itemIdsToCountMap)
       throws IOException, InterruptedException {
     String endpoint = INVENTORY_SERVICE + ITEMS_BY_ID_EP;
@@ -321,6 +329,7 @@ public class ApiServerController {
     return Optional.empty();
   }
 
+  @NewSpan("ApiServerController.updateItemDetails")
   private boolean updateItemDetails(List<PurchaseItem> purchaseItems)
       throws IOException, InterruptedException {
     String endpoint = INVENTORY_SERVICE + UPDATE_EP;
@@ -341,6 +350,7 @@ public class ApiServerController {
     return false;
   }
 
+  @NewSpan("ApiServerController.makePayment")
   private Optional<String> makePayment(
       PaymentType paymentType,
       BigDecimal amountOnRequest,
