@@ -24,16 +24,20 @@ steps:
   ###########################################################
   # publish jars to artifact registry
   ###########################################################
-- id: 'publish-jars'
-  name: gcr.io/google.com/cloudsdktool/cloud-sdk
-  entrypoint: bash
-  args:
-  - -c
-  - |
-    echo "Deploying the maven jars..."
-    ./mvnw deploy
-  # indicates that the step need not wait for any other step
-  waitFor: [ '-' ]
+# - id: 'publish-jars'
+#   name: gcr.io/google.com/cloudsdktool/cloud-sdk
+#   entrypoint: bash
+#   args:
+#   - -c
+#   - |
+#     echo "Deploying the maven jars..."
+#     ./mvnw deploy
+#   # indicates that the step need not wait for any other step
+#   waitFor: [ '-' ]
+
+###########################################################
+# WE DONT DEPLOY THE MAVEN JARS FOR THE JSS BRANCH
+###########################################################
 
  ###########################################################
   # skaffold deploy to kubernetes cluster
