@@ -14,6 +14,7 @@
 
 package com.google.abmedge.inventory;
 
+import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import javax.annotation.PreDestroy;
 import javax.persistence.EntityManagerFactory;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +39,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 @SpringBootApplication
 @EntityScan(basePackages = {"com.google.abmedge.inventory"})
 @ComponentScan(basePackages = {"com.google.abmedge.inventory"})
-@EnableJpaRepositories(basePackages = {"com.google.abmedge.inventory"})
+@EnableSpannerRepositories(basePackages = {"com.google.abmedge.inventory"})
 public class InventoryApplication {
   private static final Logger LOGGER = LogManager.getLogger(InventoryApplication.class);
 

@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabasePaymentGateway implements PaymentGateway {
 
-  private final PaymentRepository paymentRepository;
+  @Autowired private PaymentRepository paymentRepository;
 
   public DatabasePaymentGateway(PaymentRepository paymentRepository) {
     this.paymentRepository = paymentRepository;
@@ -44,7 +44,7 @@ public class DatabasePaymentGateway implements PaymentGateway {
   public Bill pay(Payment payment) throws PaymentProcessingFailedException {
     try {
       Payment saved = paymentRepository.save(payment);
-      return BillGenerator.generateBill(saved.getId(), payment);
+      return BillGenerator.generateBill(saved.getPaymentId(), payment);
     } catch (Exception e) {
       String msg =
           String.format(

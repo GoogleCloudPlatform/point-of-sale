@@ -105,7 +105,7 @@ public class PaymentsController {
       String msg =
           String.format(
               "Failed to process payment id '%s' with amount $%s",
-              payment.getId(), payment.getPaidAmount());
+              payment.getPaymentId(), payment.getPaidAmount());
       LOGGER.error(msg, ex);
       return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
     }

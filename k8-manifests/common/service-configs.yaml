@@ -18,6 +18,9 @@ kind: ConfigMap
 metadata:
   name: service-configs
 data:
+  PROJECT_ID: "UPDATE_ME"
+  SPANNER_ID: "UPDATE_ME"
+  SPANNER_DATABASE: "UPDATE_ME"
   INVENTORY_EP: "http://inventory-svc:8080"
   PAYMENTS_EP: "http://payments-svc:8080"
   ACTIVE_ITEM_TYPE: "burgers"
