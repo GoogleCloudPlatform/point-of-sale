@@ -14,6 +14,7 @@
 
 package com.google.abmedge.payments;
 
+import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import javax.annotation.PreDestroy;
 import javax.persistence.EntityManagerFactory;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +38,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 @SpringBootApplication
 @EntityScan(basePackages = {"com.google.abmedge.payment"})
 @ComponentScan(basePackages = {"com.google.abmedge.payment", "com.google.abmedge.payments"})
-@EnableJpaRepositories(basePackages = {"com.google.abmedge.payment"})
+@EnableSpannerRepositories(basePackages = {"com.google.abmedge.payment"})
 public class PaymentsApplication {
 
   private static final Logger LOGGER = LogManager.getLogger(PaymentsApplication.class);

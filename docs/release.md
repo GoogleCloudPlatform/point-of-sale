@@ -25,7 +25,7 @@ versions during the release process. The release process includes **three stages
 ---
 ### How to carry-out a release
 
-- Checkout the repo locally.
+- Checkout the repo locally and start from the brancj `jss`
 
 - Create a new branch which has the following name format: `release-<type>`. The
   `type` can be one of: ***patch***, ***minor***, ***major*** _(e.g. release-patch, release-minor)_
@@ -34,11 +34,13 @@ versions during the release process. The release process includes **three stages
   file and adjust the auto-generated notes as suitable.
     ```sh
     # run from the root of the repo
-    npm install && npm run release
+    npm install && npm run release:<ADD_TYPE>
     ```
+  Ignore the tags and etc and just push the branch only with the `CHANGELOG`
+  and `package.json` updates.
 - Create a **pull request** from the release branch _(e.g. `release-patch`)_ to
-  the **main** branch.
-- This will automatically trigger the release steps defined in the [`pos-check-for-release`](.github/cloudbuild/pos-check-for-release.yaml) file.
+  the **jss** branch.
+- This will automatically trigger the release steps defined in the [`pos-check-for-release`](/.github/cloudbuild/pos-check-for-release.yaml) file.
   - Trigger updates the files _(pom.xml & package.json)_ with the next release version using
     the [release script](/.github/releases/releaser.py). The type of release is deduced from the
     **branch name**.
@@ -50,14 +52,14 @@ versions during the release process. The release process includes **three stages
      </div>
   </p>
 - Follow the instructions on the _pull-request_ comment and **RUN** the `CloudBuild`
-  trigger backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
+  trigger (`pos-publish-release-artifacts-jss`) backed by the [`pos-publish-release-artifacts`](/.github/cloudbuild/pos-publish-release-artifacts.yaml) file. You have to manually trigger this in the GCP console. Make sure,
   you run the trigger against the branch you create.
   <p>
     <img src="/docs/images/trigger.png">
   </p>
 
-    - Trigger builds and deploys the ***Maven Jars*** for the sample application
-      to the [`pos-jars`](https://console.cloud.google.com/artifacts/maven/point-of-sale-ci/us/pos-jars?project=point-of-sale-ci) repository.
+    - ~~Trigger builds and deploys the ***Maven Jars*** for the sample application
+      to the [`pos-jars`](https://console.cloud.google.com/artifacts/maven/point-of-sale-ci/us/pos-jars?project=point-of-sale-ci) repository.~~
     - Trigger builds and deploys the ***container images*** for the sample application
       to the [`pos-images`](https://pantheon.corp.google.com/artifacts/docker/point-of-sale-ci/us/pos-images?project=point-of-sale-ci) repository.
     - Trigger creates a [***Git Tag***](https://github.com/GoogleCloudPlatform/point-of-sale/tags) and a [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) which you can inspect and publish later.
@@ -71,30 +73,27 @@ versions during the release process. The release process includes **three stages
          <strong>(click to enlarge)</strong>
       </div>
     </p>
-- Inspect the changes in the PR and **merge** it into **main**.
+- Inspect the changes in the PR and **merge** it into **jss**.
 - Publish the [**draft** Github release](https://github.com/GoogleCloudPlatform/point-of-sale/releases) that would have been created as part of the release trigger.
-- Finally, run the [`pos-deploy-release`](/.github/cloudbuild/pos-deploy-release.yaml) trigger
-  _(on the main branch)_ to deploy the latest released version of the application
-  to the main Kubernetes cluster.
 
 ---
 ### Versioning
 The versioning in this repo follows the [semantic versioning](https://semver.org/)
 guide. Thus, the release process supports triggering `major`, `minor` or `patch`
-releases. The configuration files _(pom.xml & package.json)_ in the **main**
+releases. The configuration files _(pom.xml & package.json)_ in the **jss**
 branch will always have the **SNAPSHOT** version of the upcoming **patch**
 release version. The [release script](/.github/releases/releaser.py) relies on
 this to decide the release version during the time of the release.
 
 _The following examples shows how the versions will change for each type of releases._
-| **Example** _(state of the repo before release)_    |   |
-|---                                                    |---|
-| _Most recent release version_                         | 4.12.3           |
-| _Version in the main branch_                          | 4.12.4-SNAPSHOT  |
+| **Example** _(state of the repo before release)_ |                 |
+| ------------------------------------------------ | --------------- |
+| _Most recent release version_                    | 4.12.3          |
+| _Version in the jss branch_                      | 4.12.4-SNAPSHOT |
 
 
-| Triggered release type    | Released version | **"main"** updated to  |
-|---                        |---               |---                     |
-| _patch_                   | 4.12.4           | 4.12.5-SNAPSHOT  |
-| _minor_                   | 4.13.0           | 4.13.1-SNAPSHOT  |
-| _major_                   | 5.0.0            | 5.0.1-SNAPSHOT  |
+| Triggered release type | Released version | **"jss"** updated to |
+| ---------------------- | ---------------- | -------------------- |
+| _patch_                | 4.12.4           | 4.12.5-SNAPSHOT      |
+| _minor_                | 4.13.0           | 4.13.1-SNAPSHOT      |
+| _major_                | 5.0.0            | 5.0.1-SNAPSHOT       |

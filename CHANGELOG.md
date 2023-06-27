@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * define transaction manager ([fb263b1](https://github.com/mokkapps/changelog-generator-demo/commits/fb263b16e6fd5142817f8988cb0aa0d4ca3589ff))
 
+
 ## [0.3.0](https://github.com/mokkapps/changelog-generator-demo/compare/v0.2.0-jss...v0.3.0) (2023-06-20)
 
 
@@ -29,6 +30,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * define transaction manager ([fb263b1](https://github.com/mokkapps/changelog-generator-demo/commits/fb263b16e6fd5142817f8988cb0aa0d4ca3589ff))
+
 
 ### 0.1.0 (2022-05-12)
 
