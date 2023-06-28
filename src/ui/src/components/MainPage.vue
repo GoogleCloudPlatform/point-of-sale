@@ -19,7 +19,7 @@
     <div class="row" id="pos">
       <div class="col-md-8 col-md-offset-2">
         <div class="header-container">
-          <h1 class="h1-flex">Point of Sale</h1>
+          <h1 class="h1-flex">Point of Sale!</h1>
         </div>
         <div class="row">
           <div class="col-md-6">
