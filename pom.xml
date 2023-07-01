@@ -37,7 +37,7 @@
     <log4j2.version>2.17.1</log4j2.version>
     <snakeyaml.version>2.0</snakeyaml.version>
     <springboot.version>2.7.8</springboot.version>
-    <springboot.springbeans.version>5.3.26</springboot.springbeans.version>
+    <springboot.springbeans.version>5.3.28</springboot.springbeans.version>
     <apache.commons.version>3.12.0</apache.commons.version>
     <spring-boot-maven.plugin.version>2.7.8</spring-boot-maven.plugin.version>
     <mysql.connector.version>8.0.32</mysql.connector.version>
