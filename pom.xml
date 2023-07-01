@@ -47,7 +47,7 @@
     <jacoco-maven.plugin.version>0.8.8</jacoco-maven.plugin.version>
     <coveo-fmt-maven-plugin.version>2.13</coveo-fmt-maven-plugin.version>
     <googlejavaformat.version>1.15.0</googlejavaformat.version>
-    <artifactregistry-maven-wagon.extension.version>2.2.0
+    <artifactregistry-maven-wagon.extension.version>2.2.1
     </artifactregistry-maven-wagon.extension.version>
   </properties>
 
