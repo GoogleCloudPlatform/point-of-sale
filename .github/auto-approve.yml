@@ -15,4 +15,5 @@
 # https://github.com/googleapis/repo-automation-bots/tree/main/packages/auto-approve
 processes:
   - "JavaDependency"
+  - "JavaSampleAppDependency"
   - "NodeDependency"
