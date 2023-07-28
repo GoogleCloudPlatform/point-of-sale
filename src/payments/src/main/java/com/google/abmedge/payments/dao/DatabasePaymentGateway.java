@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabasePaymentGateway implements PaymentGateway {
 
-  @Autowired private PaymentRepository paymentRepository;
+  private PaymentRepository paymentRepository;
 
   public DatabasePaymentGateway(PaymentRepository paymentRepository) {
     this.paymentRepository = paymentRepository;
