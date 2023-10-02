@@ -41,7 +41,7 @@
     <apache.commons.version>3.12.0</apache.commons.version>
     <spring-boot-maven.plugin.version>2.7.8</spring-boot-maven.plugin.version>
     <mysql.connector.version>8.0.33</mysql.connector.version>
-    <h2.embedded.db.version>2.2.220</h2.embedded.db.version>
+    <h2.embedded.db.version>2.2.224</h2.embedded.db.version>
     <maven-checkstyle.plugin.version>3.2.1</maven-checkstyle.plugin.version>
     <maven-surefire.plugin.version>2.22.2</maven-surefire.plugin.version>
     <jacoco-maven.plugin.version>0.8.10</jacoco-maven.plugin.version>
