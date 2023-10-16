@@ -30,6 +30,13 @@ allowedLicenses:
 # ignoreLicenseYear: true # Useful when migrating in code licensed at previous years.
 
 sourceFileExtensions:
+  - 'css'
+  - 'java'
+  - 'js'
+  - 'properties'
+  - 'py'
+  - 'sh'
   - 'tf'
+  - 'vue'
   - 'yaml'
   - 'yml'
