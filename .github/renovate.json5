@@ -1,6 +1,7 @@
 {
   "extends": [
-    "config:base"
+    "github>GoogleCloudPlatform/kubernetes-engine-samples//.github/renovate-configs/dee-platform-ops.json5",
+    "schedule:weekly",
   ],
   "packageRules": [
     {
@@ -19,24 +20,6 @@
       "matchPackageNames": ["vuex"],
       "allowedVersions": "<4.0.0"
     }
-  ],
-  "prConcurrentLimit":5,
-  "stabilityDays":7,
-  "vulnerabilityAlerts":{
-     "labels":[
-       "type:security"
-     ],
-     "stabilityDays":0
-  },
-  "labels": ["dependencies"],
-  "js":{
-    "addLabels": ["lang: javascript"]
-  },
-  "java":{
-    "addLabels": ["lang: java"]
-  },
-  "schedule": [
-    "every 3 months on the first day of the month"
   ],
   "timezone": "America/New_York"
 }
