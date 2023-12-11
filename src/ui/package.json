@@ -17,10 +17,10 @@
     "vuex": "3.6.2"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "6.4.2",
+    "@fortawesome/fontawesome-free": "6.5.1",
     "@vue/cli-service": "5.0.8",
     "eslint-config-google": "0.14.0",
-    "eslint-plugin-vue": "9.18.1",
+    "eslint-plugin-vue": "9.19.2",
     "lint": "1.1.2",
     "vue-template-compiler": "2.7.15"
   },
