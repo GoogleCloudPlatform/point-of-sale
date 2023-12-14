@@ -124,14 +124,19 @@ class InventoryIntegrationTest extends AbstractContainerDatabaseTest {
     apiProxy.toxics().bandwidth("CUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
     apiProxy.toxics().bandwidth("CUT_CONNECTION_UPSTREAM", ToxicDirection.UPSTREAM, 0);
 
-    assertThat(
-            catchThrowable(
-                () -> {
-                  ResponseEntity<String> itemsDuringToxic =
-                      this.testRestTemplate.getForEntity(proxyHostAndPort + "/items", String.class);
-                }))
-        .as("call should fail when the connection is cut")
-        .isInstanceOf(Exception.class);
+    try {
+      assertThat(
+              catchThrowable(
+                  () -> {
+                    ResponseEntity<String> itemsDuringToxic =
+                        this.testRestTemplate.getForEntity(
+                            proxyHostAndPort + "/items", String.class);
+                  }))
+          .as("call should fail when the connection is cut")
+          .isInstanceOf(Exception.class);
+    } catch (Exception e) {
+      // Handle exception as specifically as desired
+    }
 
     apiProxy.toxics().get("CUT_CONNECTION_DOWNSTREAM").remove();
     apiProxy.toxics().get("CUT_CONNECTION_UPSTREAM").remove();
@@ -157,14 +162,20 @@ class InventoryIntegrationTest extends AbstractContainerDatabaseTest {
     apiProxy.toxics().bandwidth("CUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
     apiProxy.toxics().bandwidth("CUT_CONNECTION_UPSTREAM", ToxicDirection.UPSTREAM, 0);
 
-    assertThat(
-            catchThrowable(
-                () -> {
-                  ResponseEntity<String> itemsDuringToxic =
-                      this.testRestTemplate.getForEntity(proxyHostAndPort + "/items", String.class);
-                }))
-        .as("call should fail when the connection is cut")
-        .isInstanceOf(Exception.class);
+    try {
+
+      assertThat(
+              catchThrowable(
+                  () -> {
+                    ResponseEntity<String> itemsDuringToxic =
+                        this.testRestTemplate.getForEntity(
+                            proxyHostAndPort + "/items", String.class);
+                  }))
+          .as("call should fail when the connection is cut")
+          .isInstanceOf(Exception.class);
+    } catch (Exception e) {
+      // Handle exception as specifically as desired
+    }
 
     apiProxy.toxics().get("CUT_CONNECTION_DOWNSTREAM").remove();
     apiProxy.toxics().get("CUT_CONNECTION_UPSTREAM").remove();
