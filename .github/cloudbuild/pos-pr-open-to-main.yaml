@@ -151,10 +151,11 @@ steps:
 #     gh pr comment $_PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
 #   waitFor: [ 'get-external-loadbalancer-ip' ]
 
-availableSecrets:
-  secretManager:
-  - versionName: projects/$PROJECT_NUMBER/secrets/$_GHTOKEN_SECRET_NAME/versions/latest
-    env: 'GITHUB_TOKEN'
+# @TODO: Commented until this is resolved: https://github.com/GoogleCloudPlatform/point-of-sale/issues/102
+# availableSecrets:
+#   secretManager:
+#   - versionName: projects/$PROJECT_NUMBER/secrets/$_GHTOKEN_SECRET_NAME/versions/latest
+#     env: 'GITHUB_TOKEN'
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:
