@@ -1,12 +1,12 @@
 # Domain mapping for the application
 
-The parent domain for the application is [`abm-pos.com`](http://abm-pos.com)
+The parent domain for the application is [`point-of-sale.retail.cymbal.dev`](http://point-of-sale.retail.cymbal.dev)
 hosted via [Google Domains](https://domains.google/). There are a few
 sub-domains that are used to reach key deployments of the application:
-- Latest release _(using MySQL DB)_: [abm-pos.com](http://abm-pos.com)
-- Latest release _(using H2 Embedded DB)_: [im.abm-pos.com](http://im.abm-pos.com)
-- Build from **main** branch  _(using MySQL DB)_: [staging.abm-pos.com](http://staging.abm-pos.com)
-- Build from **main** branch  _(using H2 Embedded D)_: [im.staging.abm-pos.com](http://im.staging.abm-pos.com)
+- Latest release _(using MySQL DB)_: [point-of-sale.retail.cymbal.dev](http://point-of-sale.retail.cymbal.dev)
+- Latest release _(using H2 Embedded DB)_: [im.point-of-sale.retail.cymbal.dev](http://im.point-of-sale.retail.cymbal.dev)
+- Build from **main** branch  _(using MySQL DB)_: [staging.point-of-sale.retail.cymbal.dev](http://staging.point-of-sale.retail.cymbal.dev)
+- Build from **main** branch  _(using H2 Embedded D)_: [im.staging.point-of-sale.retail.cymbal.dev](http://im.staging.point-of-sale.retail.cymbal.dev)
 
 ### To create a new mapping you have to: _(examples show how the above were created)_
 1. Create a global static IP Address
@@ -30,7 +30,7 @@ sub-domains that are used to reach key deployments of the application:
     #   namespace: release-db
     # spec:
     #   domains:
-    #     - abm-pos.com
+    #     - point-of-sale.retail.cymbal.dev
 
     kubectl apply -f k8-manifests/util/certificates.yaml
     ```

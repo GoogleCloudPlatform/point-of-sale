@@ -25,8 +25,8 @@ If you’re using this app, please ★Star the repository to show your interest!
 </p>
 
 ### Play with it:
-- Latest release: [abm-pos.com](http://abm-pos.com)
-- Build from **main** branch: [staging.abm-pos.com](http://staging.abm-pos.com)
+- Latest release: [point-of-sale.retail.cymbal.dev](http://point-of-sale.retail.cymbal.dev)
+- Build from **main** branch: [staging.point-of-sale.retail.cymbal.dev](http://staging.point-of-sale.retail.cymbal.dev)
 ---
 
 ### Edge computing

@@ -21,7 +21,7 @@ metadata:
   namespace: release-db
 spec:
   domains:
-    - abm-pos.com
+    - point-of-sale.retail.cymbal.dev
 ---
 # Certificate to be created in the main cluster under the release namespace
 # specific to the H2 Embedded DB based deployment of the application
@@ -32,7 +32,7 @@ metadata:
   namespace: release-inmemory
 spec:
   domains:
-    - im.abm-pos.com
+    - im.point-of-sale.retail.cymbal.dev
 ---
 # Certificate to be created in the main cluster under the staging namespace
 # specific to the MySQL DB based deployment of the application
@@ -43,7 +43,7 @@ metadata:
   namespace: staging-db
 spec:
   domains:
-    - staging.abm-pos.com
+    - staging.point-of-sale.retail.cymbal.dev
 ---
 # Certificate to be created in the main cluster under the staging namespace
 # specific to the H2 Embedded DB based deployment of the application
@@ -54,4 +54,4 @@ metadata:
   namespace: staging-inmemory
 spec:
   domains:
-    - im.staging.abm-pos.com
+    - im.staging.point-of-sale.retail.cymbal.dev
