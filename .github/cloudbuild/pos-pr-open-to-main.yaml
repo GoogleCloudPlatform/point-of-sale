@@ -134,26 +134,28 @@ steps:
 
   ###########################################################
   # Comment the fetched IP in the GitHub Pull request
+  # @TODO: Commented until this is resolved: https://github.com/GoogleCloudPlatform/point-of-sale/issues/102
   ###########################################################
-- id: 'comment-ip-to-github-pr'
-  name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
-  secretEnv: [ 'GITHUB_TOKEN' ]
-  entrypoint: bash
-  args:
-  - -c
-  - |
-    cat <<EOF > /workspace/gh-comment.txt -
-    :zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
-    - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
-    - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
-    EOF
-    gh pr comment $_PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
-  waitFor: [ 'get-external-loadbalancer-ip' ]
+# - id: 'comment-ip-to-github-pr'
+#   name: 'us-docker.pkg.dev/point-of-sale-ci/third-party-images/github-cli:mar-22'
+#   secretEnv: [ 'GITHUB_TOKEN' ]
+#   entrypoint: bash
+#   args:
+#   - -c
+#   - |
+#     cat <<EOF > /workspace/gh-comment.txt -
+#     :zap:  Two deployments have been created for the Point-of-Sale application. You may access and test them at: :zap: </br>
+#     - **MySQL DB** backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-db.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-db.ip))
+#     - **Embedded H2** DB backed deployment: [**$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip)**](http://$(cat /workspace/pr-$_PR_NUMBER-inmemory.ip))
+#     EOF
+#     gh pr comment $_PR_NUMBER --repo GoogleCloudPlatform/point-of-sale --body-file /workspace/gh-comment.txt
+#   waitFor: [ 'get-external-loadbalancer-ip' ]
 
-availableSecrets:
-  secretManager:
-  - versionName: projects/$PROJECT_NUMBER/secrets/$_GHTOKEN_SECRET_NAME/versions/latest
-    env: 'GITHUB_TOKEN'
+# @TODO: Commented until this is resolved: https://github.com/GoogleCloudPlatform/point-of-sale/issues/102
+# availableSecrets:
+#   secretManager:
+#   - versionName: projects/$PROJECT_NUMBER/secrets/$_GHTOKEN_SECRET_NAME/versions/latest
+#     env: 'GITHUB_TOKEN'
 timeout: 1800s
 logsBucket: 'gs://pos-cloudbuild-logs'
 options:

@@ -12,17 +12,17 @@
     "@vue/cli-plugin-eslint": "5.0.8",
     "bootstrap-vue": "2.23.1",
     "bootstrap": "5.3.2",
-    "vue": "2.7.15",
+    "vue": "2.7.16",
     "vue-toast-notification": "1.0.1",
     "vuex": "3.6.2"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "6.4.2",
+    "@fortawesome/fontawesome-free": "6.5.1",
     "@vue/cli-service": "5.0.8",
     "eslint-config-google": "0.14.0",
-    "eslint-plugin-vue": "9.18.1",
+    "eslint-plugin-vue": "9.20.1",
     "lint": "1.1.2",
-    "vue-template-compiler": "2.7.15"
+    "vue-template-compiler": "2.7.16"
   },
   "eslintConfig": {
     "root": true,
