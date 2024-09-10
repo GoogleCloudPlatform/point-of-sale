@@ -76,6 +76,7 @@ public class ApiServerController {
           .version(HttpClient.Version.HTTP_1_1)
           .connectTimeout(Duration.ofSeconds(11))
           .build();
+
   /**
    * default service endpoints to use if they cannot be read from environment variables in {@link
    * #initServiceEndpoints()}
