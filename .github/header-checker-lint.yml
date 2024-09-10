@@ -33,7 +33,6 @@ sourceFileExtensions:
   - 'css'
   - 'java'
   - 'js'
-  - 'properties'
   - 'py'
   - 'sh'
   - 'tf'
