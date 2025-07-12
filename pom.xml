@@ -38,7 +38,7 @@
     <snakeyaml.version>2.2</snakeyaml.version>
     <springboot.version>2.7.8</springboot.version>
     <springboot.springbeans.version>5.3.28</springboot.springbeans.version>
-    <apache.commons.version>3.12.0</apache.commons.version>
+    <apache.commons.version>3.18.0</apache.commons.version>
     <spring-boot-maven.plugin.version>2.7.8</spring-boot-maven.plugin.version>
     <mysql.connector.version>8.0.33</mysql.connector.version>
     <h2.embedded.db.version>2.2.224</h2.embedded.db.version>
