@@ -50,13 +50,13 @@ Environment=SPRING_PROFILES_ACTIVE=inmemory
 
 - Create `Cloud Storage Bucket` to store the image
     ```sh
-    gsutil mb -p ${PROJECT_ID} -c standard -b on gs://${BUCKET_NAME}
+    gcloud storage buckets create gs://${BUCKET_NAME} --project=${PROJECT_ID} --default-storage-class=standard --uniform-bucket-level-access
     ```
 
 - Make the bucket **publicly readable**
     > **Note**: For typical use the bucket should be **private**, and [credentials](https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/vm-runtime/create-storage-credentials) for the bucket added into VM Runtime to securely access the private image.
     ```sh
-    gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
+    gcloud storage buckets add-iam-policy-binding gs://${BUCKET_NAME} --member=allUsers --role=objectViewer
     ```
 
 
